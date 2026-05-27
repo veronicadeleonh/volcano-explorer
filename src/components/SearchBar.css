@@ -1,0 +1,96 @@
+.search-wrap {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  max-width: calc(100vw - 40px);
+  z-index: 100;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(12, 12, 22, 0.88);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 10px 14px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.5);
+  transition: border-color 0.2s;
+}
+
+.search-box.open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-color: rgba(255,100,50,0.35);
+}
+
+.search-box:focus-within {
+  border-color: rgba(255,100,50,0.4);
+}
+
+.search-icon { font-size: 14px; opacity: 0.6; flex-shrink: 0; }
+
+.search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.search-input::placeholder { color: rgba(255,255,255,0.3); }
+
+.search-clear {
+  background: none; border: none; cursor: pointer;
+  color: rgba(255,255,255,0.35); font-size: 12px;
+  padding: 2px 4px; border-radius: 4px;
+  transition: color 0.15s;
+}
+.search-clear:hover { color: rgba(255,255,255,0.7); }
+
+.search-results {
+  list-style: none;
+  background: rgba(12, 12, 22, 0.96);
+  border: 1px solid rgba(255,100,50,0.3);
+  border-top: none;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.search-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  cursor: pointer;
+  transition: background 0.1s;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.search-item:first-child { border-top: none; }
+.search-item:hover,
+.search-item.highlighted { background: rgba(255,100,50,0.12); }
+
+.si-emoji { font-size: 11px; flex-shrink: 0; }
+.si-name { color: #fff; font-size: 13.5px; font-weight: 500; flex: 1; }
+.si-meta { color: rgba(255,255,255,0.38); font-size: 11.5px; flex-shrink: 0; }
+
+.search-empty {
+  background: rgba(12, 12, 22, 0.96);
+  border: 1px solid rgba(255,100,50,0.2);
+  border-top: none;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.35);
+  text-align: center;
+}
