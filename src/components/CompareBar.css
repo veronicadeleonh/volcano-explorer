@@ -1,0 +1,137 @@
+.cb-wrap {
+  position: absolute;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(8, 12, 28, 0.92);
+  border: 1px solid rgba(100, 160, 255, 0.3);
+  border-radius: 14px;
+  padding: 8px 12px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.55);
+  max-width: calc(100vw - 40px);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cb-hint {
+  font-size: 11.5px;
+  color: rgba(100, 160, 255, 0.7);
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+  padding-right: 4px;
+}
+
+.cb-slots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cb-slot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  min-width: 110px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.cb-slot.filled {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff;
+}
+
+.cb-slot.empty {
+  background: rgba(100, 160, 255, 0.05);
+  border: 1px dashed rgba(100, 160, 255, 0.25);
+  color: rgba(100, 160, 255, 0.4);
+  justify-content: center;
+  font-size: 12px;
+}
+
+.cb-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cb-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+  font-weight: 500;
+}
+
+.cb-remove {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.3);
+  cursor: pointer;
+  font-size: 10px;
+  padding: 2px;
+  flex-shrink: 0;
+  transition: color 0.15s;
+  line-height: 1;
+}
+.cb-remove:hover { color: rgba(255,100,50,0.8); }
+
+.cb-placeholder {
+  font-size: 12px;
+}
+
+/* Action buttons */
+.cb-go {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.cb-go.ready {
+  background: rgba(100, 160, 255, 0.9);
+  color: #fff;
+}
+.cb-go.ready:hover {
+  background: rgba(120, 180, 255, 1);
+}
+
+.cb-go.disabled {
+  background: rgba(100, 160, 255, 0.15);
+  color: rgba(100, 160, 255, 0.4);
+  cursor: not-allowed;
+}
+
+.cb-cancel {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.3);
+  font-size: 11.5px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-family: inherit;
+  transition: color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+.cb-cancel:hover {
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.06);
+}

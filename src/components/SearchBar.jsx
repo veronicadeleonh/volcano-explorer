@@ -10,7 +10,7 @@ function statusEmoji(s) {
   return '🔴'
 }
 
-export default function SearchBar({ volcanoes, onSelect, selected }) {
+export default function SearchBar({ volcanoes, onSelect, selected, compareMode, onToggleCompare }) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
   const [highlight, setHighlight] = useState(-1)
@@ -32,6 +32,14 @@ export default function SearchBar({ volcanoes, onSelect, selected }) {
     }
   }, [selected])
 
+  // Clear query when entering compare mode
+  useEffect(() => {
+    if (compareMode) {
+      setQuery('')
+      setOpen(false)
+    }
+  }, [compareMode])
+
   const handleChange = (e) => {
     setQuery(e.target.value)
     setOpen(true)
@@ -49,7 +57,8 @@ export default function SearchBar({ volcanoes, onSelect, selected }) {
 
   const pick = (v) => {
     onSelect(v)
-    setQuery(v.name)
+    if (!compareMode) setQuery(v.name)
+    else setQuery('')
     setOpen(false)
     inputRef.current?.blur()
   }
@@ -72,13 +81,13 @@ export default function SearchBar({ volcanoes, onSelect, selected }) {
 
   return (
     <div className="search-wrap">
-      <div className={`search-box ${open && results.length > 0 ? 'open' : ''}`}>
-        <span className="search-icon">🔍</span>
+      <div className={`search-box ${open && results.length > 0 ? 'open' : ''} ${compareMode ? 'compare-active' : ''}`}>
+        <span className="search-icon">{compareMode ? '⚖️' : '🔍'}</span>
         <input
           ref={inputRef}
           className="search-input"
           type="text"
-          placeholder="Buscar volcán, país o región..."
+          placeholder={compareMode ? 'Buscar volcán para comparar...' : 'Buscar volcán, país o región...'}
           value={query}
           onChange={handleChange}
           onFocus={() => query && setOpen(true)}
@@ -89,6 +98,25 @@ export default function SearchBar({ volcanoes, onSelect, selected }) {
         {query && (
           <button className="search-clear" onClick={handleClear} title="Limpiar">✕</button>
         )}
+        <div className="search-compare-wrap">
+          <button
+            className={`search-compare-btn ${compareMode ? 'on' : ''}`}
+            onClick={onToggleCompare}
+          >
+            ⚖
+          </button>
+          {!compareMode && (
+            <div className="compare-tooltip" role="tooltip">
+              <div className="ct-arrow" />
+              <p className="ct-title">Comparar volcanes</p>
+              <ol className="ct-steps">
+                <li><span className="ct-num">1</span>Activa el modo comparación</li>
+                <li><span className="ct-num">2</span>Haz clic en 2 o 3 volcanes del mapa</li>
+                <li><span className="ct-num">3</span>Pulsa "Ver comparación" para ver los datos lado a lado</li>
+              </ol>
+            </div>
+          )}
+        </div>
       </div>
 
       {open && results.length > 0 && (
@@ -103,6 +131,7 @@ export default function SearchBar({ volcanoes, onSelect, selected }) {
               <span className="si-emoji">{statusEmoji(v.status)}</span>
               <span className="si-name">{v.name}</span>
               <span className="si-meta">{v.country} · {v.elevation > 0 ? `${v.elevation.toLocaleString()} m` : 'Submarina'}</span>
+              {compareMode && <span className="si-add">+ Añadir</span>}
             </li>
           ))}
         </ul>

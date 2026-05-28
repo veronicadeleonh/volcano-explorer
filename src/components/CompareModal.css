@@ -1,0 +1,224 @@
+/* Overlay */
+.cm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: cmFadeIn 0.2s ease-out;
+}
+
+@keyframes cmFadeIn {
+  from { opacity: 0 }
+  to   { opacity: 1 }
+}
+
+/* Modal box */
+.cm-modal {
+  background: rgba(10, 10, 22, 0.98);
+  border: 1px solid rgba(100, 160, 255, 0.25);
+  border-radius: 18px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+  width: 100%;
+  max-width: 760px;
+  max-height: 88vh;
+  overflow-y: auto;
+  animation: cmSlideUp 0.22s ease-out;
+}
+
+@keyframes cmSlideUp {
+  from { transform: translateY(20px); opacity: 0 }
+  to   { transform: translateY(0);    opacity: 1 }
+}
+
+/* Header */
+.cm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  position: sticky;
+  top: 0;
+  background: rgba(10, 10, 22, 0.98);
+  z-index: 1;
+  border-radius: 18px 18px 0 0;
+}
+
+.cm-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.2px;
+}
+
+.cm-close {
+  background: rgba(255,255,255,0.07);
+  border: none;
+  color: rgba(255,255,255,0.45);
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 11px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+.cm-close:hover { background: rgba(255,100,50,0.2); color: #fff; }
+
+/* Column header row */
+.cm-cols {
+  display: grid;
+  grid-template-columns: 110px repeat(var(--ncols, 2), 1fr);
+  padding: 16px 22px 10px;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.cm-row-label-col { /* spacer */ }
+
+.cm-vol-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.cm-vol-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.cm-vol-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.cm-vol-sub {
+  font-size: 11.5px;
+  color: rgba(255,255,255,0.35);
+  margin-top: 2px;
+}
+
+/* Table */
+.cm-table {
+  padding: 6px 22px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.cm-row {
+  display: grid;
+  grid-template-columns: 110px repeat(var(--ncols, 2), 1fr);
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  align-items: center;
+}
+.cm-row:last-child { border-bottom: none; }
+
+.cm-row-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: rgba(255,255,255,0.3);
+  font-weight: 600;
+  padding-top: 2px;
+}
+
+.cm-cell {
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+  font-weight: 500;
+}
+
+.cm-na { color: rgba(255,255,255,0.25); }
+
+/* Elevation row */
+.cm-elev-row { padding: 14px 0; }
+
+.cm-elev-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cm-elev-text {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.cm-crown { font-size: 13px; }
+
+.cm-elev-bar-wrap {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.07);
+  overflow: hidden;
+}
+
+.cm-elev-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+/* VEI bar */
+.cm-vei-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.cm-vei-seg {
+  width: 6px; height: 10px;
+  border-radius: 1px;
+  background: rgba(255,255,255,0.1);
+}
+.cm-vei-seg.on { background: #ff6432; }
+.cm-vei-num {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  margin-left: 5px;
+}
+
+/* Links row */
+.cm-links-row {
+  display: grid;
+  grid-template-columns: 110px repeat(var(--ncols, 2), 1fr);
+  gap: 12px;
+  padding: 12px 22px 20px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.cm-link-cell {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cm-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  color: rgba(100, 160, 255, 0.7);
+  background: rgba(100, 160, 255, 0.08);
+  border: 1px solid rgba(100, 160, 255, 0.18);
+  border-radius: 7px;
+  padding: 4px 10px;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.cm-link:hover {
+  background: rgba(100, 160, 255, 0.18);
+  color: #a8d0ff;
+}
+
+/* --ncols is set as inline style on .cm-modal and cascades to all children */
