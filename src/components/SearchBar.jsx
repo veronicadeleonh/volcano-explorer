@@ -87,7 +87,7 @@ export default function SearchBar({ volcanoes, onSelect, selected, compareMode, 
           ref={inputRef}
           className="search-input"
           type="text"
-          placeholder={compareMode ? 'Buscar volcán para comparar...' : 'Buscar volcán, país o región...'}
+          placeholder={compareMode ? 'Search volcano to compare...' : 'Search volcano, country or region...'}
           value={query}
           onChange={handleChange}
           onFocus={() => query && setOpen(true)}
@@ -96,23 +96,24 @@ export default function SearchBar({ volcanoes, onSelect, selected, compareMode, 
           spellCheck={false}
         />
         {query && (
-          <button className="search-clear" onClick={handleClear} title="Limpiar">✕</button>
+          <button className="search-clear" onClick={handleClear} title="Clear">✕</button>
         )}
         <div className="search-compare-wrap">
           <button
             className={`search-compare-btn ${compareMode ? 'on' : ''}`}
             onClick={onToggleCompare}
+            title={compareMode ? 'Exit compare mode' : 'Compare volcanoes'}
           >
             ⚖
           </button>
           {!compareMode && (
             <div className="compare-tooltip" role="tooltip">
               <div className="ct-arrow" />
-              <p className="ct-title">Comparar volcanes</p>
+              <p className="ct-title">Compare volcanoes</p>
               <ol className="ct-steps">
-                <li><span className="ct-num">1</span>Activa el modo comparación</li>
-                <li><span className="ct-num">2</span>Haz clic en 2 o 3 volcanes del mapa</li>
-                <li><span className="ct-num">3</span>Pulsa "Ver comparación" para ver los datos lado a lado</li>
+                <li><span className="ct-num">1</span>Activate compare mode</li>
+                <li><span className="ct-num">2</span>Click 2 or 3 volcanoes on the map</li>
+                <li><span className="ct-num">3</span>Press "Compare" to see data side by side</li>
               </ol>
             </div>
           )}
@@ -130,15 +131,15 @@ export default function SearchBar({ volcanoes, onSelect, selected, compareMode, 
             >
               <span className="si-emoji">{statusEmoji(v.status)}</span>
               <span className="si-name">{v.name}</span>
-              <span className="si-meta">{v.country} · {v.elevation > 0 ? `${v.elevation.toLocaleString()} m` : 'Submarina'}</span>
-              {compareMode && <span className="si-add">+ Añadir</span>}
+              <span className="si-meta">{v.country} · {v.elevation > 0 ? `${v.elevation.toLocaleString()} m` : 'Submarine'}</span>
+              {compareMode && <span className="si-add">+ Add</span>}
             </li>
           ))}
         </ul>
       )}
 
       {open && query.length > 1 && results.length === 0 && (
-        <div className="search-empty">No se encontró ningún volcán con ese nombre.</div>
+        <div className="search-empty">No volcano found with that name.</div>
       )}
     </div>
   )

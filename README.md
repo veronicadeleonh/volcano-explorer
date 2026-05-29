@@ -2,6 +2,8 @@
 
 An interactive 3D globe for exploring the world's volcanoes — search, inspect, and compare volcanoes with eruption history, geological overlays, and side-by-side comparisons.
 
+![100% vibecoded](https://img.shields.io/badge/100%25-vibecoded-ff4422?style=flat-square&labelColor=0a0a16)
+
 ![Volcano Explorer](.github/screenshots/layers.png)
 
 ---

@@ -9,7 +9,7 @@ export default function TokenGate({ onSave }) {
     e.preventDefault()
     const t = token.trim()
     if (!t.startsWith('pk.')) {
-      setError('El token debe comenzar con "pk." — cópialo desde tu cuenta de Mapbox.')
+      setError('Token must start with "pk." — copy it from your Mapbox account.')
       return
     }
     onSave(t)
@@ -20,7 +20,7 @@ export default function TokenGate({ onSave }) {
       <div className="tg-card">
         <div className="tg-icon">🌋</div>
         <h1>Volcano Explorer</h1>
-        <p className="tg-sub">Explora 50 volcanes del mundo en un mapa interactivo.<br/>Necesitas un token gratuito de Mapbox para comenzar.</p>
+        <p className="tg-sub">Explore 50 volcanoes around the world on an interactive 3D globe.<br/>You need a free Mapbox token to get started.</p>
         <form onSubmit={handleSubmit}>
           <input
             className="tg-input"
@@ -33,11 +33,11 @@ export default function TokenGate({ onSave }) {
           />
           {error && <p className="tg-error">{error}</p>}
           <button className="tg-btn" type="submit" disabled={!token.trim()}>
-            Abrir el mapa →
+            Open the map →
           </button>
         </form>
         <p className="tg-help">
-          ¿No tienes token? Crea uno gratis en{' '}
+          Don't have a token? Get one for free at{' '}
           <a href="https://account.mapbox.com/access-tokens/" target="_blank" rel="noreferrer">
             account.mapbox.com
           </a>

@@ -246,7 +246,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
             <strong style="color:#fff">${p.name}</strong><br/>
             <span style="color:${p.color};font-size:11px">● ${p.status}</span><br/>
             <span style="color:rgba(255,255,255,0.45);font-size:11px">
-              ${p.country} · ${p.elevation > 0 ? Number(p.elevation).toLocaleString() + ' m' : 'Submarina'}
+              ${p.country} · ${p.elevation > 0 ? Number(p.elevation).toLocaleString() + ' m' : 'Submarine'}
             </span>`)
           .addTo(map)
       })

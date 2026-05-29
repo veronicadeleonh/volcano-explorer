@@ -48,7 +48,7 @@ export default function CompareModal({ volcanoes, onClose }) {
       <div className="cm-modal" style={{ '--ncols': volcanoes.length }}>
         {/* Header */}
         <div className="cm-header">
-          <span className="cm-title">⚖ Comparación de volcanes</span>
+          <span className="cm-title">⚖ Volcano Comparison</span>
           <button className="cm-close" onClick={onClose}>✕</button>
         </div>
 
@@ -73,14 +73,14 @@ export default function CompareModal({ volcanoes, onClose }) {
 
           {/* Standard rows */}
           {[
-            { label: 'Región',        render: v => v.region },
-            { label: 'Tipo',          render: v => v.type },
-            { label: 'Estado',        render: v => (
+            { label: 'Region',        render: v => v.region },
+            { label: 'Type',          render: v => v.type },
+            { label: 'Status',        render: v => (
               <span style={{ color: getColor(v.status), fontWeight: 600 }}>{v.status}</span>
             )},
-            { label: 'Últ. erupción', render: v => v.last_eruption || '—' },
-            { label: 'Erupciones',    render: v => v.eruptions?.length ? `${v.eruptions.length} registradas` : '—' },
-            { label: 'VEI máximo',    render: v => <VEIBar vei={maxVEI(v.eruptions)} /> },
+            { label: 'Last eruption', render: v => v.last_eruption || '—' },
+            { label: 'Eruptions',     render: v => v.eruptions?.length ? `${v.eruptions.length} recorded` : '—' },
+            { label: 'Max VEI',       render: v => <VEIBar vei={maxVEI(v.eruptions)} /> },
           ].map(row => (
             <div key={row.label} className="cm-row">
               <div className="cm-row-label">{row.label}</div>
@@ -113,14 +113,14 @@ function ElevationRow({ volcanoes }) {
 
   return (
     <div className="cm-row cm-elev-row">
-      <div className="cm-row-label">Elevación</div>
+      <div className="cm-row-label">Elevation</div>
       {volcanoes.map(v => {
         const pct = v.elevation > 0 ? (v.elevation / maxElev) * 100 : 0
         const isHighest = v.elevation === maxElev && v.elevation > 0
         return (
           <div key={v.id} className="cm-cell cm-elev-cell">
             <div className="cm-elev-text" style={{ color: isHighest ? '#ffd080' : '#fff' }}>
-              {v.elevation > 0 ? `${Number(v.elevation).toLocaleString()} m` : 'Submarina'}
+              {v.elevation > 0 ? `${Number(v.elevation).toLocaleString()} m` : 'Submarine'}
               {isHighest && <span className="cm-crown"> 👑</span>}
             </div>
             {v.elevation > 0 && (

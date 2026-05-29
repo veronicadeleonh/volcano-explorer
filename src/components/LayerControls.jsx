@@ -3,12 +3,12 @@ import './LayerControls.css'
 const LAYERS = [
   {
     id: 'boundaries',
-    label: 'Placas tectónicas',
+    label: 'Tectonic Plates',
     icon: '🌐',
     legend: [
-      { color: '#ff6b35', label: 'Subducción' },
-      { color: '#4da8da', label: 'Divergente' },
-      { color: '#a0a0c0', label: 'Transformante' },
+      { color: '#ff6b35', label: 'Subduction' },
+      { color: '#4da8da', label: 'Divergent' },
+      { color: '#a0a0c0', label: 'Transform' },
     ],
   },
   {
@@ -16,7 +16,7 @@ const LAYERS = [
     label: 'Ring of Fire',
     icon: '🔥',
     legend: [
-      { color: '#ff2200', label: 'Cinturón de fuego del Pacífico' },
+      { color: '#ff2200', label: 'Pacific Ring of Fire' },
     ],
   },
 ]
@@ -31,7 +31,7 @@ export default function LayerControls({ layers, onToggle }) {
             <button
               className="lc-btn"
               onClick={() => onToggle(layer.id)}
-              title={active ? `Ocultar ${layer.label}` : `Mostrar ${layer.label}`}
+              title={active ? `Hide ${layer.label}` : `Show ${layer.label}`}
             >
               <span className="lc-icon">{layer.icon}</span>
               <span className="lc-label">{layer.label}</span>

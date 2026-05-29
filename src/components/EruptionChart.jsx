@@ -37,7 +37,7 @@ export default function EruptionChart({ eruptions }) {
 
   if (data.length === 0) return (
     <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 12, fontStyle: 'italic' }}>
-      No hay datos de VEI disponibles.
+      No VEI data available.
     </p>
   )
 

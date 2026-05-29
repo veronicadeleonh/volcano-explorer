@@ -15,9 +15,9 @@ export default function CompareBar({ compareList, onRemove, onOpen, onCancel }) 
   return (
     <div className="cb-wrap">
       <div className="cb-hint">
-        {compareList.length === 0 && 'Haz clic en un volcán para añadirlo'}
-        {compareList.length === 1 && 'Añade al menos un volcán más'}
-        {compareList.length >= 2 && `${compareList.length} volcanes seleccionados`}
+        {compareList.length === 0 && 'Click a volcano on the map to add it'}
+        {compareList.length === 1 && 'Add at least one more volcano'}
+        {compareList.length >= 2 && `${compareList.length} volcanoes selected`}
       </div>
 
       <div className="cb-slots">
@@ -27,10 +27,10 @@ export default function CompareBar({ compareList, onRemove, onOpen, onCancel }) 
               <>
                 <span className="cb-dot" style={{ background: getColor(v.status) }} />
                 <span className="cb-name">{v.name}</span>
-                <button className="cb-remove" onClick={() => onRemove(v.id)} title="Quitar">✕</button>
+                <button className="cb-remove" onClick={() => onRemove(v.id)} title="Remove">✕</button>
               </>
             ) : (
-              <span className="cb-placeholder">+ Vacío</span>
+              <span className="cb-placeholder">+ Empty</span>
             )}
           </div>
         ))}
@@ -38,13 +38,13 @@ export default function CompareBar({ compareList, onRemove, onOpen, onCancel }) 
         <button
           className={`cb-go ${canCompare ? 'ready' : 'disabled'}`}
           onClick={canCompare ? onOpen : undefined}
-          title={canCompare ? 'Ver comparación' : 'Selecciona al menos 2 volcanes'}
+          title={canCompare ? 'View comparison' : 'Select at least 2 volcanoes'}
         >
-          Ver comparación →
+          Compare →
         </button>
       </div>
 
-      <button className="cb-cancel" onClick={onCancel}>✕ Cancelar</button>
+      <button className="cb-cancel" onClick={onCancel}>✕ Cancel</button>
     </div>
   )
 }

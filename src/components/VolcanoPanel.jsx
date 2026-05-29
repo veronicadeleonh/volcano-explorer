@@ -65,7 +65,7 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
 
         {/* ── Header ── */}
         <div className="vp-header">
-          <button className="vp-close" onClick={onClose} title="Cerrar">✕</button>
+          <button className="vp-close" onClick={onClose} title="Close">✕</button>
           <div className="vp-badge" style={{ background: sc.bg, color: sc.text }}>
             <span style={{ color: sc.dot }}>●</span> {v.status}
           </div>
@@ -96,12 +96,12 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
           {/* Stats */}
           <div className="vp-stats">
             {[
-              ['Elevación',     v.elevation > 0 ? `${v.elevation.toLocaleString()} m` : 'Submarina'],
-              ['Tipo',          v.type],
-              ['Última erupción', formatYear(v.last_eruption)],
-              ['Erupciones reg.', v.eruptions?.length ?? 0],
-              ['Coordenadas',   `${v.lat.toFixed(2)}°, ${v.lon.toFixed(2)}°`],
-              ['VEI máximo',    maxVei > 0 ? maxVei : '—'],
+              ['Elevation',     v.elevation > 0 ? `${v.elevation.toLocaleString()} m` : 'Submarine'],
+              ['Type',          v.type],
+              ['Last eruption', formatYear(v.last_eruption)],
+              ['Eruptions rec.', v.eruptions?.length ?? 0],
+              ['Coordinates',   `${v.lat.toFixed(2)}°, ${v.lon.toFixed(2)}°`],
+              ['Max VEI',       maxVei > 0 ? maxVei : '—'],
             ].map(([label, value]) => (
               <div key={label} className="vp-stat">
                 <span className="vp-stat-label">{label}</span>
@@ -124,7 +124,7 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
           {/* Eruption chart */}
           {v.eruptions?.length > 0 && (
             <div className="vp-section">
-              <h3 className="vp-section-title">Historial VEI</h3>
+              <h3 className="vp-section-title">VEI History</h3>
               <EruptionChart eruptions={v.eruptions} />
             </div>
           )}
@@ -132,7 +132,7 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
           {/* Eruption list */}
           {sortedEruptions.length > 0 && (
             <div className="vp-section">
-              <h3 className="vp-section-title">Erupciones destacadas</h3>
+              <h3 className="vp-section-title">Notable Eruptions</h3>
               <div className="vp-eruptions">
                 {sortedEruptions.map((e, i) => (
                   <div key={i} className="vp-eruption">
