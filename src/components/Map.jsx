@@ -271,10 +271,19 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   useEffect(() => {
     const map = mapRef.current
     if (!map || !volcanoes.length) return
-    if (map.isStyleLoaded() && map.getSource('volcanoes')) {
-      map.getSource('volcanoes').setData(toGeoJSON(volcanoes))
+
+    const apply = () => {
+      const src = map.getSource('volcanoes')
+      if (src) src.setData(toGeoJSON(volcanoes))
     }
-    // If style not loaded yet, the style.load callback seeds from volCacheRef
+
+    // Try immediately (works when style is already loaded)
+    apply()
+
+    // Also hook into style.load so we're covered if style hasn't fired yet,
+    // or if it reloads. Cleaned up when effect re-runs or component unmounts.
+    map.on('style.load', apply)
+    return () => map.off('style.load', apply)
   }, [volcanoes])
 
   // ── highlight selected volcano ─────────────────────────────────────────
