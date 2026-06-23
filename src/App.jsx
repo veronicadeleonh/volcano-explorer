@@ -6,6 +6,7 @@ import LayerControls from './components/LayerControls'
 import CompareBar from './components/CompareBar'
 import CompareModal from './components/CompareModal'
 import TokenGate from './components/TokenGate'
+import WelcomeModal from './components/WelcomeModal'
 import './App.css'
 
 const DEFAULT_LAYERS = { boundaries: false, ringOfFire: false }
@@ -66,6 +67,7 @@ export default function App() {
 
   return (
     <div className="app">
+      <WelcomeModal />
       <Map
         token={token}
         volcanoes={volcanoes}

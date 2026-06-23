@@ -1,0 +1,91 @@
+.wm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.wm-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 100, 50, 0.2);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16px);
+}
+
+.wm-icon {
+  font-size: 48px;
+  margin-bottom: 14px;
+  filter: drop-shadow(0 0 20px rgba(255, 100, 50, 0.6));
+}
+
+.wm-card h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 8px;
+  letter-spacing: -0.5px;
+}
+
+.wm-sub {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+
+.wm-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.wm-step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+}
+
+.wm-step-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.wm-step-text {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.5;
+}
+
+.wm-btn {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, #ff6432 0%, #cc2800 100%);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  letter-spacing: -0.01em;
+}
+
+.wm-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(255, 80, 30, 0.45);
+}
