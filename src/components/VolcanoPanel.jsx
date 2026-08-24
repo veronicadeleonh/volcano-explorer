@@ -38,10 +38,46 @@ async function fetchWikiImage(wikiUrl, fallbackUrl) {
   }
 }
 
+const ERUPTION_KEYWORDS = ['eruption', 'erupted', 'eruptive', 'lava', 'ash', 'pyroclastic', 'explosion', 'volcanic activity']
+
+function hasRecentEruption(results = []) {
+  const cutoff = new Date()
+  cutoff.setFullYear(cutoff.getFullYear() - 1)
+  return results.some(r => {
+    const withinYear = r.published_date && new Date(r.published_date) >= cutoff
+    const mentionsEruption = ERUPTION_KEYWORDS.some(w =>
+      r.title?.toLowerCase().includes(w) || r.content?.toLowerCase().includes(w)
+    )
+    return withinYear && mentionsEruption
+  })
+}
+
+async function fetchVolcanoNews(name, country) {
+  const key = import.meta.env.VITE_TAVILY_KEY
+  if (!key || key === 'your_tavily_key_here') return null
+  const res = await fetch('https://api.tavily.com/search', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      api_key: key,
+      query: `${name} volcano ${country} eruption activity`,
+      search_depth: 'basic',
+      topic: 'news',
+      days: 365,
+      max_results: 5,
+    }),
+  })
+  if (!res.ok) throw new Error('Tavily error')
+  return res.json()
+}
+
 export default function VolcanoPanel({ volcano: v, onClose }) {
   const [imgSrc, setImgSrc]     = useState(null)
   const [imgLoaded, setImgLoaded] = useState(false)
   const [imgError, setImgError]  = useState(false)
+  const [news, setNews]               = useState(null)
+  const [newsLoading, setNewsLoading] = useState(false)
+  const [recentEruption, setRecentEruption] = useState(false)
 
   const sc = getStatusStyle(v.status)
   const sortedEruptions = [...(v.eruptions || [])].sort((a, b) => b.year - a.year)
@@ -59,6 +95,21 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
     })
   }, [v.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Fetch news whenever volcano changes
+  useEffect(() => {
+    setNews(null)
+    setRecentEruption(false)
+    setNewsLoading(true)
+    fetchVolcanoNews(v.name, v.country)
+      .then(data => {
+        const results = data?.results ?? []
+        setNews(results)
+        setRecentEruption(hasRecentEruption(results))
+      })
+      .catch(() => setNews([]))
+      .finally(() => setNewsLoading(false))
+  }, [v.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div className="vp-overlay" onClick={onClose}>
       <div className="vp-panel" onClick={e => e.stopPropagation()}>
@@ -66,8 +117,15 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
         {/* ── Header ── */}
         <div className="vp-header">
           <button className="vp-close" onClick={onClose} title="Close">✕</button>
-          <div className="vp-badge" style={{ background: sc.bg, color: sc.text }}>
-            <span style={{ color: sc.dot }}>●</span> {v.status}
+          <div className="vp-badges">
+            <div className="vp-badge" style={{ background: sc.bg, color: sc.text }}>
+              <span style={{ color: sc.dot }}>●</span> {v.status}
+            </div>
+            {recentEruption && (
+              <div className="vp-badge vp-badge-eruption">
+                ▲ Erupted in last 12 months
+              </div>
+            )}
           </div>
           <h2 className="vp-title">{v.name}</h2>
           <p className="vp-subtitle">{v.country} · {v.region}</p>
@@ -146,6 +204,40 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
               </div>
             </div>
           )}
+
+          {/* Latest News */}
+          <div className="vp-section">
+            <h3 className="vp-section-title">Latest News</h3>
+            {newsLoading && (
+              <div className="vp-news-skeleton">
+                {[1,2,3].map(i => <div key={i} className="vp-news-skel-item" />)}
+              </div>
+            )}
+            {!newsLoading && news?.length > 0 && (
+              <div className="vp-news">
+                {news.map((item, i) => (
+                  <a
+                    key={i}
+                    className="vp-news-item"
+                    href={item.url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <div className="vp-news-title">{item.title}</div>
+                    {item.published_date && (
+                      <div className="vp-news-date">
+                        {new Date(item.published_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                      </div>
+                    )}
+                    <div className="vp-news-snippet">{item.content?.slice(0, 120)}…</div>
+                  </a>
+                ))}
+              </div>
+            )}
+            {!newsLoading && news?.length === 0 && (
+              <p className="vp-news-empty">No recent news found.</p>
+            )}
+          </div>
 
           {/* Links */}
           <div className="vp-links">

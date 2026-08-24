@@ -1,5 +1,20 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import './CompareModal.css'
+
+async function fetchWikiImage(wikiUrl, fallbackUrl) {
+  if (!wikiUrl) return fallbackUrl || null
+  try {
+    const title = wikiUrl.split('/wiki/').pop()
+    const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${title}`, {
+      headers: { Accept: 'application/json' },
+    })
+    if (!res.ok) throw new Error('not ok')
+    const data = await res.json()
+    return data?.originalimage?.source || data?.thumbnail?.source || fallbackUrl || null
+  } catch {
+    return fallbackUrl || null
+  }
+}
 
 function getColor(status = '') {
   if (status.includes('Active'))  return '#ff4422'
@@ -36,12 +51,23 @@ const ROWS = [
 ]
 
 export default function CompareModal({ volcanoes, onClose }) {
+  const [images, setImages] = useState({})
+
   // Close on Escape
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') onClose() }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
   }, [onClose])
+
+  // Fetch images for all volcanoes
+  useEffect(() => {
+    volcanoes.forEach(v => {
+      fetchWikiImage(v.wikipedia, v.image).then(src => {
+        if (src) setImages(prev => ({ ...prev, [v.id]: src }))
+      })
+    })
+  }, [volcanoes])
 
   return (
     <div className="cm-overlay" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
@@ -57,11 +83,15 @@ export default function CompareModal({ volcanoes, onClose }) {
           <div className="cm-row-label-col" />
           {volcanoes.map(v => (
             <div key={v.id} className="cm-vol-header">
-              <span className="cm-vol-dot" style={{ background: getColor(v.status) }} />
-              <div>
-                <div className="cm-vol-name">{v.name}</div>
-                <div className="cm-vol-sub">{v.country}</div>
+              <div className="cm-vol-img-wrap">
+                {images[v.id]
+                  ? <img src={images[v.id]} alt={v.name} className="cm-vol-img" />
+                  : <div className="cm-vol-img-skeleton" />
+                }
+                <span className="cm-vol-dot" style={{ background: getColor(v.status) }} />
               </div>
+              <div className="cm-vol-name">{v.name}</div>
+              <div className="cm-vol-sub">{v.country}</div>
             </div>
           ))}
         </div>

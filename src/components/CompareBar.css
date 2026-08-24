@@ -32,6 +32,10 @@
   gap: 6px;
 }
 
+.cb-slot-wrap {
+  position: relative;
+}
+
 .cb-slot {
   display: flex;
   align-items: center;
@@ -40,7 +44,7 @@
   padding: 0 10px;
   border-radius: 8px;
   font-size: 12.5px;
-  min-width: 110px;
+  min-width: 130px;
   transition: background 0.15s, border-color 0.15s;
 }
 
@@ -53,9 +57,24 @@
 .cb-slot.empty {
   background: rgba(100, 160, 255, 0.05);
   border: 1px dashed rgba(100, 160, 255, 0.25);
-  color: rgba(100, 160, 255, 0.4);
+  color: rgba(100, 160, 255, 0.5);
   justify-content: center;
   font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.cb-slot.empty:hover,
+.cb-slot.empty.open {
+  background: rgba(100, 160, 255, 0.12);
+  border-color: rgba(100, 160, 255, 0.5);
+  color: rgba(100, 160, 255, 0.9);
+}
+
+.cb-plus {
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.7;
 }
 
 .cb-dot {
@@ -89,6 +108,89 @@
 
 .cb-placeholder {
   font-size: 12px;
+}
+
+/* Dropdown */
+.cb-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 240px;
+  background: rgba(8, 12, 28, 0.98);
+  border: 1px solid rgba(100, 160, 255, 0.35);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  backdrop-filter: blur(20px);
+  z-index: 200;
+  overflow: hidden;
+  animation: cbDropIn 0.15s ease-out;
+}
+
+@keyframes cbDropIn {
+  from { opacity: 0; transform: translateY(-4px) }
+  to   { opacity: 1; transform: translateY(0) }
+}
+
+.cb-search {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255,255,255,0.05);
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 9px 12px;
+  color: #fff;
+  font-size: 12.5px;
+  font-family: inherit;
+  outline: none;
+}
+.cb-search::placeholder { color: rgba(255,255,255,0.25); }
+
+.cb-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.cb-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.cb-option:hover { background: rgba(100,160,255,0.1); }
+
+.cb-opt-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cb-opt-name {
+  flex: 1;
+  font-size: 12.5px;
+  color: #fff;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cb-opt-country {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  white-space: nowrap;
+}
+
+.cb-empty-msg {
+  padding: 12px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+  text-align: center;
 }
 
 /* Action buttons */

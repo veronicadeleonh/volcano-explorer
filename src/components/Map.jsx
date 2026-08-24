@@ -331,7 +331,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
 
     const GEO_LAYERS = {
       boundaries: ['geo-transform', 'geo-divergent', 'geo-subduction'],
-      ringOfFire:  ['geo-rof-glow', 'geo-rof-line'],
+      ringOfFire: ['geo-rof-glow', 'geo-rof-line'],
     }
 
     Object.entries(GEO_LAYERS).forEach(([key, ids]) => {
@@ -339,6 +339,37 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
         if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', VIS(layers[key]))
       })
     })
+
+    // ── volcano status visibility ──────────────────────────────────────
+    if (map.getLayer('vl-active'))  map.setLayoutProperty('vl-active',  'visibility', VIS(layers.showActive))
+    if (map.getLayer('vl-dormant')) map.setLayoutProperty('vl-dormant', 'visibility', VIS(layers.showDormant))
+
+    // ── combined type + recent eruption filter ─────────────────────────
+    const ALL_TYPES = ['Stratovolcano', 'Caldera', 'Shield', 'Submarine']
+    const activeTypes = ALL_TYPES.filter(t => layers[`type${t}`])
+    const recentYear  = new Date().getFullYear() - 2   // 2024 as of 2026
+
+    const typeFilter = activeTypes.length === ALL_TYPES.length
+      ? null
+      : activeTypes.length === 0
+        ? ['==', ['get', 'type'], '__none__']  // match nothing
+        : ['match', ['get', 'type'], activeTypes, true, false]
+
+    const recentFilter = layers.recentEruption
+      ? ['>=', ['get', 'last_eruption'], recentYear]
+      : null
+
+    const buildFilter = (statusExpr) => {
+      const parts = [statusExpr, typeFilter, recentFilter].filter(Boolean)
+      return parts.length === 1 ? parts[0] : ['all', ...parts]
+    }
+
+    if (map.getLayer('vl-active')) {
+      map.setFilter('vl-active',  buildFilter(['>', ['index-of', 'Active', ['get', 'status']], -1]))
+    }
+    if (map.getLayer('vl-dormant')) {
+      map.setFilter('vl-dormant', buildFilter(['!', ['>', ['index-of', 'Active', ['get', 'status']], -1]]))
+    }
   }, [layers])
 
   return <div ref={containerRef} className="map-container" />

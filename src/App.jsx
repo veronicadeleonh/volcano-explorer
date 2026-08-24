@@ -9,7 +9,12 @@ import TokenGate from './components/TokenGate'
 import WelcomeModal from './components/WelcomeModal'
 import './App.css'
 
-const DEFAULT_LAYERS = { boundaries: false, ringOfFire: false }
+const DEFAULT_LAYERS = {
+  boundaries: true, ringOfFire: true,
+  showActive: true, showDormant: true,
+  recentEruption: false,
+  typeStratovolcano: true, typeCaldera: true, typeShield: true, typeSubmarine: true,
+}
 
 export default function App() {
   const [volcanoes, setVolcanoes] = useState([])
@@ -87,6 +92,8 @@ export default function App() {
       {compareMode && (
         <CompareBar
           compareList={compareList}
+          volcanoes={volcanoes}
+          onAdd={handleAddToCompare}
           onRemove={(id) => setCompareList(prev => prev.filter(v => v.id !== id))}
           onOpen={() => setCompareOpen(true)}
           onCancel={handleToggleCompareMode}

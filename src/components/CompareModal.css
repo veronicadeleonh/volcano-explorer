@@ -82,15 +82,52 @@
 
 .cm-vol-header {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cm-vol-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.05);
+}
+
+.cm-vol-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cm-vol-img-skeleton {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: cmSkeleton 1.4s ease-in-out infinite;
+}
+
+@keyframes cmSkeleton {
+  0%   { background-position: 200% 0 }
+  100% { background-position: -200% 0 }
 }
 
 .cm-vol-dot {
-  width: 10px;
-  height: 10px;
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  margin-top: 4px;
+  border: 1.5px solid rgba(0,0,0,0.5);
   flex-shrink: 0;
 }
 
@@ -104,7 +141,7 @@
 .cm-vol-sub {
   font-size: 11.5px;
   color: rgba(255,255,255,0.35);
-  margin-top: 2px;
+  margin-top: -4px;
 }
 
 /* Table */

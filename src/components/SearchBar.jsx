@@ -98,27 +98,15 @@ export default function SearchBar({ volcanoes, onSelect, selected, compareMode, 
         {query && (
           <button className="search-clear" onClick={handleClear} title="Clear">✕</button>
         )}
-        <div className="search-compare-wrap">
-          <button
-            className={`search-compare-btn ${compareMode ? 'on' : ''}`}
-            onClick={onToggleCompare}
-            title={compareMode ? 'Exit compare mode' : 'Compare volcanoes'}
-          >
-            ⚖
-          </button>
-          {!compareMode && (
-            <div className="compare-tooltip" role="tooltip">
-              <div className="ct-arrow" />
-              <p className="ct-title">Compare volcanoes</p>
-              <ol className="ct-steps">
-                <li><span className="ct-num">1</span>Activate compare mode</li>
-                <li><span className="ct-num">2</span>Click 2 or 3 volcanoes on the map</li>
-                <li><span className="ct-num">3</span>Press "Compare" to see data side by side</li>
-              </ol>
-            </div>
-          )}
-        </div>
       </div>
+
+      <button
+        className={`compare-cta ${compareMode ? 'on' : ''}`}
+        onClick={onToggleCompare}
+      >
+        <span className="compare-cta-icon">⚖</span>
+        {compareMode ? 'Exit compare mode' : 'Compare volcanoes'}
+      </button>
 
       {open && results.length > 0 && (
         <ul className="search-results" ref={listRef}>

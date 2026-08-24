@@ -1,6 +1,6 @@
 # 🌋 Volcano Explorer
 
-An interactive 3D globe for exploring the world's volcanoes — search, inspect, and compare volcanoes with eruption history, geological overlays, and side-by-side comparisons.
+An interactive 3D globe for exploring the world's volcanoes — search, filter, inspect, and compare volcanoes with eruption history, geological overlays, real-time news, and side-by-side comparisons.
 
 ![100% vibecoded](https://img.shields.io/badge/100%25-vibecoded-ff4422?style=flat-square&labelColor=0a0a16)
 
@@ -11,7 +11,7 @@ An interactive 3D globe for exploring the world's volcanoes — search, inspect,
 ## Features
 
 ### 🌍 Interactive 3D Globe
-A fully rotatable globe built with Mapbox GL JS. Active volcanoes pulse with an animated red dot; dormant and extinct volcanoes appear as colored circles. Atmosphere, fog, and star field give the map a cinematic feel.
+A fully rotatable globe built with Mapbox GL JS. Active volcanoes pulse with an animated red dot; dormant volcanoes appear as colored circles. Atmosphere, fog, and star field give the map a cinematic feel.
 
 ![Globe view](.github/screenshots/globe.png)
 
@@ -27,23 +27,35 @@ Find any volcano by name, country, or region. Results update as you type with st
 ### 📋 Volcano Detail Panel
 Click any volcano to open a side panel with:
 - Dynamic image fetched from Wikipedia
+- Status badge + **"Erupted in last 12 months"** badge powered by Tavily web search
 - Key stats: elevation, type, last eruption, VEI
 - Full eruption history with a VEI bar chart
+- **Latest news** section — real-time articles from the last 365 days via Tavily
 - Links to Wikipedia, Global Volcanism Program, and Google Maps
 
 ![Detail panel](.github/screenshots/panel.png)
 
 ---
 
-### 🗺️ Geological Layers
-Toggle tectonic plate boundaries and the Pacific Ring of Fire on the globe. Three boundary types are shown — subduction zones, divergent boundaries, and transform faults — each in a distinct color with a legend.
+### 🎛️ Map Filters
+Two filter panels let you control exactly what's shown on the globe:
 
-![Geological layers](.github/screenshots/layers.png)
+**Volcano filters (bottom-left)**
+- Toggle **Active** and **Dormant** volcanoes independently
+- **Erupted recently** — highlight only volcanoes with a recorded eruption in recent years
+- **Volcano Type** — filter by Stratovolcano, Caldera, Shield, or Submarine
+
+**Geological layers (bottom-right)**
+- **Tectonic Plates** — subduction zones, divergent boundaries, and transform faults in distinct colors
+- **Ring of Fire** — Pacific Ring of Fire boundary overlay
 
 ---
 
 ### ⚖️ Volcano Comparison
-Compare up to 3 volcanoes side by side. Activate compare mode from the search bar, select volcanoes on the map (blue ring highlights), then open the modal to see elevation bars, VEI scores, eruption counts, and more.
+Compare up to 3 volcanoes side by side. Click the **"Compare volcanoes"** button, add volcanoes via the searchable dropdown or by clicking on the map, then open the modal to see:
+- Volcano photos fetched from Wikipedia
+- Elevation bars with highest-peak crown
+- VEI scores, eruption counts, status, and more
 
 ![Comparison](.github/screenshots/compare.png)
 
@@ -53,10 +65,11 @@ Compare up to 3 volcanoes side by side. Activate compare mode from the search ba
 
 | Layer | Technology |
 |---|---|
-| Framework | [React 18](https://react.dev) + [Vite](https://vitejs.dev) |
+| Framework | [React 19](https://react.dev) + [Vite](https://vitejs.dev) |
 | Map | [Mapbox GL JS v3](https://docs.mapbox.com/mapbox-gl-js/) — globe projection, GeoJSON layers, custom animated images |
 | Charts | [Recharts](https://recharts.org) — VEI eruption history bar charts |
 | Images | [Wikipedia REST API](https://en.wikipedia.org/api/rest_v1/) — dynamic thumbnail fetching |
+| News & search | [Tavily API](https://tavily.com) — real-time web search for volcano news and recent activity detection |
 | Geological data | [PB2002](https://doi.org/10.1029/2001GC000252) plate boundary dataset (Peter Bird, 2002) |
 | Styling | Plain CSS with `backdrop-filter` glass panels |
 
@@ -67,6 +80,7 @@ Compare up to 3 volcanoes side by side. Activate compare mode from the search ba
 ### Prerequisites
 - Node.js 18+
 - A free [Mapbox access token](https://account.mapbox.com/auth/signup/)
+- A [Tavily API key](https://tavily.com) (for real-time news — optional)
 
 ### Installation
 
@@ -78,15 +92,14 @@ npm install
 
 ### Configuration
 
-**Option A — `.env` file (recommended)**
+Create a `.env.local` file in the project root:
 
 ```env
 VITE_MAPBOX_TOKEN=pk.eyJ1Ijoi...your_token_here
+VITE_TAVILY_KEY=tvly-...your_key_here
 ```
 
-**Option B — in-app prompt**
-
-Skip the `.env` file. On first launch the app will ask for your token and save it to `localStorage`.
+**No `.env.local`?** On first launch the app will prompt for your Mapbox token and save it to `localStorage`. Tavily features will be disabled without the key.
 
 ### Run
 
@@ -104,18 +117,18 @@ Open [http://localhost:5173](http://localhost:5173).
 volcano-explorer/
 ├── public/
 │   └── data/
-│       ├── volcanoes.json          # Volcano dataset with eruption history
+│       ├── volcanoes.json          # 65 volcanoes with eruption history
 │       ├── plate_boundaries.json   # PB2002 tectonic boundaries
 │       └── ring_of_fire.json       # Pacific Ring of Fire boundary
 └── src/
     ├── components/
-    │   ├── Map.jsx                 # Mapbox GL globe — all layers & interactions
-    │   ├── SearchBar.jsx           # Search + compare mode toggle
-    │   ├── VolcanoPanel.jsx        # Detail panel: stats, images, eruption chart
+    │   ├── Map.jsx                 # Mapbox GL globe — all layers, filters & interactions
+    │   ├── SearchBar.jsx           # Search input + Compare volcanoes button
+    │   ├── VolcanoPanel.jsx        # Detail panel: stats, image, news, eruption chart
     │   ├── EruptionChart.jsx       # Recharts VEI bar chart
-    │   ├── LayerControls.jsx       # Tectonic / Ring of Fire toggles
-    │   ├── CompareBar.jsx          # Compare mode selection strip
-    │   ├── CompareModal.jsx        # Side-by-side comparison modal
+    │   ├── LayerControls.jsx       # Volcano filters (left) + geological layers (right)
+    │   ├── CompareBar.jsx          # Compare mode bar with searchable volcano dropdowns
+    │   ├── CompareModal.jsx        # Side-by-side comparison modal with photos
     │   └── TokenGate.jsx           # First-run Mapbox token prompt
     └── App.jsx
 ```
@@ -124,7 +137,7 @@ volcano-explorer/
 
 ## Data
 
-`volcanoes.json` covers 50 significant volcanoes worldwide with coordinates, elevation, type, activity status, eruption history (year + VEI + description), and Wikipedia/GVP links. Geological boundary data is derived from the [PB2002 dataset](https://doi.org/10.1029/2001GC000252) by Peter Bird.
+`volcanoes.json` covers **65 significant volcanoes** worldwide — 44 active and 21 dormant — spanning every major volcanic region. Each entry includes coordinates, elevation, type, activity status, eruption history (year + VEI + description), and Wikipedia/GVP links. Geological boundary data is derived from the [PB2002 dataset](https://doi.org/10.1029/2001GC000252) by Peter Bird.
 
 ---
 
