@@ -7,8 +7,8 @@
   gap: 6px;
 }
 
-.lc-wrap-left  { left: 16px; }
-.lc-wrap-right { right: 16px; }
+.lc-wrap-left  { left: 16px; bottom: auto; top: 20px; }
+.lc-wrap-right { left: 16px; }
 
 .lc-item {
   background: rgba(10, 10, 20, 0.88);
