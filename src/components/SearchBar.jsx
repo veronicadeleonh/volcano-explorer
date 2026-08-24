@@ -100,14 +100,6 @@ export default function SearchBar({ volcanoes, onSelect, selected, compareMode, 
         )}
       </div>
 
-      <button
-        className={`compare-cta ${compareMode ? 'on' : ''}`}
-        onClick={onToggleCompare}
-      >
-        <span className="compare-cta-icon">⚖</span>
-        {compareMode ? 'Exit compare mode' : 'Compare volcanoes'}
-      </button>
-
       {open && results.length > 0 && (
         <ul className="search-results" ref={listRef}>
           {results.map((v, i) => (
@@ -129,6 +121,14 @@ export default function SearchBar({ volcanoes, onSelect, selected, compareMode, 
       {open && query.length > 1 && results.length === 0 && (
         <div className="search-empty">No volcano found with that name.</div>
       )}
+
+      <button
+        className={`compare-cta ${compareMode ? 'on' : ''}`}
+        onClick={onToggleCompare}
+      >
+        <span className="compare-cta-icon">⚖</span>
+        {compareMode ? 'Exit compare mode' : 'Compare volcanoes'}
+      </button>
     </div>
   )
 }

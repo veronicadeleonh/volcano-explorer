@@ -48,7 +48,7 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
 
   return (
     <div className="cb-wrap">
-      <div className="cb-hint">
+      <div className="cb-title">
         {compareList.length === 0 && 'Select volcanoes to compare'}
         {compareList.length === 1 && 'Add at least one more'}
         {compareList.length >= 2 && `${compareList.length} volcanoes selected`}
@@ -106,8 +106,6 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
           Compare →
         </button>
       </div>
-
-      <button className="cb-cancel" onClick={onCancel}>✕ Cancel</button>
     </div>
   )
 }

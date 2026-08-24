@@ -38,16 +38,17 @@ async function fetchWikiImage(wikiUrl, fallbackUrl) {
   }
 }
 
-const ERUPTION_KEYWORDS = ['eruption', 'erupted', 'eruptive', 'lava', 'ash', 'pyroclastic', 'explosion', 'volcanic activity']
+// Only unambiguous active-eruption phrases — checked against title only
+// to avoid false positives from monitoring/tourism/historical articles
+const ERUPTION_KEYWORDS = ['erupts', 'erupted', 'erupting', 'new eruption', 'lava flow', 'lava flows']
 
 function hasRecentEruption(results = []) {
   const cutoff = new Date()
   cutoff.setFullYear(cutoff.getFullYear() - 1)
   return results.some(r => {
     const withinYear = r.published_date && new Date(r.published_date) >= cutoff
-    const mentionsEruption = ERUPTION_KEYWORDS.some(w =>
-      r.title?.toLowerCase().includes(w) || r.content?.toLowerCase().includes(w)
-    )
+    const title = r.title?.toLowerCase() ?? ''
+    const mentionsEruption = ERUPTION_KEYWORDS.some(w => title.includes(w))
     return withinYear && mentionsEruption
   })
 }
@@ -55,12 +56,13 @@ function hasRecentEruption(results = []) {
 async function fetchVolcanoNews(name, country) {
   const key = import.meta.env.VITE_TAVILY_KEY
   if (!key || key === 'your_tavily_key_here') return null
+  const y = new Date().getFullYear()
   const res = await fetch('https://api.tavily.com/search', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       api_key: key,
-      query: `${name} volcano ${country} eruption activity`,
+      query: `${name} volcano ${country} erupted ${y} OR ${y - 1}`,
       search_depth: 'basic',
       topic: 'news',
       days: 365,
