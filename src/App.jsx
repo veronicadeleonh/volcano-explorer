@@ -65,7 +65,14 @@ export default function App() {
   }
 
   const handleToggleLayer = useCallback((id) => {
-    setLayers(prev => ({ ...prev, [id]: !prev[id] }))
+    setLayers(prev => {
+      const next = { ...prev, [id]: !prev[id] }
+      // Enabling "Erupted recently" → always ensure Active is on (dormant volcanoes don't have recent eruptions in the dataset)
+      if (id === 'recentEruption' && next.recentEruption && !next.showActive) {
+        next.showActive = true
+      }
+      return next
+    })
   }, [])
 
   if (!token) return <TokenGate onSave={handleSaveToken} />

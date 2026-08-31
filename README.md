@@ -11,6 +11,7 @@ An interactive 3D globe for exploring the world's volcanoes — search, filter, 
 ## Features
 
 ### 🌍 Interactive 3D Globe
+
 A fully rotatable globe built with Mapbox GL JS. Active volcanoes pulse with an animated red dot; dormant volcanoes appear as colored circles. Atmosphere, fog, and star field give the map a cinematic feel.
 
 ![Globe view](.github/screenshots/globe.png)
@@ -18,6 +19,7 @@ A fully rotatable globe built with Mapbox GL JS. Active volcanoes pulse with an 
 ---
 
 ### 🔍 Search
+
 Find any volcano by name, country, or region. Results update as you type with status indicators and elevation data.
 
 ![Search](.github/screenshots/search.png)
@@ -25,7 +27,9 @@ Find any volcano by name, country, or region. Results update as you type with st
 ---
 
 ### 📋 Volcano Detail Panel
+
 Click any volcano to open a side panel with:
+
 - Dynamic image fetched from Wikipedia
 - Status badge + **"Erupted in last 12 months"** badge powered by Tavily web search
 - Key stats: elevation, type, last eruption, VEI
@@ -38,21 +42,28 @@ Click any volcano to open a side panel with:
 ---
 
 ### 🎛️ Map Filters
+
 Two filter panels let you control exactly what's shown on the globe:
 
 **Volcano filters (bottom-left)**
+
 - Toggle **Active** and **Dormant** volcanoes independently
 - **Erupted recently** — highlight only volcanoes with a recorded eruption in recent years
 - **Volcano Type** — filter by Stratovolcano, Caldera, Shield, or Submarine
 
 **Geological layers (bottom-right)**
+
 - **Tectonic Plates** — subduction zones, divergent boundaries, and transform faults in distinct colors
 - **Ring of Fire** — Pacific Ring of Fire boundary overlay
+
+![MAp filters](.github/screenshots/filters.png)
 
 ---
 
 ### ⚖️ Volcano Comparison
+
 Compare up to 3 volcanoes side by side. Click the **"Compare volcanoes"** button, add volcanoes via the searchable dropdown or by clicking on the map, then open the modal to see:
+
 - Volcano photos fetched from Wikipedia
 - Elevation bars with highest-peak crown
 - VEI scores, eruption counts, status, and more
@@ -63,21 +74,22 @@ Compare up to 3 volcanoes side by side. Click the **"Compare volcanoes"** button
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | [React 19](https://react.dev) + [Vite](https://vitejs.dev) |
-| Map | [Mapbox GL JS v3](https://docs.mapbox.com/mapbox-gl-js/) — globe projection, GeoJSON layers, custom animated images |
-| Charts | [Recharts](https://recharts.org) — VEI eruption history bar charts |
-| Images | [Wikipedia REST API](https://en.wikipedia.org/api/rest_v1/) — dynamic thumbnail fetching |
-| News & search | [Tavily API](https://tavily.com) — real-time web search for volcano news and recent activity detection |
-| Geological data | [PB2002](https://doi.org/10.1029/2001GC000252) plate boundary dataset (Peter Bird, 2002) |
-| Styling | Plain CSS with `backdrop-filter` glass panels |
+| Layer           | Technology                                                                                                          |
+| --------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Framework       | [React 19](https://react.dev) + [Vite](https://vitejs.dev)                                                          |
+| Map             | [Mapbox GL JS v3](https://docs.mapbox.com/mapbox-gl-js/) — globe projection, GeoJSON layers, custom animated images |
+| Charts          | [Recharts](https://recharts.org) — VEI eruption history bar charts                                                  |
+| Images          | [Wikipedia REST API](https://en.wikipedia.org/api/rest_v1/) — dynamic thumbnail fetching                            |
+| News & search   | [Tavily API](https://tavily.com) — real-time web search for volcano news and recent activity detection              |
+| Geological data | [PB2002](https://doi.org/10.1029/2001GC000252) plate boundary dataset (Peter Bird, 2002)                            |
+| Styling         | Plain CSS with `backdrop-filter` glass panels                                                                       |
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 - A free [Mapbox access token](https://account.mapbox.com/auth/signup/)
 - A [Tavily API key](https://tavily.com) (for real-time news — optional)

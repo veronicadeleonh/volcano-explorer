@@ -14,6 +14,7 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
   const canCompare = compareList.length >= 2
   const [openSlot, setOpenSlot] = useState(null)   // index of the slot whose dropdown is open
   const [query, setQuery] = useState('')
+  const wrapRef    = useRef(null)
   const dropdownRef = useRef(null)
   const inputRef = useRef(null)
 
@@ -36,18 +37,31 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
     setQuery('')
   }
 
-  // Close on outside click
+  // Close dropdown on outside click
   useEffect(() => {
     if (openSlot === null) return
     const handler = (e) => {
+      if (!document.contains(e.target)) return
       if (!dropdownRef.current?.contains(e.target)) setOpenSlot(null)
     }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [openSlot])
 
+  // Close compare mode on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      // Ignore clicks on nodes that React already removed from the DOM
+      // (e.g. a volcano option that caused a re-render before this handler fires)
+      if (!document.contains(e.target)) return
+      if (!wrapRef.current?.contains(e.target)) onCancel()
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [onCancel])
+
   return (
-    <div className="cb-wrap">
+    <div className="cb-wrap" ref={wrapRef}>
       <div className="cb-title">
         {compareList.length === 0 && 'Select volcanoes to compare'}
         {compareList.length === 1 && 'Add at least one more'}

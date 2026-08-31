@@ -42,15 +42,18 @@ async function fetchWikiImage(wikiUrl, fallbackUrl) {
 // to avoid false positives from monitoring/tourism/historical articles
 const ERUPTION_KEYWORDS = ['erupts', 'erupted', 'erupting', 'new eruption', 'lava flow', 'lava flows']
 
-function hasRecentEruption(results = []) {
+// Returns the formatted date of the most recent matching article, or null
+function getRecentEruptionDate(results = []) {
   const cutoff = new Date()
   cutoff.setFullYear(cutoff.getFullYear() - 1)
-  return results.some(r => {
+  const matches = results.filter(r => {
     const withinYear = r.published_date && new Date(r.published_date) >= cutoff
     const title = r.title?.toLowerCase() ?? ''
-    const mentionsEruption = ERUPTION_KEYWORDS.some(w => title.includes(w))
-    return withinYear && mentionsEruption
+    return withinYear && ERUPTION_KEYWORDS.some(w => title.includes(w))
   })
+  if (matches.length === 0) return null
+  matches.sort((a, b) => new Date(b.published_date) - new Date(a.published_date))
+  return new Date(matches[0].published_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 }
 
 async function fetchVolcanoNews(name, country) {
@@ -77,9 +80,7 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
   const [imgSrc, setImgSrc]     = useState(null)
   const [imgLoaded, setImgLoaded] = useState(false)
   const [imgError, setImgError]  = useState(false)
-  const [news, setNews]               = useState(null)
-  const [newsLoading, setNewsLoading] = useState(false)
-  const [recentEruption, setRecentEruption] = useState(false)
+  const [recentEruption, setRecentEruption] = useState(null) // null | date string
 
   const sc = getStatusStyle(v.status)
   const sortedEruptions = [...(v.eruptions || [])].sort((a, b) => b.year - a.year)
@@ -97,19 +98,12 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
     })
   }, [v.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Fetch news whenever volcano changes
+  // Check for recent eruption via Tavily
   useEffect(() => {
-    setNews(null)
-    setRecentEruption(false)
-    setNewsLoading(true)
+    setRecentEruption(null)
     fetchVolcanoNews(v.name, v.country)
-      .then(data => {
-        const results = data?.results ?? []
-        setNews(results)
-        setRecentEruption(hasRecentEruption(results))
-      })
-      .catch(() => setNews([]))
-      .finally(() => setNewsLoading(false))
+      .then(data => setRecentEruption(getRecentEruptionDate(data?.results ?? [])))
+      .catch(() => {})
   }, [v.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -125,7 +119,7 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
             </div>
             {recentEruption && (
               <div className="vp-badge vp-badge-eruption">
-                ▲ Erupted in last 12 months
+                ▲ Erupted in last 12 months · {recentEruption}
               </div>
             )}
           </div>
@@ -206,40 +200,6 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
               </div>
             </div>
           )}
-
-          {/* Latest News */}
-          <div className="vp-section">
-            <h3 className="vp-section-title">Latest News</h3>
-            {newsLoading && (
-              <div className="vp-news-skeleton">
-                {[1,2,3].map(i => <div key={i} className="vp-news-skel-item" />)}
-              </div>
-            )}
-            {!newsLoading && news?.length > 0 && (
-              <div className="vp-news">
-                {news.map((item, i) => (
-                  <a
-                    key={i}
-                    className="vp-news-item"
-                    href={item.url}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <div className="vp-news-title">{item.title}</div>
-                    {item.published_date && (
-                      <div className="vp-news-date">
-                        {new Date(item.published_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                      </div>
-                    )}
-                    <div className="vp-news-snippet">{item.content?.slice(0, 120)}…</div>
-                  </a>
-                ))}
-              </div>
-            )}
-            {!newsLoading && news?.length === 0 && (
-              <p className="vp-news-empty">No recent news found.</p>
-            )}
-          </div>
 
           {/* Links */}
           <div className="vp-links">
