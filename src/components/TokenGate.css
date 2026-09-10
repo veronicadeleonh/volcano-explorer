@@ -24,7 +24,7 @@
   border-radius: 10px;
   padding: 12px 14px;
   color: #fff; font-size: 12.5px;
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-mono);
   outline: none;
   transition: border-color 0.2s, background 0.2s;
   margin-bottom: 10px;

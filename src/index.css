@@ -1,7 +1,19 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+}
+
+/* Buttons/inputs/selects don't inherit the body font by default in browsers'
+   own stylesheets — without this every control silently falls back to the
+   platform UI font instead of --font-mono. */
+button, input, select, textarea {
+  font-family: inherit;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-mono);
   background: #0a0a0f;
   color: #f0f0f0;
   overflow: hidden;

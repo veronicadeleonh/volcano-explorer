@@ -3,6 +3,7 @@ import Map from './components/Map'
 import SearchBar from './components/SearchBar'
 import VolcanoPanel from './components/VolcanoPanel'
 import LayerControls from './components/LayerControls'
+import CountryPanel from './components/CountryPanel'
 import CompareBar from './components/CompareBar'
 import CompareModal from './components/CompareModal'
 import TokenGate from './components/TokenGate'
@@ -12,13 +13,14 @@ import './App.css'
 const DEFAULT_LAYERS = {
   boundaries: true, ringOfFire: true,
   showActive: true, showDormant: true,
-  recentEruption: false,
+  recencyFilter: 'all', // 'all' | '6m' | '1y'
   typeStratovolcano: true, typeCaldera: true, typeShield: true, typeSubmarine: true,
 }
 
 export default function App() {
-  const [volcanoes, setVolcanoes] = useState([])
-  const [selected, setSelected]   = useState(null)
+  const [volcanoes, setVolcanoes]           = useState([])
+  const [selected, setSelected]             = useState(null)
+  const [selectedCountry, setSelectedCountry] = useState(null)
   const [flyTo, setFlyTo]         = useState(null)
   const [layers, setLayers]       = useState(DEFAULT_LAYERS)
   const [token, setToken]         = useState(
@@ -61,18 +63,22 @@ export default function App() {
       return
     }
     setSelected(volcano)
+    setSelectedCountry(null)
     if (volcano) setFlyTo({ lon: volcano.lon, lat: volcano.lat })
   }
 
+  const handleCountryClick = useCallback((country) => {
+    if (compareMode) return
+    setSelectedCountry(country)
+    setSelected(null)
+  }, [compareMode])
+
   const handleToggleLayer = useCallback((id) => {
-    setLayers(prev => {
-      const next = { ...prev, [id]: !prev[id] }
-      // Enabling "Erupted recently" → always ensure Active is on (dormant volcanoes don't have recent eruptions in the dataset)
-      if (id === 'recentEruption' && next.recentEruption && !next.showActive) {
-        next.showActive = true
-      }
-      return next
-    })
+    setLayers(prev => ({ ...prev, [id]: !prev[id] }))
+  }, [])
+
+  const handleSetRecency = useCallback((recencyFilter) => {
+    setLayers(prev => ({ ...prev, recencyFilter }))
   }, [])
 
   if (!token) return <TokenGate onSave={handleSaveToken} />
@@ -86,6 +92,8 @@ export default function App() {
         selected={compareMode ? null : selected}
         compareList={compareList}
         onSelect={handleSelect}
+        onCountryClick={handleCountryClick}
+        activeCountry={selectedCountry}
         flyTo={flyTo}
         layers={layers}
       />
@@ -106,9 +114,16 @@ export default function App() {
           onCancel={handleToggleCompareMode}
         />
       )}
-      <LayerControls layers={layers} onToggle={handleToggleLayer} />
+      <LayerControls layers={layers} onToggle={handleToggleLayer} onSetRecency={handleSetRecency} />
       {!compareMode && selected && (
         <VolcanoPanel key={selected.id} volcano={selected} onClose={() => setSelected(null)} />
+      )}
+      {!compareMode && !selected && selectedCountry && (
+        <CountryPanel
+          country={selectedCountry}
+          onClose={() => setSelectedCountry(null)}
+          onSelectVolcano={handleSelect}
+        />
       )}
       {compareOpen && (
         <CompareModal

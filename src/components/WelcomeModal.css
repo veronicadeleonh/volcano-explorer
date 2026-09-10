@@ -89,3 +89,8 @@
   transform: translateY(-1px);
   box-shadow: 0 8px 28px rgba(255, 80, 30, 0.45);
 }
+
+/* Long-form copy stays in the sans stack for readability; UI chrome elsewhere uses the mono default */
+.wm-sub, .wm-step-text {
+  font-family: var(--font-sans);
+}

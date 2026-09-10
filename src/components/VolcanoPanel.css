@@ -336,3 +336,8 @@
   border-color: rgba(255,100,50,0.3);
   color: #fff;
 }
+
+/* Eruption descriptions are prose, not data — keep them in the sans stack */
+.ve-desc {
+  font-family: var(--font-sans);
+}

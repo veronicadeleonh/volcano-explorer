@@ -1,0 +1,209 @@
+.cp-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.cp-panel {
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 340px;
+  max-width: 100vw;
+  background: rgba(10, 10, 18, 0.96);
+  border-left: 1px solid rgba(255, 100, 50, 0.2);
+  backdrop-filter: blur(24px);
+  overflow-y: auto;
+  pointer-events: all;
+  animation: cpSlideIn 0.25s ease-out;
+  box-shadow: -8px 0 48px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes cpSlideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+.cp-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+}
+
+.cp-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: none; color: rgba(255, 255, 255, 0.5);
+  width: 28px; height: 28px; border-radius: 50%;
+  cursor: pointer; font-size: 11px;
+  transition: background 0.15s, color 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.cp-close:hover { background: rgba(255, 100, 50, 0.25); color: #fff; }
+
+.cp-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: rgba(255, 138, 92, 0.9);
+  margin-bottom: 6px;
+}
+
+.cp-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+  letter-spacing: -0.3px;
+}
+
+.cp-flag {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.cp-subtitle {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0 0 16px;
+}
+
+/* Aggregate stats — same visual language as the volcano detail panel */
+.cp-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cp-stat {
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  min-width: 0;
+}
+.cp-stat:nth-child(odd) { border-right: 1px solid rgba(255, 255, 255, 0.04); }
+
+.cp-stat-label {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 3px;
+}
+
+.cp-stat-value {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Volcano cards */
+.cp-cards {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 6px;
+}
+
+.cp-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.cp-card:hover { background: rgba(255, 255, 255, 0.06); }
+
+.cp-card-img-wrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.cp-card-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.cp-card-img-wrap.loaded .cp-card-img { opacity: 1; }
+
+.cp-card-skeleton {
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.09) 50%,
+    rgba(255, 255, 255, 0.04) 100%);
+  background-size: 200% 100%;
+  animation: cpShimmer 1.4s ease-in-out infinite;
+}
+@keyframes cpShimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.cp-card-fallback {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  opacity: 0.4;
+}
+
+.cp-card-status-dot {
+  position: absolute;
+  bottom: 4px; right: 4px;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(10, 10, 18, 0.9);
+}
+
+.cp-card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cp-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cp-card-meta {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cp-card-arrow {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 16px;
+  flex-shrink: 0;
+}

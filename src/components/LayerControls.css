@@ -174,35 +174,39 @@
   padding: 4px 9px;
 }
 
-/* Recently erupted toggle */
-.lc-recent-btn {
+/* Recency filter — segmented control (All / 6M / 1Y), Seismic-style pills */
+.lc-segment {
   display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-top: 8px;
-  width: 100%;
-  padding: 5px 2px;
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.35);
-  font-size: 11.5px;
-  font-family: inherit;
-  cursor: pointer;
-  text-align: left;
-  transition: color 0.15s;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
-.lc-recent-btn:hover { color: rgba(255, 255, 255, 0.7); }
-.lc-recent-btn.on    { color: #ff6640; }
 
-.lc-recent-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  flex-shrink: 0;
-  transition: background 0.15s, border-color 0.15s;
+.lc-seg-btn {
+  flex: 1;
+  padding: 5px 4px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 10.5px;
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
 }
-.lc-recent-dot.on {
-  background: #ff6640;
-  border-color: #ff6640;
+
+.lc-seg-btn:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.lc-seg-btn.on {
+  background: rgba(255, 100, 50, 0.85);
+  border-color: rgba(255, 100, 50, 0.85);
+  color: #fff;
 }

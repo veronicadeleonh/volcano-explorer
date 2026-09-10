@@ -6,7 +6,7 @@ const LAYERS = [
     label: 'Tectonic Plates',
     icon: '🌐',
     legend: [
-      { color: '#ff6b35', label: 'Subduction' },
+      { color: '#b56cf0', label: 'Subduction' },
       { color: '#4da8da', label: 'Divergent' },
       { color: '#a0a0c0', label: 'Transform' },
     ],
@@ -16,7 +16,7 @@ const LAYERS = [
     label: 'Ring of Fire',
     icon: '🔥',
     legend: [
-      { color: '#ff2200', label: 'Pacific Ring of Fire' },
+      { color: '#ff6a35', label: 'Pacific Ring of Fire' },
     ],
   },
 ]
@@ -26,6 +26,12 @@ const VOLCANO_FILTERS = [
   { id: 'showDormant', label: 'Dormant', icon: '⛰️', color: '#ffaa22' },
 ]
 
+const RECENCY_FILTERS = [
+  { id: 'all', label: 'All' },
+  { id: '6m',  label: '6M' },
+  { id: '1y',  label: '1Y' },
+]
+
 const TYPE_FILTERS = [
   { id: 'typeStratovolcano', label: 'Stratovolcano' },
   { id: 'typeCaldera',       label: 'Caldera' },
@@ -33,7 +39,7 @@ const TYPE_FILTERS = [
   { id: 'typeSubmarine',     label: 'Submarine' },
 ]
 
-export default function LayerControls({ layers, onToggle }) {
+export default function LayerControls({ layers, onToggle, onSetRecency }) {
   return (
     <>
       {/* ── Volcano filters — bottom-left ── */}
@@ -56,13 +62,18 @@ export default function LayerControls({ layers, onToggle }) {
               )
             })}
           </div>
-          <button
-            className={`lc-recent-btn ${layers.recentEruption ? 'on' : ''}`}
-            onClick={() => onToggle('recentEruption')}
-          >
-            <span className={`lc-recent-dot ${layers.recentEruption ? 'on' : ''}`} />
-            Erupted recently
-          </button>
+          <div className="lc-segment">
+            {RECENCY_FILTERS.map(f => (
+              <button
+                key={f.id}
+                className={`lc-seg-btn ${layers.recencyFilter === f.id ? 'on' : ''}`}
+                onClick={() => onSetRecency(f.id)}
+                title={f.id === 'all' ? 'Show all volcanoes' : `Active in the last ${f.label === '6M' ? '6 months' : 'year'}`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="lc-item lc-group">

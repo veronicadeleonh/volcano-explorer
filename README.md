@@ -12,9 +12,17 @@ An interactive 3D globe for exploring the world's volcanoes — search, filter, 
 
 ### 🌍 Interactive 3D Globe
 
-A fully rotatable globe built with Mapbox GL JS. Active volcanoes pulse with an animated red dot; dormant volcanoes appear as colored circles. Atmosphere, fog, and star field give the map a cinematic feel.
+A fully rotatable globe built with Mapbox GL JS, inspired by [seismic.center](https://seismic.center/)'s monospace, data-dense aesthetic. The globe drifts on its own ambient rotation, pausing while you interact and picking back up automatically once you let go. Volcanoes active within the last year pulse with an animated red dot; other active and dormant volcanoes appear as solid colored circles. A warm amber atmosphere, subtle star field, and monospace UI (JetBrains Mono) give the map a cinematic, terminal-like feel — with political borders hidden so the Ring of Fire and plate boundaries read as the map's real geography.
 
 ![Globe view](.github/screenshots/globe.png)
+
+---
+
+### 🗺️ Country Explorer
+
+Hover any country with a volcano to highlight it on the globe; click to open a country panel with a flag, quick stats (active vs. dormant count, highest peak, most recent eruption, total recorded eruptions), and a photo card for every volcano in that country. The highlight stays active while the panel is open, and clears automatically when you select a different country or volcano.
+
+![Country panel](.github/screenshots/country.png)
 
 ---
 
@@ -48,7 +56,7 @@ Two filter panels let you control exactly what's shown on the globe:
 **Volcano filters (bottom-left)**
 
 - Toggle **Active** and **Dormant** volcanoes independently
-- **Erupted recently** — highlight only volcanoes with a recorded eruption in recent years
+- **Recency filter** — segmented **All / 6M / 1Y** control to show only volcanoes with a recorded eruption in the last 6 months or year
 - **Volcano Type** — filter by Stratovolcano, Caldera, Shield, or Submarine
 
 **Geological layers (bottom-right)**
@@ -82,7 +90,7 @@ Compare up to 3 volcanoes side by side. Click the **"Compare volcanoes"** button
 | Images          | [Wikipedia REST API](https://en.wikipedia.org/api/rest_v1/) — dynamic thumbnail fetching                            |
 | News & search   | [Tavily API](https://tavily.com) — real-time web search for volcano news and recent activity detection              |
 | Geological data | [PB2002](https://doi.org/10.1029/2001GC000252) plate boundary dataset (Peter Bird, 2002)                            |
-| Styling         | Plain CSS with `backdrop-filter` glass panels                                                                       |
+| Styling         | Plain CSS with `backdrop-filter` glass panels, [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono) throughout |
 
 ---
 
@@ -137,10 +145,12 @@ volcano-explorer/
     │   ├── Map.jsx                 # Mapbox GL globe — all layers, filters & interactions
     │   ├── SearchBar.jsx           # Search input + Compare volcanoes button
     │   ├── VolcanoPanel.jsx        # Detail panel: stats, image, news, eruption chart
+    │   ├── CountryPanel.jsx        # Country panel: flag, stats, per-volcano photo cards
     │   ├── EruptionChart.jsx       # Recharts VEI bar chart
     │   ├── LayerControls.jsx       # Volcano filters (left) + geological layers (right)
     │   ├── CompareBar.jsx          # Compare mode bar with searchable volcano dropdowns
     │   ├── CompareModal.jsx        # Side-by-side comparison modal with photos
+    │   ├── WelcomeModal.jsx        # First-run onboarding steps
     │   └── TokenGate.jsx           # First-run Mapbox token prompt
     └── App.jsx
 ```
