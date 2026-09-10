@@ -14,11 +14,15 @@ function getColor(status = '') {
 // Only covers the countries actually present in volcanoes.json.
 const COUNTRY_ISO = {
   Cameroon: 'CM', 'Cape Verde': 'CV', Chile: 'CL', Colombia: 'CO', Comoros: 'KM',
-  'Costa Rica': 'CR', 'Dem. Rep. Congo': 'CD', Ecuador: 'EC', France: 'FR',
-  Greece: 'GR', Guatemala: 'GT', Iceland: 'IS', Indonesia: 'ID', Iran: 'IR',
-  Italy: 'IT', Japan: 'JP', Mexico: 'MX', 'New Zealand': 'NZ',
+  'Costa Rica': 'CR', 'Dem. Rep. Congo': 'CD', Ecuador: 'EC', Ethiopia: 'ET',
+  France: 'FR', Greece: 'GR', Guatemala: 'GT', Iceland: 'IS', Indonesia: 'ID',
+  Iran: 'IR', Italy: 'IT', Japan: 'JP', Mexico: 'MX', 'New Zealand': 'NZ',
+  // Baekdu straddles the border and its `country` field reflects that --
+  // mapped to North Korea's ISO since that's the primary attribution.
+  'North Korea / China': 'KP',
   'Papua New Guinea': 'PG', Peru: 'PE', Philippines: 'PH', Russia: 'RU',
-  Spain: 'ES', Tanzania: 'TZ', Tonga: 'TO', Turkey: 'TR', USA: 'US', Vanuatu: 'VU',
+  'Saint Vincent': 'VC', 'South Korea': 'KR', Spain: 'ES', Tanzania: 'TZ',
+  Tonga: 'TO', Turkey: 'TR', 'United Kingdom': 'GB', USA: 'US', Vanuatu: 'VU',
 }
 const ISO_TO_COUNTRY = Object.fromEntries(
   Object.entries(COUNTRY_ISO).map(([name, iso]) => [iso, name])
