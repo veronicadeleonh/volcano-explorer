@@ -42,6 +42,16 @@ async function fetchWikiImage(wikiUrl, fallbackUrl) {
 // to avoid false positives from monitoring/tourism/historical articles
 const ERUPTION_KEYWORDS = ['erupts', 'erupted', 'erupting', 'new eruption', 'lava flow', 'lava flows']
 
+// Heavily-monitored dormant volcanoes (Fuji, Vesuvius, Rainier...) generate a
+// steady stream of "what if it erupts" / disaster-preparedness coverage that
+// still contains a raw eruption keyword in the title. Exclude that framing so
+// it doesn't read as an actual, current eruption.
+const HYPOTHETICAL_KEYWORDS = [
+  'if ', ' if ', 'could', 'would', 'may ', 'might', 'should',
+  'risk', 'threat', 'overdue', 'prepares', 'preparedness', 'readiness',
+  'warns', 'warning', 'hazard', 'simulation', 'drill', 'what if', 'in case',
+]
+
 // Returns the formatted date of the most recent matching article, or null
 function getRecentEruptionDate(results = []) {
   const cutoff = new Date()
@@ -49,7 +59,9 @@ function getRecentEruptionDate(results = []) {
   const matches = results.filter(r => {
     const withinYear = r.published_date && new Date(r.published_date) >= cutoff
     const title = r.title?.toLowerCase() ?? ''
-    return withinYear && ERUPTION_KEYWORDS.some(w => title.includes(w))
+    const mentionsEruption = ERUPTION_KEYWORDS.some(w => title.includes(w))
+    const isHypothetical = HYPOTHETICAL_KEYWORDS.some(w => title.includes(w))
+    return withinYear && mentionsEruption && !isHypothetical
   })
   if (matches.length === 0) return null
   matches.sort((a, b) => new Date(b.published_date) - new Date(a.published_date))
