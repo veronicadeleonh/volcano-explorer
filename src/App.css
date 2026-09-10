@@ -18,15 +18,28 @@
   z-index: 10;
 
   a {
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.6);
+    font-weight: 500;
     text-decoration: none;
     transition: color 0.2s;
-    &:hover { color: rgba(255,255,255,0.75); }
+    &:hover { color: rgba(255,255,255,0.85); }
   }
 }
 
 .app-attribution-sep {
   opacity: 0.4;
+}
+
+@media (max-width: 640px) {
+  .app-attribution {
+    /* Sit below the mobile filter toggle buttons (LayerControls.css --
+    those now start at bottom: 30px) instead of overlapping them, and
+    shrink further since screen width is at a premium here. */
+    bottom: 8px;
+    right: 8px;
+    font-size: 8px;
+    gap: 4px;
+  }
 }
 
 .counter {

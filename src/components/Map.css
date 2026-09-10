@@ -60,3 +60,13 @@
 .volcano-marker.selected .vm-pulse {
   animation-duration: 1.2s;
 }
+
+@media (max-width: 640px) {
+  /* Zoom is available via pinch-to-zoom on mobile -- the on-screen +/-
+  buttons just eat screen space and sit close to the filter toggles.
+  NavigationControl is the only control added (see Map.jsx), so hiding
+  its top-right corner is safe. */
+  .mapboxgl-ctrl-top-right {
+    display: none;
+  }
+}

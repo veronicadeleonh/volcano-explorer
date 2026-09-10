@@ -259,3 +259,78 @@
 }
 
 /* --ncols is set as inline style on .cm-modal and cascades to all children */
+
+@media (max-width: 640px) {
+  .cm-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .cm-modal {
+    width: 100%;
+    max-width: 100%;
+    max-height: 92vh;
+    border-radius: 18px 18px 0 0;
+    /* Keep each volcano column a legible fixed width instead of squeezing
+    images/text unreadably -- the whole modal scrolls horizontally so rows,
+    the header, and the links row all stay in sync. */
+    overflow-x: auto;
+  }
+
+  .cm-header {
+    padding: 14px 16px 12px;
+    left: 0; /* on top of the base rule's `position: sticky; top: 0`, this
+    keeps the header from scrolling away horizontally too */
+    z-index: 3; /* stay above the sticky (left-frozen) row-label column
+    (z-index: 2) as rows scroll past underneath it */
+  }
+  .cm-title { font-size: 13.5px; }
+
+  .cm-cols,
+  .cm-row,
+  .cm-links-row {
+    grid-template-columns: 84px repeat(var(--ncols, 2), 140px);
+    width: max-content;
+    min-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .cm-cols,
+  .cm-links-row {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .cm-table {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .cm-vol-name { font-size: 13.5px; }
+
+  .cm-row-label-col,
+  .cm-row-label {
+    position: sticky;
+    left: 16px; /* matches the row's own padding-left so it locks into the
+    same spot it was already sitting in, instead of jumping to the bare
+    scrollport edge */
+    z-index: 2;
+    background: rgba(10, 10, 22, 0.98);
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .cm-row-label {
+    font-size: 10px;
+    padding-right: 8px;
+  }
+
+  .cm-row-label::before {
+    content: '';
+    position: absolute;
+    inset: -10px 0; /* bleed into .cm-row's own 10px top/bottom padding --
+    align-items: center means the label's box only wraps its text, leaving a
+    gap there that scrolled data was showing through */
+    background: rgba(10, 10, 22, 0.98);
+    z-index: -1;
+  }
+}

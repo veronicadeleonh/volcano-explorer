@@ -106,6 +106,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   const compareListRef    = useRef(compareList)
   const spinEnabledRef    = useRef(true)   // ambient globe rotation, off after first interaction
   const spinGlobeRef      = useRef(null)   // lets other effects resume the ambient spin
+  const userInteractingRef = useRef(false) // true while a drag/touch is in progress on the globe
 
   useEffect(() => { onSelectRef.current = onSelect      }, [onSelect])
   useEffect(() => { onCountryClickRef.current = onCountryClick }, [onCountryClick])
@@ -118,11 +119,17 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
     if (!token || !containerRef.current) return
     mapboxgl.accessToken = token
 
+    // On narrow viewports the globe reads better pulled back a bit further —
+    // filter panels and side sheets take up relatively more room on a phone,
+    // so a lower initial zoom keeps the whole globe visible and legible.
+    const vw = window.innerWidth
+    const initialZoom = vw <= 480 ? 0.75 : vw <= 768 ? 1.2 : 1.8
+
     const map = new mapboxgl.Map({
       container: containerRef.current,
       style: 'mapbox://styles/mapbox/dark-v11',
       center: [20, 15],
-      zoom: 1.8,
+      zoom: initialZoom,
       projection: 'globe',
       attributionControl: false,
     })
@@ -135,7 +142,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
     const SLOW_SPIN_ZOOM = 2.5
 
     const spinGlobe = () => {
-      if (!spinEnabledRef.current || userInteracting) return
+      if (!spinEnabledRef.current || userInteractingRef.current) return
       const zoom = map.getZoom()
       if (zoom >= MAX_SPIN_ZOOM) return
       let distancePerSecond = 360 / SECONDS_PER_REVOLUTION
@@ -149,15 +156,30 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
 
     spinGlobeRef.current = spinGlobe
 
-    let userInteracting = false
-    map.on('mousedown',  () => { userInteracting = true })
-    map.on('dragstart',  () => { userInteracting = true })
-    map.on('touchstart', () => { userInteracting = true })
-    map.on('mouseup',    () => { userInteracting = false })
-    map.on('touchend',   () => { userInteracting = false })
-    map.on('pitchend',   () => { userInteracting = false })
-    map.on('rotateend',  () => { userInteracting = false })
-    map.on('moveend', () => { if (!userInteracting) spinGlobe() })
+    let interactionSafetyTimer = null
+
+    const markInteracting = () => {
+      userInteractingRef.current = true
+      clearTimeout(interactionSafetyTimer)
+      // Safety net: if the browser never fires a matching end event (a known
+      // mobile quirk -- e.g. touchcancel instead of touchend during scroll/zoom
+      // conflicts), don't let rotation stay stuck off forever.
+      interactionSafetyTimer = setTimeout(() => { userInteractingRef.current = false }, 3000)
+    }
+    const markInteractionEnd = () => {
+      userInteractingRef.current = false
+      clearTimeout(interactionSafetyTimer)
+    }
+
+    map.on('mousedown',   markInteracting)
+    map.on('dragstart',   markInteracting)
+    map.on('touchstart',  markInteracting)
+    map.on('mouseup',     markInteractionEnd)
+    map.on('touchend',    markInteractionEnd)
+    map.on('touchcancel', markInteractionEnd)
+    map.on('pitchend',    markInteractionEnd)
+    map.on('rotateend',   markInteractionEnd)
+    map.on('moveend', () => { if (!userInteractingRef.current) spinGlobe() })
     map.once('load', spinGlobe)
 
     map.on('style.load', () => {
@@ -580,7 +602,14 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
     if (map.getLayer('vl-dormant')) {
       map.setFilter('vl-dormant', buildFilter(['!', activeStatus]))
     }
-  }, [layers])
+
+    // Defensive: never let a filter interaction leave rotation stuck off.
+    if (!selected && !activeCountry) {
+      userInteractingRef.current = false
+      spinEnabledRef.current = true
+      spinGlobeRef.current?.()
+    }
+  }, [layers, selected, activeCountry])
 
   return <div ref={containerRef} className="map-container" />
 }

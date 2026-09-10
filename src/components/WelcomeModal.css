@@ -8,6 +8,7 @@
   justify-content: center;
   padding: 20px;
   backdrop-filter: blur(4px);
+  overflow-y: auto;
 }
 
 .wm-card {
@@ -19,6 +20,8 @@
   width: 100%;
   box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(16px);
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 .wm-icon {
@@ -93,4 +96,50 @@
 /* Long-form copy stays in the sans stack for readability; UI chrome elsewhere uses the mono default */
 .wm-sub, .wm-step-text {
   font-family: var(--font-sans);
+}
+
+/* ── Mobile: tighter spacing so the 5-step list fits a phone viewport ───── */
+@media (max-width: 640px) {
+  .wm-overlay {
+    padding: 12px;
+    align-items: flex-start;
+  }
+
+  .wm-card {
+    padding: 24px 20px;
+    border-radius: 16px;
+    margin: auto 0;
+  }
+
+  .wm-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+
+  .wm-card h2 {
+    font-size: 19px;
+  }
+
+  .wm-sub {
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+
+  .wm-steps {
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+
+  .wm-step {
+    padding: 8px 10px;
+  }
+
+  .wm-step-text {
+    font-size: 12.5px;
+  }
+
+  .wm-btn {
+    padding: 12px;
+    font-size: 14px;
+  }
 }

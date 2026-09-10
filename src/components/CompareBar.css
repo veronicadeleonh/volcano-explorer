@@ -44,7 +44,7 @@
   padding: 0 10px;
   border-radius: 8px;
   font-size: 12.5px;
-  min-width: 130px;
+  min-width: 160px;
   transition: background 0.15s, border-color 0.15s;
 }
 
@@ -89,7 +89,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 90px;
+  max-width: 115px;
   font-weight: 500;
 }
 
@@ -115,7 +115,7 @@
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
-  width: 240px;
+  width: 280px;
   background: rgba(8, 12, 28, 0.98);
   border: 1px solid rgba(100, 160, 255, 0.35);
   border-radius: 10px;
@@ -221,3 +221,54 @@
   cursor: not-allowed;
 }
 
+
+@media (max-width: 640px) {
+  /* Three side-by-side 130px-min slots plus the Compare button don't fit a
+  phone width -- stack them full-width instead so nothing gets squeezed or
+  clipped, and so each slot's dropdown (width: 100%) can never overflow the
+  viewport horizontally. */
+  .cb-wrap {
+    top: 124px;
+    left: 20px;
+    right: 20px;
+    transform: none;
+    max-width: none;
+    width: auto;
+    align-items: stretch;
+    box-sizing: border-box;
+    padding: 10px;
+  }
+
+  .cb-title {
+    white-space: normal;
+    text-align: center;
+    font-size: 10.5px;
+  }
+
+  .cb-slots {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .cb-slot-wrap { width: 100%; }
+
+  .cb-slot {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    justify-content: flex-start;
+  }
+
+  .cb-dropdown {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: auto;
+    box-sizing: border-box;
+  }
+
+  .cb-name { max-width: none; }
+
+  .cb-go { width: 100%; }
+}
