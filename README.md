@@ -4,7 +4,7 @@ An interactive 3D globe for exploring the world's volcanoes — search, filter, 
 
 ![100% vibecoded](https://img.shields.io/badge/100%25-vibecoded-ff4422?style=flat-square&labelColor=0a0a16)
 
-![Volcano Explorer](.github/screenshots/layers.png)
+![Volcano Explorer](.github/screenshots/hero.png)
 
 ---
 
@@ -82,14 +82,14 @@ Compare up to 3 volcanoes side by side. Click the **"Compare volcanoes"** button
 
 ## Tech Stack
 
-| Layer           | Technology                                                                                                          |
-| --------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Framework       | [React 19](https://react.dev) + [Vite](https://vitejs.dev)                                                          |
-| Map             | [Mapbox GL JS v3](https://docs.mapbox.com/mapbox-gl-js/) — globe projection, GeoJSON layers, custom animated images |
-| Charts          | [Recharts](https://recharts.org) — VEI eruption history bar charts                                                  |
-| Images          | [Wikipedia REST API](https://en.wikipedia.org/api/rest_v1/) — dynamic thumbnail fetching                            |
-| News & search   | [Tavily API](https://tavily.com) — real-time web search for volcano news and recent activity detection              |
-| Geological data | [PB2002](https://doi.org/10.1029/2001GC000252) plate boundary dataset (Peter Bird, 2002)                            |
+| Layer           | Technology                                                                                                                   |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Framework       | [React 19](https://react.dev) + [Vite](https://vitejs.dev)                                                                   |
+| Map             | [Mapbox GL JS v3](https://docs.mapbox.com/mapbox-gl-js/) — globe projection, GeoJSON layers, custom animated images          |
+| Charts          | [Recharts](https://recharts.org) — VEI eruption history bar charts                                                           |
+| Images          | [Wikipedia REST API](https://en.wikipedia.org/api/rest_v1/) — dynamic thumbnail fetching                                     |
+| News & search   | [Tavily API](https://tavily.com) — real-time web search for volcano news and recent activity detection                       |
+| Geological data | [PB2002](https://doi.org/10.1029/2001GC000252) plate boundary dataset (Peter Bird, 2002)                                     |
 | Styling         | Plain CSS with `backdrop-filter` glass panels, [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono) throughout |
 
 ---
