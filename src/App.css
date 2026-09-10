@@ -5,6 +5,30 @@
   overflow: hidden;
 }
 
+.app-attribution {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  pointer-events: auto;
+  z-index: 10;
+
+  a {
+    color: rgba(255,255,255,0.45);
+    text-decoration: none;
+    transition: color 0.2s;
+    &:hover { color: rgba(255,255,255,0.75); }
+  }
+}
+
+.app-attribution-sep {
+  opacity: 0.4;
+}
+
 .counter {
   font-size: 16px;
   padding: 5px 10px;

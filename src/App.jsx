@@ -131,6 +131,13 @@ export default function App() {
           onClose={() => setCompareOpen(false)}
         />
       )}
+      <div className="app-attribution">
+        By <a href="https://veronicadeleonh.de" target="_blank" rel="noopener noreferrer">Verónica De León Hernández</a>
+        <span className="app-attribution-sep">·</span>
+        Data: <a href="https://volcano.si.edu" target="_blank" rel="noopener noreferrer">GVP / Smithsonian</a>,{' '}
+        <a href="https://en.wikipedia.org" target="_blank" rel="noopener noreferrer">Wikipedia</a>,{' '}
+        <a href="https://github.com/fraxen/tectonicplates" target="_blank" rel="noopener noreferrer">PB2002</a>
+      </div>
     </div>
   )
 }
