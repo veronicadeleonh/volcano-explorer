@@ -20,14 +20,111 @@
   width: 100%;
   box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(16px);
-  max-height: 100%;
-  overflow-y: auto;
+  max-height: min(680px, 100%);
+  /* .wm-scroll (below) owns the internal scrolling now -- the card itself
+  no longer scrolls, so .wm-btn (a direct child, outside .wm-scroll) can
+  never be pushed off-screen or scrolled out of view. */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.wm-icon {
-  font-size: 48px;
-  margin-bottom: 14px;
-  filter: drop-shadow(0 0 20px rgba(255, 100, 50, 0.6));
+.wm-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1 1 auto;
+  min-height: 0; /* let this flex child actually shrink and scroll instead of forcing the card taller */
+}
+
+/* ── Central animated volcano ────────────────────────────────────────────
+   Replaces the old static emoji icon as the visual centerpiece: a glowing
+   crater with drifting embers, built with plain CSS/SVG so it stays crisp
+   at any size and costs nothing to load. */
+.wm-volcano {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.wm-volcano-glow {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 150px;
+  height: 150px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 120, 60, 0.4) 0%, rgba(255, 100, 50, 0) 70%);
+  animation: wmGlowPulse 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.wm-volcano-svg {
+  width: 190px;
+  height: 110px;
+  position: relative;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.5));
+}
+
+.wm-volcano-cone {
+  fill: #171019;
+  stroke: rgba(255, 110, 60, 0.35);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.wm-volcano-cone-shade {
+  fill: rgba(255, 90, 40, 0.18);
+}
+
+.wm-volcano-crater {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 1px;
+  height: 1px;
+}
+
+.wm-ember {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffb066;
+  box-shadow: 0 0 8px 2px rgba(255, 140, 60, 0.85);
+  opacity: 0;
+  animation: wmEmberRise 2.8s ease-in infinite;
+}
+
+.wm-ember-1 { left: -7px; animation-delay: 0s; }
+.wm-ember-2 { left:  1px; animation-delay: 0.7s; }
+.wm-ember-3 { left: -2px; animation-delay: 1.4s; }
+.wm-ember-4 { left:  6px; animation-delay: 2.1s; }
+
+@keyframes wmGlowPulse {
+  0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
+  50%      { opacity: 1;    transform: translateX(-50%) scale(1.18); }
+}
+
+@keyframes wmEmberRise {
+  0%   { transform: translate(0, 0) scale(1);   opacity: 0; }
+  12%  { opacity: 1; }
+  75%  { opacity: 0.45; }
+  100% { transform: translate(6px, -64px) scale(0.3); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wm-volcano-glow,
+  .wm-ember {
+    animation: none;
+    opacity: 0.7;
+  }
 }
 
 .wm-card h2 {
@@ -42,28 +139,45 @@
   font-size: 14px;
   color: rgba(255, 255, 255, 0.55);
   line-height: 1.6;
-  margin: 0 0 24px;
+  margin: 0 0 22px;
 }
 
+/* ── Onboarding steps — horizontal scroll-snap slider ────────────────────
+   One step per "page", swipeable/scrollable instead of a tall stacked
+   list, with .wm-dots below as both a position indicator and quick nav. */
 .wm-steps {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 28px;
+  flex-direction: row;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  margin: 0 0 12px;
+  border-radius: 10px;
+}
+
+.wm-steps::-webkit-scrollbar {
+  display: none;
 }
 
 .wm-step {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  box-sizing: border-box;
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  padding: 10px 12px;
+  padding: 14px;
+  min-height: 64px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 10px;
 }
 
 .wm-step-icon {
-  font-size: 16px;
+  font-size: 17px;
   flex-shrink: 0;
   margin-top: 1px;
 }
@@ -74,7 +188,32 @@
   line-height: 1.5;
 }
 
+.wm-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 26px;
+}
+
+.wm-dot {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.wm-dot.active {
+  background: #ff6432;
+  transform: scale(1.35);
+}
+
 .wm-btn {
+  flex-shrink: 0;
   width: 100%;
   padding: 13px;
   background: linear-gradient(135deg, #ff6432 0%, #cc2800 100%);
@@ -98,7 +237,7 @@
   font-family: var(--font-sans);
 }
 
-/* ── Mobile: tighter spacing so the 5-step list fits a phone viewport ───── */
+/* ── Mobile: tighter spacing so everything fits a phone viewport ───────── */
 @media (max-width: 640px) {
   .wm-overlay {
     padding: 12px;
@@ -109,11 +248,22 @@
     padding: 24px 20px;
     border-radius: 16px;
     margin: auto 0;
+    max-height: min(600px, 100%);
   }
 
-  .wm-icon {
-    font-size: 36px;
+  .wm-volcano {
+    height: 92px;
     margin-bottom: 10px;
+  }
+
+  .wm-volcano-svg {
+    width: 150px;
+    height: 88px;
+  }
+
+  .wm-volcano-glow {
+    width: 120px;
+    height: 120px;
   }
 
   .wm-card h2 {
@@ -122,20 +272,20 @@
 
   .wm-sub {
     font-size: 13px;
-    margin-bottom: 18px;
-  }
-
-  .wm-steps {
-    gap: 6px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
 
   .wm-step {
-    padding: 8px 10px;
+    padding: 10px;
+    min-height: 58px;
   }
 
   .wm-step-text {
     font-size: 12.5px;
+  }
+
+  .wm-dots {
+    margin-bottom: 18px;
   }
 
   .wm-btn {
