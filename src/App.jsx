@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 import Map from './components/Map'
 import SearchBar from './components/SearchBar'
 import VolcanoPanel from './components/VolcanoPanel'
@@ -138,6 +139,7 @@ export default function App() {
         <a href="https://en.wikipedia.org" target="_blank" rel="noopener noreferrer">Wikipedia</a>,{' '}
         <a href="https://github.com/fraxen/tectonicplates" target="_blank" rel="noopener noreferrer">PB2002</a>
       </div>
+      <Analytics />
     </div>
   )
 }
