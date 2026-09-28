@@ -100,6 +100,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   const containerRef  = useRef(null)
   const mapRef        = useRef(null)
   const popupRef      = useRef(null)
+  const imgCacheRef   = useRef({})   // volcano id → Wikipedia thumbnail URL
   const onSelectRef   = useRef(onSelect)
   const onCountryClickRef = useRef(onCountryClick)
   // (the "active" country highlight is filter-driven — see the effect below)
@@ -407,15 +408,49 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
         map.getCanvas().style.cursor = 'pointer'
         const p = e.features[0].properties
         if (popupRef.current) popupRef.current.remove()
-        popupRef.current = new mapboxgl.Popup({ closeButton: false, offset: 14, maxWidth: '240px' })
+        // Country tooltip should not compete with volcano tooltip
+        countryPopup?.remove(); countryPopup = null; countryPopupIso = null
+        popupRef.current = new mapboxgl.Popup({ closeButton: false, offset: 14, maxWidth: '220px' })
           .setLngLat(e.features[0].geometry.coordinates.slice())
           .setHTML(`
-            <strong style="color:#fff">${p.name}</strong><br/>
-            <span style="color:${p.color};font-size:11px">● ${p.status}</span><br/>
-            <span style="color:rgba(255,255,255,0.45);font-size:11px">
-              ${p.country} · ${p.elevation > 0 ? Number(p.elevation).toLocaleString() + ' m' : 'Submarine'}
-            </span>`)
+            <div class="vt-root">
+              <div class="vt-img-wrap"><img class="vt-img" alt="${p.name}" /></div>
+              <div class="vt-info">
+                <strong class="vt-name">${p.name}</strong>
+                <span class="vt-status" style="color:${p.color}">● ${p.status}</span>
+                <span class="vt-meta">${p.country} · ${p.elevation > 0 ? Number(p.elevation).toLocaleString() + ' m' : 'Submarine'}</span>
+              </div>
+            </div>`)
           .addTo(map)
+
+        // Inject thumbnail — use cache if available, otherwise fetch from Wikipedia
+        const injectImg = (src) => {
+          const el  = popupRef.current?.getElement()
+          const img = el?.querySelector('.vt-img')
+          if (!img) return
+          img.onload  = () => el.querySelector('.vt-img-wrap')?.classList.add('loaded')
+          img.onerror = () => el.querySelector('.vt-img-wrap')?.remove()
+          img.src = src
+        }
+
+        const cached = imgCacheRef.current[p.id]
+        if (cached) {
+          injectImg(cached)
+        } else if (p.wikipedia) {
+          const title = p.wikipedia.split('/wiki/').pop()
+          fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${title}`, {
+            headers: { Accept: 'application/json' },
+          })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+              const src = data?.originalimage?.source || data?.thumbnail?.source || null
+              if (src) { imgCacheRef.current[p.id] = src; injectImg(src) }
+              else popupRef.current?.getElement()?.querySelector('.vt-img-wrap')?.remove()
+            })
+            .catch(() => popupRef.current?.getElement()?.querySelector('.vt-img-wrap')?.remove())
+        } else {
+          popupRef.current?.getElement()?.querySelector('.vt-img-wrap')?.remove()
+        }
       })
 
       map.on('mouseleave', VOLCANO_LAYERS, () => {
@@ -431,6 +466,8 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
 
       // ── country hover + click ────────────────────────────────────────────
       let hoveredCountryId = null
+      let countryPopup     = null
+      let countryPopupIso  = null
 
       map.on('mousemove', 'country-hover-fill', (e) => {
         if (!e.features.length) return
@@ -440,6 +477,32 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
         hoveredCountryId = e.features[0].id
         map.setFeatureState({ source: 'country-boundaries', sourceLayer: 'country_boundaries', id: hoveredCountryId }, { hover: true })
         map.getCanvas().style.cursor = 'pointer'
+
+        // Don't show country tooltip when a volcano tooltip is already open
+        if (popupRef.current) return
+
+        const iso  = e.features[0]?.properties?.iso_3166_1
+        const name = ISO_TO_COUNTRY[iso]
+        if (!name) { countryPopup?.remove(); countryPopup = null; countryPopupIso = null; return }
+
+        const count = volCacheRef.current.filter(v => v.country === name).length
+
+        if (countryPopupIso !== iso) {
+          countryPopup?.remove()
+          countryPopupIso = iso
+          countryPopup = new mapboxgl.Popup({
+            closeButton: false, offset: 10, maxWidth: '180px', className: 'country-popup',
+          })
+            .setLngLat(e.lngLat)
+            .setHTML(`
+              <div class="ct-root">
+                <span class="ct-name">${name}</span>
+                <span class="ct-count">${count} ${count === 1 ? 'volcano' : 'volcanoes'}</span>
+              </div>`)
+            .addTo(map)
+        } else {
+          countryPopup?.setLngLat(e.lngLat)
+        }
       })
 
       map.on('mouseleave', 'country-hover-fill', () => {
@@ -447,6 +510,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
           map.setFeatureState({ source: 'country-boundaries', sourceLayer: 'country_boundaries', id: hoveredCountryId }, { hover: false })
         }
         hoveredCountryId = null
+        countryPopup?.remove(); countryPopup = null; countryPopupIso = null
         map.getCanvas().style.cursor = ''
       })
 
