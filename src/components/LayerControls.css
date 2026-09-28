@@ -177,10 +177,24 @@
 /* Recency filter — segmented control (All / 6M / 1Y), Seismic-style pills */
 .lc-segment {
   display: flex;
-  gap: 4px;
+  flex-direction: column;
+  gap: 6px;
   margin-top: 10px;
   padding-top: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.lc-seg-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.lc-seg-btns {
+  display: flex;
+  gap: 4px;
 }
 
 .lc-seg-btn {

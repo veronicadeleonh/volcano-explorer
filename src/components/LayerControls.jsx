@@ -93,16 +93,19 @@ export default function LayerControls({ layers, onToggle, onSetRecency }) {
             })}
           </div>
           <div className="lc-segment">
-            {RECENCY_FILTERS.map(f => (
-              <button
-                key={f.id}
-                className={`lc-seg-btn ${layers.recencyFilter === f.id ? 'on' : ''}`}
-                onClick={() => onSetRecency(f.id)}
-                title={f.id === 'all' ? 'Show all volcanoes' : `Active in the last ${f.label === '6M' ? '6 months' : 'year'}`}
-              >
-                {f.label}
-              </button>
-            ))}
+            <div className="lc-seg-label">Last eruption</div>
+            <div className="lc-seg-btns">
+              {RECENCY_FILTERS.map(f => (
+                <button
+                  key={f.id}
+                  className={`lc-seg-btn ${layers.recencyFilter === f.id ? 'on' : ''}`}
+                  onClick={() => onSetRecency(f.id)}
+                  title={f.id === 'all' ? 'Show all volcanoes' : `Active in the last ${f.label === '6M' ? '6 months' : 'year'}`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
