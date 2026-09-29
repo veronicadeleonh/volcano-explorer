@@ -915,7 +915,7 @@
     "type": "Stratovolcano",
     "status": "Active",
     "last_eruption": 2025,
-    "wikipedia": "https://en.wikipedia.org/wiki/Fuego_(volcano)",
+    "wikipedia": "https://en.wikipedia.org/wiki/Volc%C3%A1n_de_Fuego",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Volc%C3%A1n_de_Fuego_-_Guatemala.jpg/500px-Volc%C3%A1n_de_Fuego_-_Guatemala.jpg",
     "eruptions": [
       {
@@ -2244,6 +2244,161 @@
         "year": 900,
         "vei": 3,
         "description": "Last estimated eruption. The entire island is a volcanic edifice rising from the floor of the East Sea. Its mountainous interior and cliffs are the result of centuries of volcanic activity and marine erosion."
+      }
+    ]
+  },
+  {
+    "id": 74,
+    "name": "Agung",
+    "country": "Indonesia",
+    "region": "Bali",
+    "lat": -8.342,
+    "lon": 115.508,
+    "elevation": 3142,
+    "type": "Stratovolcano",
+    "status": "Active",
+    "last_eruption": 2019,
+    "wikipedia": "https://en.wikipedia.org/wiki/Mount_Agung",
+    "image": null,
+    "eruptions": [
+      {
+        "year": 1963,
+        "vei": 5,
+        "description": "Catastrophic eruption that killed over 1,000 people and destroyed villages on Bali. One of the deadliest eruptions of the 20th century in Indonesia."
+      },
+      {
+        "year": 2017,
+        "vei": 3,
+        "description": "Eruption preceded by months of seismic unrest. Tens of thousands evacuated from Bali. Ash columns reached 3 km above the crater."
+      },
+      {
+        "year": 2019,
+        "vei": 2,
+        "description": "Continued intermittent explosive activity with ash plumes. Bali airport temporarily closed on multiple occasions."
+      }
+    ]
+  },
+  {
+    "id": 75,
+    "name": "Kelud",
+    "country": "Indonesia",
+    "region": "East Java",
+    "lat": -7.93,
+    "lon": 112.308,
+    "elevation": 1731,
+    "type": "Stratovolcano",
+    "status": "Active",
+    "last_eruption": 2014,
+    "wikipedia": "https://en.wikipedia.org/wiki/Kelud",
+    "image": null,
+    "eruptions": [
+      {
+        "year": 1919,
+        "vei": 4,
+        "description": "Volcanic mudflows (lahars) triggered by crater lake expulsion killed over 5,000 people. One of the deadliest lahars in Indonesian history."
+      },
+      {
+        "year": 1990,
+        "vei": 4,
+        "description": "Explosive eruption with pyroclastic flows. Crater lake volume reduced significantly following the event."
+      },
+      {
+        "year": 2014,
+        "vei": 4,
+        "description": "Sudden explosive eruption ejected the crater lake in minutes. Ash fall reached Yogyakarta and Solo, 200 km away. Nearly 100,000 people evacuated."
+      }
+    ]
+  },
+  {
+    "id": 76,
+    "name": "Bromo",
+    "country": "Indonesia",
+    "region": "East Java",
+    "lat": -7.942,
+    "lon": 112.95,
+    "elevation": 2329,
+    "type": "Stratovolcano",
+    "status": "Active",
+    "last_eruption": 2016,
+    "wikipedia": "https://en.wikipedia.org/wiki/Mount_Bromo",
+    "image": null,
+    "eruptions": [
+      {
+        "year": 2010,
+        "vei": 2,
+        "description": "Extended eruptive episode with ash columns up to 800 m. Surrounding villages evacuated and Tengger Caldera access restricted."
+      },
+      {
+        "year": 2015,
+        "vei": 2,
+        "description": "Increased Strombolian activity from the summit crater. Ash advisories issued for regional aviation."
+      },
+      {
+        "year": 2016,
+        "vei": 2,
+        "description": "Phreatic explosions and ash fall affected nearby communities in the Tengger Caldera area."
+      }
+    ]
+  },
+  {
+    "id": 77,
+    "name": "Rinjani",
+    "country": "Indonesia",
+    "region": "Lombok",
+    "lat": -8.42,
+    "lon": 116.47,
+    "elevation": 3726,
+    "type": "Stratovolcano",
+    "status": "Active",
+    "last_eruption": 2016,
+    "wikipedia": "https://en.wikipedia.org/wiki/Mount_Rinjani",
+    "image": null,
+    "eruptions": [
+      {
+        "year": 1994,
+        "vei": 3,
+        "description": "Major eruption from the Barujari cone inside the caldera. Lava flows and ash ejection into Segara Anak crater lake."
+      },
+      {
+        "year": 2009,
+        "vei": 3,
+        "description": "Eruption from the Barujari cone with lava flows reaching the crater lake. Lombok airport temporarily closed."
+      },
+      {
+        "year": 2016,
+        "vei": 3,
+        "description": "Eruption triggered by a magnitude 6.2 earthquake. Ash column reached 5 km. Several thousand tourists evacuated from the caldera."
+      }
+    ]
+  },
+  {
+    "id": 78,
+    "name": "Marapi",
+    "country": "Indonesia",
+    "region": "West Sumatra",
+    "lat": -0.381,
+    "lon": 100.474,
+    "elevation": 2891,
+    "type": "Stratovolcano",
+    "status": "Active",
+    "last_eruption": 2024,
+    "wikipedia": "https://en.wikipedia.org/wiki/Mount_Marapi",
+    "image": null,
+    "eruptions": [
+      {
+        "year": 2011,
+        "vei": 2,
+        "description": "Explosive eruption with ash columns reaching 3 km. Surrounding agricultural areas affected by ash fall."
+      },
+      {
+        "year": 2023,
+        "vei": 2,
+        "description": "Sudden eruption killed 24 hikers on the summit trails. One of the deadliest volcanic events in Indonesia in recent years."
+      },
+      {
+        "year": 2024,
+        "vei": 2,
+        "description": "Continued explosive activity following the 2023 eruption sequence. Alert level maintained at the highest status."
       }
     ]
   }

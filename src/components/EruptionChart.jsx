@@ -5,26 +5,41 @@ function formatYear(y) {
   return y.toString()
 }
 
+const VEI_SCALE = [
+  { label: 'Non-explosive', volume: '< 10,000 m³',    ref: 'Kīlauea effusive flows'         },
+  { label: 'Gentle',        volume: '> 10,000 m³',    ref: 'Stromboli, Yasur'                },
+  { label: 'Explosive',     volume: '> 1,000,000 m³', ref: 'Galeras 1992, Soufrière Hills'   },
+  { label: 'Severe',        volume: '> 0.01 km³',     ref: 'Nevado del Ruiz 1985'            },
+  { label: 'Cataclysmic',   volume: '> 0.1 km³',      ref: 'Eyjafjallajökull 2010'           },
+  { label: 'Paroxysmal',    volume: '> 1 km³',        ref: 'Mount St. Helens 1980'           },
+  { label: 'Colossal',      volume: '> 10 km³',       ref: 'Pinatubo 1991'                   },
+  { label: 'Super-colossal',volume: '> 100 km³',      ref: 'Tambora 1815'                    },
+  { label: 'Mega-colossal', volume: '> 1,000 km³',    ref: 'Yellowstone ~640,000 years ago'  },
+]
+
 const CustomTooltip = ({ active, payload }) => {
   if (!active || !payload?.length) return null
-  const d = payload[0].payload
+  const d   = payload[0].payload
+  const vei = d.vei >= 0 ? d.vei : null
+  const info = vei !== null ? VEI_SCALE[vei] : null
   return (
     <div style={{
-      background: 'rgba(10,10,20,0.95)',
+      background: 'rgba(10,10,20,0.97)',
       border: '1px solid rgba(255,100,50,0.4)',
       borderRadius: 8,
       padding: '8px 12px',
       fontSize: 12,
+      maxWidth: 210,
     }}>
-      <p style={{ color: 'rgba(255,100,50,0.9)', fontWeight: 700, marginBottom: 2 }}>
+      <p style={{ color: 'rgba(255,100,50,0.9)', fontWeight: 700, marginBottom: 4 }}>
         {formatYear(d.year)}
+        {vei !== null && <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 400, marginLeft: 8 }}>VEI {vei}</span>}
       </p>
-      <p style={{ color: 'rgba(255,255,255,0.7)' }}>VEI: <strong style={{ color: '#fff' }}>{d.vei >= 0 ? d.vei : '?'}</strong></p>
-      {d.description && (
-        <p style={{ color: 'rgba(255,255,255,0.45)', marginTop: 4, maxWidth: 200, lineHeight: 1.4 }}>
-          {d.description.length > 80 ? d.description.slice(0, 80) + '…' : d.description}
-        </p>
-      )}
+      {info && <>
+        <p style={{ color: '#fff', fontWeight: 600, marginBottom: 2 }}>{info.label}</p>
+        <p style={{ color: 'rgba(255,255,255,0.45)', marginBottom: 3 }}>{info.volume} ejected</p>
+        <p style={{ color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>e.g. {info.ref}</p>
+      </>}
     </div>
   )
 }

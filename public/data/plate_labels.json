@@ -1,0 +1,20 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-155, 5]   }, "properties": { "name": "Pacific Plate" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-100, 48]  }, "properties": { "name": "North American Plate" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-55, -18]  }, "properties": { "name": "South American Plate" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [55, 52]    }, "properties": { "name": "Eurasian Plate" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [22, 8]     }, "properties": { "name": "African Plate" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [125, -28]  }, "properties": { "name": "Australian Plate" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [0, -78]    }, "properties": { "name": "Antarctic Plate" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-95, -22]  }, "properties": { "name": "Nazca Plate" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-75, 15]   }, "properties": { "name": "Caribbean Plate" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-88, 10]   }, "properties": { "name": "Cocos Plate" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [133, 20]   }, "properties": { "name": "Philippine Plate" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [47, 24]    }, "properties": { "name": "Arabian Plate" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [78, 22]    }, "properties": { "name": "Indian Plate" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-130, 47]  }, "properties": { "name": "Juan de Fuca Plate" } },
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [-40, -57]  }, "properties": { "name": "Scotia Plate" } }
+  ]
+}

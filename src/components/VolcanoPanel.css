@@ -196,6 +196,64 @@
   color: rgba(255,255,255,0.35);
   margin-bottom: 10px;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vp-help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.45);
+  font-size: 9px;
+  font-weight: 700;
+  cursor: help;
+  position: relative;
+  flex-shrink: 0;
+  letter-spacing: 0;
+  text-transform: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.vp-help:hover {
+  background: rgba(255,100,50,0.25);
+  color: #fff;
+}
+
+.vp-help-tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  padding: 9px 11px;
+  background: rgba(12,12,24,0.98);
+  border: 1px solid rgba(255,100,50,0.25);
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.5;
+  text-transform: none;
+  letter-spacing: 0;
+  z-index: 300;
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.55);
+}
+
+.vp-help-tooltip strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.vp-help:hover .vp-help-tooltip {
+  display: block;
 }
 
 /* Eruption list */

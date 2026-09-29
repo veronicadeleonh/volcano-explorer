@@ -29,8 +29,8 @@ const VOLCANO_FILTERS = [
 
 const RECENCY_FILTERS = [
   { id: 'all', label: 'All' },
-  { id: '6m',  label: '6M' },
-  { id: '1y',  label: '1Y' },
+  { id: '6m',  label: '6 months' },
+  { id: '1y',  label: '1 year' },
 ]
 
 const TYPE_FILTERS = [

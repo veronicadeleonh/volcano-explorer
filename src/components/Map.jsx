@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import PlateLabels from './PlateLabels'
 import mapboxgl from 'mapbox-gl'
 import './Map.css'
 
@@ -99,6 +100,7 @@ const VIS = (on) => (on ? 'visible' : 'none')
 export default function Map({ token, volcanoes, selected, compareList = [], onSelect, onCountryClick, activeCountry, flyTo, layers }) {
   const containerRef  = useRef(null)
   const mapRef        = useRef(null)
+  const [mapInstance, setMapInstance] = useState(null)
   const popupRef      = useRef(null)
   const imgCacheRef   = useRef({})   // volcano id → Wikipedia thumbnail URL
   const onSelectRef   = useRef(onSelect)
@@ -443,11 +445,16 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
           })
             .then(r => r.ok ? r.json() : null)
             .then(data => {
-              const src = data?.originalimage?.source || data?.thumbnail?.source || null
+              const src = data?.originalimage?.source || data?.thumbnail?.source || p.image || null
               if (src) { imgCacheRef.current[p.id] = src; injectImg(src) }
               else popupRef.current?.getElement()?.querySelector('.vt-img-wrap')?.remove()
             })
-            .catch(() => popupRef.current?.getElement()?.querySelector('.vt-img-wrap')?.remove())
+            .catch(() => {
+              if (p.image) { imgCacheRef.current[p.id] = p.image; injectImg(p.image) }
+              else popupRef.current?.getElement()?.querySelector('.vt-img-wrap')?.remove()
+            })
+        } else if (p.image) {
+          imgCacheRef.current[p.id] = p.image; injectImg(p.image)
         } else {
           popupRef.current?.getElement()?.querySelector('.vt-img-wrap')?.remove()
         }
@@ -526,7 +533,8 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
     })
 
     mapRef.current = map
-    return () => { map.remove(); mapRef.current = null }
+    map.once('load', () => setMapInstance(map))
+    return () => { map.remove(); mapRef.current = null; setMapInstance(null) }
   }, [token]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── update volcano source data when prop changes ──────────────────────
@@ -679,5 +687,10 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
     }
   }, [layers, selected, activeCountry])
 
-  return <div ref={containerRef} className="map-container" />
+  return (
+    <>
+      <div ref={containerRef} className="map-container" />
+      <PlateLabels map={mapInstance} visible={layers.boundaries} />
+    </>
+  )
 }

@@ -190,7 +190,17 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
           {/* Eruption chart */}
           {v.eruptions?.length > 0 && (
             <div className="vp-section">
-              <h3 className="vp-section-title">VEI History</h3>
+              <h3 className="vp-section-title">
+                VEI History
+                <span className="vp-help">
+                  ?
+                  <span className="vp-help-tooltip">
+                    The <strong>Volcanic Explosivity Index</strong> (VEI) rates eruption size on a scale of 0–8.
+                    Each step is roughly 10× more powerful than the last —
+                    VEI 2 is a moderate eruption, VEI 8 is a supervolcano.
+                  </span>
+                </span>
+              </h3>
               <EruptionChart eruptions={v.eruptions} />
             </div>
           )}
