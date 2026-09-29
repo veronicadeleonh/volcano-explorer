@@ -1,0 +1,11 @@
+/* Small hover cue on each plate label -- brightens and picks up a warm glow
+   matching the amber used for the selected-plate fill/stroke elsewhere, so
+   it reads as "this is clickable" before the user commits to a click. */
+.plate-label-text {
+  transition: fill 0.15s ease, filter 0.15s ease;
+}
+
+.plate-label-group:hover .plate-label-text {
+  fill: #fff;
+  filter: drop-shadow(0 0 3px rgba(245, 166, 35, 0.7));
+}

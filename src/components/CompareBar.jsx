@@ -54,6 +54,12 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
       // Ignore clicks on nodes that React already removed from the DOM
       // (e.g. a volcano option that caused a re-render before this handler fires)
       if (!document.contains(e.target)) return
+      // The dedicated "Exit compare mode" button (SearchBar's .compare-cta)
+      // already toggles compare mode itself on click. Without this guard, this
+      // mousedown-based outside-click check fires first and exits, then the
+      // button's own click fires right after and toggles it back on -- so the
+      // button visibly does nothing. Let the button be the only trigger.
+      if (e.target.closest?.('.compare-cta')) return
       if (!wrapRef.current?.contains(e.target)) onCancel()
     }
     document.addEventListener('mousedown', handler)

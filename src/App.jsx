@@ -7,6 +7,7 @@ import LayerControls from './components/LayerControls'
 import CountryPanel from './components/CountryPanel'
 import CompareBar from './components/CompareBar'
 import CompareModal from './components/CompareModal'
+import PlateModal from './components/PlateModal'
 import TokenGate from './components/TokenGate'
 import WelcomeModal from './components/WelcomeModal'
 import './App.css'
@@ -33,6 +34,10 @@ export default function App() {
   const [compareList, setCompareList] = useState([])
   const [compareOpen, setCompareOpen] = useState(false)
 
+  // ── tectonic plate detail modal ───────────────────────────────────────────
+  const [selectedPlate, setSelectedPlate] = useState(null) // { name, side } | null
+  const [plateArrowPoint, setPlateArrowPoint] = useState(null) // modal's measured arrow tip -- feeds the map connector line
+
   useEffect(() => {
     fetch('/data/volcanoes.json').then(r => r.json()).then(setVolcanoes)
   }, [])
@@ -57,7 +62,11 @@ export default function App() {
     })
   }, [])
 
+  // Volcano and plate selection are mutually exclusive -- opening one always
+  // closes the other, in every path (search, map click, compare mode).
   const handleSelect = (volcano) => {
+    setSelectedPlate(null)
+    setPlateArrowPoint(null)
     if (compareMode && volcano) {
       handleAddToCompare(volcano)
       if (volcano) setFlyTo({ lon: volcano.lon, lat: volcano.lat })
@@ -70,6 +79,8 @@ export default function App() {
 
   const handleCountryClick = useCallback((country) => {
     if (compareMode) return
+    setSelectedPlate(null)
+    setPlateArrowPoint(null)
     setSelectedCountry(country)
     setSelected(null)
   }, [compareMode])
@@ -80,6 +91,24 @@ export default function App() {
 
   const handleSetRecency = useCallback((recencyFilter) => {
     setLayers(prev => ({ ...prev, recencyFilter }))
+  }, [])
+
+  // Clicking the same plate label again closes the modal (and, via Map.jsx's
+  // selectedPlate effect, zooms the camera back in). The panel always opens on
+  // the right, vertically centered, and the dashed line drawn by PlateLabels
+  // points back at the plate itself instead of a little modal arrow. Also
+  // closes the volcano/country panel -- only one of the three can be open at
+  // a time.
+  const handlePlateClick = useCallback((name) => {
+    setSelected(null)
+    setSelectedCountry(null)
+    setSelectedPlate(prev => {
+      if (prev?.name === name) {
+        setPlateArrowPoint(null)
+        return null
+      }
+      return { name, side: 'right' }
+    })
   }, [])
 
   if (!token) return <TokenGate onSave={handleSaveToken} />
@@ -97,6 +126,9 @@ export default function App() {
         activeCountry={selectedCountry}
         flyTo={flyTo}
         layers={layers}
+        selectedPlate={selectedPlate}
+        onPlateClick={handlePlateClick}
+        modalArrowPoint={plateArrowPoint}
       />
       <SearchBar
         volcanoes={volcanoes}
@@ -130,6 +162,15 @@ export default function App() {
         <CompareModal
           volcanoes={compareList}
           onClose={() => setCompareOpen(false)}
+        />
+      )}
+      {selectedPlate && (
+        <PlateModal
+          key={selectedPlate.name}
+          plateName={selectedPlate.name}
+          side={selectedPlate.side}
+          onArrowPositioned={setPlateArrowPoint}
+          onClose={() => { setSelectedPlate(null); setPlateArrowPoint(null) }}
         />
       )}
       <div className="app-attribution">

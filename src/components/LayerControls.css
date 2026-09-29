@@ -1,3 +1,15 @@
+/* Two-tier radius language for the whole panel, matching the small
+   rounded-rect radius used everywhere else in the app (CompareBar's
+   "Add volcano" slots, its buttons, etc. all use 8px) rather than a
+   full pill -- containers get a slightly larger radius, every
+   button/chip control shares one radius so Active/Dormant, the
+   volcano-type tags, and the Last-eruption segmented buttons all read
+   as the same shape language instead of three different roundings. */
+:root {
+  --lc-radius-container: 10px;
+  --lc-radius-btn: 8px;
+}
+
 .lc-wrap {
   position: absolute;
   bottom: 32px;
@@ -13,7 +25,7 @@
 .lc-item {
   background: rgba(10, 10, 20, 0.88);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  border-radius: var(--lc-radius-container);
   overflow: hidden;
   backdrop-filter: blur(16px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
@@ -140,7 +152,7 @@
   align-items: center;
   gap: 5px;
   padding: 5px 11px;
-  border-radius: 20px;
+  border-radius: var(--lc-radius-btn);
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.45);
@@ -200,7 +212,7 @@
 .lc-seg-btn {
   flex: 1;
   padding: 5px 6px;
-  border-radius: 6px;
+  border-radius: var(--lc-radius-btn);
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.04);
   color: rgba(255, 255, 255, 0.45);
@@ -254,7 +266,7 @@
     bottom: 30px;
     z-index: 101;
     padding: 10px 16px;
-    border-radius: 24px;
+    border-radius: var(--lc-radius-btn);
     border: 1px solid rgba(255, 255, 255, 0.15);
     background: rgba(10, 10, 20, 0.92);
     color: #fff;

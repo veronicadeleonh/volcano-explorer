@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import PlateLabels from './PlateLabels'
+import { PLATE_META } from '../data/plateMeta'
 import mapboxgl from 'mapbox-gl'
 import './Map.css'
 
@@ -94,10 +95,35 @@ function makePulsingDot(map) {
   }
 }
 
+// Small tileable diagonal-stripe texture for the selected-plate highlight
+// (a static companion to the animated makePulsingDot above -- just a plain
+// ImageData this time, no onAdd/render needed).
+function makePlateStripePattern() {
+  const size = 7    // small + tight spacing -- fine hatching, not bold stripes
+  const ratio = 3    // extra pixel density so a sub-1px line still looks crisp
+  const c = document.createElement('canvas')
+  c.width = size * ratio
+  c.height = size * ratio
+  const ctx = c.getContext('2d')
+  ctx.scale(ratio, ratio)
+  ctx.strokeStyle = 'rgba(245, 166, 35, 0.3)'
+  ctx.lineWidth = 0.6
+  ctx.lineCap = 'square'
+  // Three parallel diagonals, offset by one tile width either side, so the
+  // 45° stripes line up seamlessly when the image repeats.
+  for (const x of [-size, 0, size]) {
+    ctx.beginPath()
+    ctx.moveTo(x, size)
+    ctx.lineTo(x + size, 0)
+    ctx.stroke()
+  }
+  return ctx.getImageData(0, 0, c.width, c.height)
+}
+
 const VIS = (on) => (on ? 'visible' : 'none')
 
 // ── component ─────────────────────────────────────────────────────────────
-export default function Map({ token, volcanoes, selected, compareList = [], onSelect, onCountryClick, activeCountry, flyTo, layers }) {
+export default function Map({ token, volcanoes, selected, compareList = [], onSelect, onCountryClick, activeCountry, flyTo, layers, selectedPlate, onPlateClick, modalArrowPoint }) {
   const containerRef  = useRef(null)
   const mapRef        = useRef(null)
   const [mapInstance, setMapInstance] = useState(null)
@@ -114,12 +140,46 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   const spinEnabledRef    = useRef(true)   // ambient globe rotation, off after first interaction
   const spinGlobeRef      = useRef(null)   // lets other effects resume the ambient spin
   const userInteractingRef = useRef(false) // true while a drag/touch is in progress on the globe
+  const selectedPlateRef  = useRef(selectedPlate) // lets the async plate-polygons fetch see the latest selection
 
   useEffect(() => { onSelectRef.current = onSelect      }, [onSelect])
   useEffect(() => { onCountryClickRef.current = onCountryClick }, [onCountryClick])
   useEffect(() => { volCacheRef.current = volcanoes     }, [volcanoes])
   useEffect(() => { layerCacheRef.current = layers      }, [layers])
   useEffect(() => { compareListRef.current = compareList }, [compareList])
+  useEffect(() => { selectedPlateRef.current = selectedPlate }, [selectedPlate])
+
+  // ── plate selection -- pull the camera back to reveal the starfield ────
+  // Driven by the `selectedPlate` prop (owned by App, alongside PlateModal)
+  // rather than local state, so the camera move and the modal open/close
+  // -- including Escape and the close button -- always stay in sync.
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+
+    const pulledBack = !!selectedPlate
+    spinEnabledRef.current = !pulledBack // pause ambient drift while examining space
+    userInteractingRef.current = false
+
+    map.setFog({
+      color: 'rgb(10,10,20)',
+      'high-color': 'rgb(120,46,12)',
+      'horizon-blend': 0.02,
+      'space-color': 'rgb(4,4,12)',
+      'star-intensity': pulledBack ? 0.85 : 0.25, // boosted for the reveal moment
+    })
+
+    const vw = window.innerWidth
+    const homeZoom = vw <= 480 ? 0.75 : vw <= 768 ? 1.2 : 1.8
+    const coords = PLATE_META[selectedPlate?.name]?.coords
+
+    map.easeTo({
+      zoom: pulledBack ? 0.3 : homeZoom,
+      ...(pulledBack && coords ? { center: coords } : {}), // recenter on the plate; leave center alone on the way back
+      duration: 1900,
+      easing: (t) => 1 - Math.pow(1 - t, 3), // easeOutCubic
+    })
+  }, [selectedPlate])
 
   // ── init map (runs once per token) ───────────────────────────────────────
   useEffect(() => {
@@ -367,6 +427,65 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
         })
         .catch(() => {}) // silently ignore if data not available
 
+      // Plate polygons (PB2002) -- fill only, purely visual: highlights the
+      // selected plate's outline when a label is clicked. No independent
+      // click/hover handling on the polygons themselves. Three stacked
+      // layers: a warm-amber wash, a fine diagonal-hatch pattern on top,
+      // and a proper stroke tracing the outline (fill-outline-color alone
+      // is too unreliable across renderers to count as a real stroke).
+      fetch('/data/plate_polygons.json')
+        .then(r => r.json())
+        .then(data => {
+          if (!map.getStyle()) return
+          map.addSource('plate-polygons', { type: 'geojson', data })
+
+          if (!map.hasImage('plate-stripe')) {
+            map.addImage('plate-stripe', makePlateStripePattern(), { pixelRatio: 3 })
+          }
+
+          // Apply whatever is already selected right now, in case a plate was
+          // clicked while this fetch was still in flight.
+          const code = PLATE_META[selectedPlateRef.current?.name]?.code
+          const initialFilter = code ? ['==', ['get', 'Code'], code] : ['==', ['get', 'Code'], '__none__']
+          const PLATE_AMBER = '#f5a623'
+
+          map.addLayer({
+            id: 'plate-active-fill',
+            type: 'fill',
+            source: 'plate-polygons',
+            filter: initialFilter,
+            paint: {
+              'fill-color': PLATE_AMBER,
+              'fill-opacity': 0.12,
+            },
+          }, geoLayersBefore)
+
+          map.addLayer({
+            id: 'plate-active-pattern',
+            type: 'fill',
+            source: 'plate-polygons',
+            filter: initialFilter,
+            paint: {
+              'fill-pattern': 'plate-stripe',
+              'fill-opacity': 0.35,
+            },
+          }, geoLayersBefore)
+
+          map.addLayer({
+            id: 'plate-active-stroke',
+            type: 'line',
+            source: 'plate-polygons',
+            filter: initialFilter,
+            layout: { 'line-cap': 'round', 'line-join': 'round' },
+            paint: {
+              'line-color': PLATE_AMBER,
+              'line-width': ['interpolate', ['linear'], ['zoom'], 1, 1, 6, 2.2],
+              'line-opacity': 0.8,
+            },
+          }, geoLayersBefore)
+        })
+        .catch(() => {}) // silently ignore if data not available
+
       fetch('/data/ring_of_fire.json')
         .then(r => r.json())
         .then(data => {
@@ -589,6 +708,24 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
     else map.once('style.load', update)
   }, [activeCountry])
 
+  // ── keep the selected-plate fill in sync with the plate modal ──────────
+  // Covers every way selection can clear -- closing the modal (✕, Escape),
+  // clicking the same label again, or clicking a volcano/country instead --
+  // since all of those funnel through the same `selectedPlate` prop from App.
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+    const code = PLATE_META[selectedPlate?.name]?.code
+    const filter = code ? ['==', ['get', 'Code'], code] : ['==', ['get', 'Code'], '__none__']
+    const update = () => {
+      for (const id of ['plate-active-fill', 'plate-active-pattern', 'plate-active-stroke']) {
+        if (map.getLayer(id)) map.setFilter(id, filter)
+      }
+    }
+    if (map.isStyleLoaded()) update()
+    else map.once('style.load', update)
+  }, [selectedPlate])
+
   // ── highlight compare list ────────────────────────────────────────────
   useEffect(() => {
     const map = mapRef.current
@@ -690,7 +827,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   return (
     <>
       <div ref={containerRef} className="map-container" />
-      <PlateLabels map={mapInstance} visible={layers.boundaries} />
+      <PlateLabels map={mapInstance} visible={layers.boundaries} onPlateClick={onPlateClick} selectedPlateName={selectedPlate?.name} modalAnchor={modalArrowPoint} />
     </>
   )
 }

@@ -1,0 +1,218 @@
+/* Overlay -- NOT a dimming scrim: the whole point is to keep the globe (and
+   the starfield reveal from Map.jsx's selectedPlate effect) fully visible
+   and interactive. pointer-events stay off here so clicks reach the map
+   underneath, same convention as CountryPanel's side sheet. */
+.pm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  pointer-events: none;
+}
+
+/* Always vertically centered -- the dashed line drawn by PlateLabels does
+   the job a little arrow used to do, pointing back at the plate itself
+   rather than at the card. NOTE: .pm-modal must still not set `overflow`
+   (even just overflow-y forces the browser to also clip the x-axis) --
+   scrolling lives on the inner .pm-modal-scroll instead. */
+.pm-modal {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: auto;
+  background: rgba(10, 10, 22, 0.94);
+  border: 1px solid rgba(120, 170, 255, 0.28);
+  border-radius: 18px;
+  box-shadow: 0 0 60px rgba(80, 140, 255, 0.12), 0 24px 80px rgba(0, 0, 0, 0.6);
+  width: 100%;
+  max-width: 380px;
+  max-height: 80vh;
+}
+
+.pm-modal-scroll {
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: inherit; /* keeps scrolled content clipped to the card's rounded corners */
+}
+
+.pm-side-right .pm-modal { right: 24px; animation: pmRiseInRight 0.32s cubic-bezier(0.16, 1, 0.3, 1); }
+.pm-side-left  .pm-modal { left: 24px;  animation: pmRiseInLeft  0.32s cubic-bezier(0.16, 1, 0.3, 1); }
+
+@keyframes pmRiseInRight {
+  from { transform: translateX(28px) scale(0.97); opacity: 0 }
+  to   { transform: translateX(0)    scale(1);    opacity: 1 }
+}
+
+@keyframes pmRiseInLeft {
+  from { transform: translateX(-28px) scale(0.97); opacity: 0 }
+  to   { transform: translateX(0)     scale(1);    opacity: 1 }
+}
+
+.pm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 22px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.pm-title-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.pm-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.2px;
+}
+
+.pm-code {
+  font-size: 11px;
+  color: rgba(120, 170, 255, 0.8);
+  letter-spacing: 0.6px;
+}
+
+.pm-close {
+  background: rgba(255,255,255,0.07);
+  border: none;
+  color: rgba(255,255,255,0.45);
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 11px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.pm-close:hover { background: rgba(120,170,255,0.2); color: #fff; }
+
+/* Key stats */
+.pm-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.pm-stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pm-stat-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.pm-stat-value {
+  font-size: 13px;
+  color: #f0f0f0;
+  text-align: right;
+}
+
+.pm-badge {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  padding: 3px 10px;
+  border-radius: 10px;
+}
+.pm-badge-major { background: rgba(120,170,255,0.16); color: #9cc4ff; }
+.pm-badge-minor { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); }
+
+/* Boundaries section */
+.pm-section {
+  padding: 16px 22px 18px;
+}
+
+.pm-section-title {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.pm-loading {
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+}
+
+.pm-boundary-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.pm-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.75);
+}
+
+.pm-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.pm-dot-sm { width: 6px; height: 6px; margin-right: -2px; }
+
+.pm-neighbors {
+  margin-top: 14px;
+}
+
+.pm-section-subtitle {
+  display: block;
+  font-size: 10.5px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 8px;
+}
+
+.pm-neighbor-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pm-neighbor {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 5px 10px 5px 8px;
+}
+
+.pm-footnote {
+  padding: 12px 22px 18px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  /* Full-width card bound to both edges, regardless of `side`. */
+  .pm-side-right .pm-modal,
+  .pm-side-left  .pm-modal {
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-width: none;
+  }
+  .pm-header { padding: 16px 18px 12px; }
+  .pm-stats, .pm-section, .pm-footnote { padding-left: 18px; padding-right: 18px; }
+}
