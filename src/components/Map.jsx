@@ -392,11 +392,16 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
       // ── geological layers (loaded async, inserted BELOW volcano layers) ──
       const geoLayersBefore = 'vl-ring'  // insert before the first volcano layer
 
-      fetch('/data/plate_boundaries.json')
-        .then(r => r.json())
-        .then(data => {
+      // Boundaries + plate polygons both feed the selected-plate highlight,
+      // so they're loaded together and their layers added in one place --
+      // see the plate-active-stroke comment below for why that matters.
+      Promise.all([
+        fetch('/data/plate_boundaries.json').then(r => r.json()),
+        fetch('/data/plate_polygons.json').then(r => r.json()),
+      ])
+        .then(([boundaries, polygons]) => {
           if (!map.getStyle()) return  // map may have been destroyed
-          map.addSource('plate-boundaries', { type: 'geojson', data })
+          map.addSource('plate-boundaries', { type: 'geojson', data: boundaries })
 
           map.addLayer({
             id: 'geo-transform',
@@ -424,20 +429,12 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
             layout: { 'line-cap': 'round', 'visibility': VIS(layerCacheRef.current.boundaries) },
             paint: { 'line-color': '#b56cf0', 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 0.8, 6, 2.2], 'line-opacity': 0.75 },
           }, geoLayersBefore)
-        })
-        .catch(() => {}) // silently ignore if data not available
 
-      // Plate polygons (PB2002) -- fill only, purely visual: highlights the
-      // selected plate's outline when a label is clicked. No independent
-      // click/hover handling on the polygons themselves. Three stacked
-      // layers: a warm-amber wash, a fine diagonal-hatch pattern on top,
-      // and a proper stroke tracing the outline (fill-outline-color alone
-      // is too unreliable across renderers to count as a real stroke).
-      fetch('/data/plate_polygons.json')
-        .then(r => r.json())
-        .then(data => {
-          if (!map.getStyle()) return
-          map.addSource('plate-polygons', { type: 'geojson', data })
+          // Plate polygons (PB2002) -- fill only, purely visual: highlights the
+          // selected plate's outline when a label is clicked. No independent
+          // click/hover handling on the polygons themselves. A warm-amber wash
+          // plus a fine diagonal-hatch pattern on top.
+          map.addSource('plate-polygons', { type: 'geojson', data: polygons })
 
           if (!map.hasImage('plate-stripe')) {
             map.addImage('plate-stripe', makePlateStripePattern(), { pixelRatio: 3 })
@@ -446,14 +443,17 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
           // Apply whatever is already selected right now, in case a plate was
           // clicked while this fetch was still in flight.
           const code = PLATE_META[selectedPlateRef.current?.name]?.code
-          const initialFilter = code ? ['==', ['get', 'Code'], code] : ['==', ['get', 'Code'], '__none__']
+          const polygonFilter = code ? ['==', ['get', 'Code'], code] : ['==', ['get', 'Code'], '__none__']
+          const boundaryFilter = code
+            ? ['any', ['==', ['get', 'plateA'], code], ['==', ['get', 'plateB'], code]]
+            : ['==', ['get', 'plateA'], '__none__']
           const PLATE_AMBER = '#f5a623'
 
           map.addLayer({
             id: 'plate-active-fill',
             type: 'fill',
             source: 'plate-polygons',
-            filter: initialFilter,
+            filter: polygonFilter,
             paint: {
               'fill-color': PLATE_AMBER,
               'fill-opacity': 0.12,
@@ -464,18 +464,27 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
             id: 'plate-active-pattern',
             type: 'fill',
             source: 'plate-polygons',
-            filter: initialFilter,
+            filter: polygonFilter,
             paint: {
               'fill-pattern': 'plate-stripe',
               'fill-opacity': 0.35,
             },
           }, geoLayersBefore)
 
+          // The stroke traces the plate's REAL tectonic boundaries (from
+          // plate-boundaries), not the polygon ring itself. The PB2002 polygon
+          // dataset splits any plate that crosses the antimeridian -- the
+          // Pacific Plate above all -- into a MultiPolygon, and each split
+          // part's closing edge runs straight along the +/-180 meridian to
+          // make it a valid ring. Stroking that raw ring drew this synthetic
+          // cut as a bogus vertical line straight across the globe. The
+          // boundaries dataset has no such artifact, since it was never split
+          // into closed shapes in the first place.
           map.addLayer({
             id: 'plate-active-stroke',
             type: 'line',
-            source: 'plate-polygons',
-            filter: initialFilter,
+            source: 'plate-boundaries',
+            filter: boundaryFilter,
             layout: { 'line-cap': 'round', 'line-join': 'round' },
             paint: {
               'line-color': PLATE_AMBER,
@@ -712,15 +721,22 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   // Covers every way selection can clear -- closing the modal (✕, Escape),
   // clicking the same label again, or clicking a volcano/country instead --
   // since all of those funnel through the same `selectedPlate` prop from App.
+  // plate-active-stroke uses a different filter than the fill/pattern layers
+  // -- it's sourced from plate-boundaries (plateA/plateB), not plate-polygons
+  // (Code), to avoid the antimeridian seam described where it's added.
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
     const code = PLATE_META[selectedPlate?.name]?.code
-    const filter = code ? ['==', ['get', 'Code'], code] : ['==', ['get', 'Code'], '__none__']
+    const polygonFilter = code ? ['==', ['get', 'Code'], code] : ['==', ['get', 'Code'], '__none__']
+    const boundaryFilter = code
+      ? ['any', ['==', ['get', 'plateA'], code], ['==', ['get', 'plateB'], code]]
+      : ['==', ['get', 'plateA'], '__none__']
     const update = () => {
-      for (const id of ['plate-active-fill', 'plate-active-pattern', 'plate-active-stroke']) {
-        if (map.getLayer(id)) map.setFilter(id, filter)
+      for (const id of ['plate-active-fill', 'plate-active-pattern']) {
+        if (map.getLayer(id)) map.setFilter(id, polygonFilter)
       }
+      if (map.getLayer('plate-active-stroke')) map.setFilter('plate-active-stroke', boundaryFilter)
     }
     if (map.isStyleLoaded()) update()
     else map.once('style.load', update)
