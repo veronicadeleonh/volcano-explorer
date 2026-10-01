@@ -816,8 +816,14 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
       ? ['>=', ['get', 'last_eruption'], RECENCY_CUTOFF[layers.recencyFilter]]
       : null
 
-    const buildFilter = (statusExpr) => {
-      const parts = [statusExpr, typeFilter, recentFilter].filter(Boolean)
+    // The Last Eruption filter (6 months / 1 year) only makes sense for
+    // Active volcanoes -- a Dormant one, by definition, hasn't erupted
+    // recently, so applying that cutoff to it just hides every dormant
+    // volcano the moment anything but ALL is selected. `includeRecency`
+    // lets the dormant layer skip that part of the filter entirely while
+    // still respecting the type filter.
+    const buildFilter = (statusExpr, includeRecency = true) => {
+      const parts = [statusExpr, typeFilter, includeRecency ? recentFilter : null].filter(Boolean)
       return parts.length === 1 ? parts[0] : ['all', ...parts]
     }
 
@@ -829,7 +835,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
       map.setFilter('vl-active-static', buildFilter(['all', activeStatus, ['!=', ['get', 'recentlyActive'], true]]))
     }
     if (map.getLayer('vl-dormant')) {
-      map.setFilter('vl-dormant', buildFilter(['!', activeStatus]))
+      map.setFilter('vl-dormant', buildFilter(['!', activeStatus], false))
     }
 
     // Defensive: never let a filter interaction leave rotation stuck off.

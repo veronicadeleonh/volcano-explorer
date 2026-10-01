@@ -14,6 +14,10 @@ An interactive 3D globe for exploring the world's volcanoes — search, filter, 
 
 ![Globe](.github/screenshots/globe.png)
 
+**Search** — Look up any volcano by name, country, or region; pick a result to fly the globe straight to it and open its detail panel. In Compare mode, picking a result adds it to your comparison list instead.
+
+![Search](.github/screenshots/search.png)
+
 **Tectonic plates** — Toggle subduction, divergent, and transform boundaries. When active, annotated callout lines float outside the globe labeling all 15 major tectonic plates.
 
 ![Layers](.github/screenshots/layers.png)
