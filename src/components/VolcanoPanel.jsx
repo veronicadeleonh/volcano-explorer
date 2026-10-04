@@ -52,12 +52,14 @@ const HYPOTHETICAL_KEYWORDS = [
   'warns', 'warning', 'hazard', 'simulation', 'drill', 'what if', 'in case',
 ]
 
-// Returns the formatted date of the most recent matching article, or null
+// Returns { date, label } for the most recent matching article, or null
 function getRecentEruptionDate(results = []) {
-  const cutoff = new Date()
-  cutoff.setFullYear(cutoff.getFullYear() - 1)
+  const cutoffYear = new Date()
+  cutoffYear.setFullYear(cutoffYear.getFullYear() - 1)
+  const cutoff6m = new Date()
+  cutoff6m.setMonth(cutoff6m.getMonth() - 6)
   const matches = results.filter(r => {
-    const withinYear = r.published_date && new Date(r.published_date) >= cutoff
+    const withinYear = r.published_date && new Date(r.published_date) >= cutoffYear
     const title = r.title?.toLowerCase() ?? ''
     const mentionsEruption = ERUPTION_KEYWORDS.some(w => title.includes(w))
     const isHypothetical = HYPOTHETICAL_KEYWORDS.some(w => title.includes(w))
@@ -65,7 +67,10 @@ function getRecentEruptionDate(results = []) {
   })
   if (matches.length === 0) return null
   matches.sort((a, b) => new Date(b.published_date) - new Date(a.published_date))
-  return new Date(matches[0].published_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+  const latest = matches[0]
+  const date = new Date(latest.published_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+  const label = new Date(latest.published_date) >= cutoff6m ? '6 months' : '1 year'
+  return { date, label }
 }
 
 async function fetchVolcanoNews(name, country) {
@@ -131,7 +136,7 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
             </div>
             {recentEruption && (
               <div className="vp-badge vp-badge-eruption">
-                ▲ Erupted in last 12 months · {recentEruption}
+                ▲ Erupted in the last {recentEruption.label} · {recentEruption.date}
               </div>
             )}
           </div>
