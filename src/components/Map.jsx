@@ -130,7 +130,8 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   const popupRef      = useRef(null)
   const imgCacheRef   = useRef({})   // volcano id → Wikipedia thumbnail URL
   const onSelectRef   = useRef(onSelect)
-  const onCountryClickRef = useRef(onCountryClick)
+  const onCountryClickRef  = useRef(onCountryClick)
+  const activeCountryRef   = useRef(activeCountry)
   // (the "active" country highlight is filter-driven — see the effect below)
 
   // Caches so async map callbacks always see latest values
@@ -143,7 +144,8 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   const selectedPlateRef  = useRef(selectedPlate) // lets the async plate-polygons fetch see the latest selection
 
   useEffect(() => { onSelectRef.current = onSelect      }, [onSelect])
-  useEffect(() => { onCountryClickRef.current = onCountryClick }, [onCountryClick])
+  useEffect(() => { onCountryClickRef.current  = onCountryClick }, [onCountryClick])
+  useEffect(() => { activeCountryRef.current   = activeCountry  }, [activeCountry])
   useEffect(() => { volCacheRef.current = volcanoes     }, [volcanoes])
   useEffect(() => { layerCacheRef.current = layers      }, [layers])
   useEffect(() => { compareListRef.current = compareList }, [compareList])
@@ -655,6 +657,11 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
         const iso  = e.features[0]?.properties?.iso_3166_1
         const name = ISO_TO_COUNTRY[iso]
         if (!name) return
+        // clicking the already-selected country deselects it
+        if (activeCountryRef.current?.iso === iso) {
+          onCountryClickRef.current(null)
+          return
+        }
         const inCountry = volCacheRef.current.filter(v => v.country === name)
         if (inCountry.length) onCountryClickRef.current({ name, iso, volcanoes: inCountry })
       })

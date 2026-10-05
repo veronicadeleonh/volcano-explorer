@@ -90,6 +90,10 @@ export default function PlateModal({ plateName, side = 'right', onArrowPositione
               </span>
             </div>
             <div className="pm-stat">
+              <span className="pm-stat-label">Crust</span>
+              <span className="pm-stat-value">{meta.crust}</span>
+            </div>
+            <div className="pm-stat">
               <span className="pm-stat-label">Area</span>
               <span className="pm-stat-value">{formatArea(meta.areaKm2)}</span>
             </div>
@@ -99,6 +103,11 @@ export default function PlateModal({ plateName, side = 'right', onArrowPositione
                 {formatVelocity(meta.velocity)} toward the {meta.direction}
               </span>
             </div>
+          </div>
+
+          <div className="pm-section pm-section-feature">
+            <span className="pm-section-title">Notable</span>
+            <p className="pm-feature">{meta.feature}</p>
           </div>
 
           <div className="pm-section">
@@ -143,7 +152,7 @@ export default function PlateModal({ plateName, side = 'right', onArrowPositione
           </div>
 
           <div className="pm-footnote">
-            Area: Wikipedia · Velocity: approximate published ranges · Boundaries: PB2002 (Bird, 2003)
+            Area, crust & notable: Wikipedia · Velocity: approximate published ranges · Boundaries: PB2002 (Bird, 2003)
           </div>
         </div>
       </div>

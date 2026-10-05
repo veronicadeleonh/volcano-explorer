@@ -18,7 +18,7 @@ An interactive 3D globe for exploring the world's volcanoes — search, filter, 
 
 ![Search](.github/screenshots/search.png)
 
-**Tectonic plates** — Toggle subduction, divergent, and transform boundaries. When active, annotated callout lines float outside the globe labeling all 15 major tectonic plates.
+**Tectonic plates** — Toggle subduction, divergent, and transform boundaries. When active, annotated callout lines float outside the globe labeling all 15 major tectonic plates. Click a label to open a detail panel for that plate.
 
 ![Layers](.github/screenshots/layers.png)
 
@@ -37,6 +37,18 @@ An interactive 3D globe for exploring the world's volcanoes — search, filter, 
 **Compare** — Add up to 3 volcanoes side by side to compare elevation, VEI, status, and eruption count.
 
 ![Compare](.github/screenshots/compare.png)
+
+---
+
+## What's new in v3
+
+- **Tectonic plate panels** — click any plate label to open a detail panel (type, area, velocity, crust, boundary composition, neighboring plates, notable features). The globe pulls back and recenters on the plate, which is highlighted with an amber fill, hatch pattern, and outline.
+- **Richer tooltips** — Wikipedia thumbnails on volcano hover, volcano counts on country hover, and a VEI history tooltip with a short explainer of the scale.
+- **More data** — 5 new Indonesian volcanoes (78 total), eruption dates updated through 2026, all descriptions in English.
+- **Smarter filters** — Last Eruption (6 months / 1 year) applies to Active volcanoes only and disables itself when Active is off; unified control styling.
+- **Fixes** — Exit compare mode, a stray line across the Pacific Plate, and dormant volcanoes vanishing under recency filters.
+
+**Earlier versions** — **v1** (May 2026): globe, tectonic boundaries, volcano comparison. **v2** (Aug–Sep 2026): Seismic-inspired redesign, country explorer, news feed, filters, mobile support.
 
 ---
 

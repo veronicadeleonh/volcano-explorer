@@ -81,7 +81,7 @@ export default function App() {
     if (compareMode) return
     setSelectedPlate(null)
     setPlateArrowPoint(null)
-    setSelectedCountry(country)
+    setSelectedCountry(country ?? null)
     setSelected(null)
   }, [compareMode])
 
