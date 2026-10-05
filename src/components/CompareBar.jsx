@@ -106,7 +106,7 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
                 />
                 <ul className="cb-list">
                   {filtered.length > 0 ? filtered.map(v => (
-                    <li key={v.id} className="cb-option" onMouseDown={() => pick(v)}>
+                    <li key={v.id} className="cb-option" onMouseEnter={sfx.uiHover} onMouseDown={() => pick(v)}>
                       <span className="cb-opt-dot" style={{ background: getColor(v.status) }} />
                       <span className="cb-opt-name">{v.name}</span>
                       <span className="cb-opt-country">{v.country}</span>

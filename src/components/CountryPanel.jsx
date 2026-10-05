@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { sfx } from '../lib/sound'
 import './CountryPanel.css'
 
 function isoToFlag(iso) {
@@ -41,7 +42,7 @@ function VolcanoCard({ volcano: v, onClick }) {
   }, [v.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="cp-card" onClick={() => onClick(v)}>
+    <div className="cp-card" onMouseEnter={sfx.uiHover} onClick={() => { sfx.uiClick(); onClick(v) }}>
       <div className={`cp-card-img-wrap ${loaded ? 'loaded' : ''}`}>
         {!error && imgSrc && (
           <img
@@ -86,7 +87,7 @@ export default function CountryPanel({ country, onClose, onSelectVolcano }) {
     <div className="cp-overlay" onClick={onClose}>
       <div className="cp-panel" onClick={e => e.stopPropagation()}>
         <div className="cp-header">
-          <button className="cp-close" onClick={onClose} title="Close">✕</button>
+          <button className="cp-close" onMouseEnter={sfx.uiHover} onClick={onClose} title="Close">✕</button>
           <div className="cp-eyebrow">Country</div>
           <h2 className="cp-title">
             <span className="cp-flag">{isoToFlag(iso)}</span> {name}

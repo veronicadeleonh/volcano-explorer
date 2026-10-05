@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import PlateLabels from './PlateLabels'
 import { PLATE_META } from '../data/plateMeta'
 import mapboxgl from 'mapbox-gl'
-import { sfx, zoomMotion, isMuted, toggleMuted, subscribe } from '../lib/sound'
+import { sfx, isMuted, toggleMuted, subscribe } from '../lib/sound'
 import './Map.css'
 
 // ── helpers ───────────────────────────────────────────────────────────────
@@ -233,17 +233,6 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
 
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right')
     map.addControl(new SoundControl(), 'top-right')
-
-    // zoom whoosh — velocity in zoom levels / second, rising pitch zooming in
-    let lastZoom = map.getZoom()
-    let lastZoomT = performance.now()
-    map.on('zoom', () => {
-      const z = map.getZoom(), t = performance.now()
-      const dt = Math.max(16, t - lastZoomT)
-      zoomMotion(((z - lastZoom) / dt) * 1000, z)
-      lastZoom = z; lastZoomT = t
-    })
-    map.on('zoomend', () => { lastZoom = map.getZoom(); lastZoomT = performance.now(); zoomMotion(0, map.getZoom()) })
 
     // ── ambient globe rotation — slow drift until the user takes over ──────
     const SECONDS_PER_REVOLUTION = 180

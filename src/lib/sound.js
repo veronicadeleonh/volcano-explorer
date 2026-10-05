@@ -1,7 +1,6 @@
 // Synthesized sound design for Volcano Explorer — everything is generated with
 // the Web Audio API, no audio files. Deliberately quiet: a low "void" drone
-// that never fully goes away, a zoom whoosh that follows camera motion, and
-// short metallic / electric UI blips.
+// that never fully goes away, plus short metallic / electric UI blips.
 //
 // Browsers keep an AudioContext suspended until a user gesture, so the engine
 // boots on the first pointer/key event and every effect is a silent no-op
@@ -11,19 +10,13 @@ const STORAGE_KEY = 'volcano-explorer:sound-muted'
 const MASTER_LEVEL = 0.9
 // Background void level (was 0.5) — kept barely above the threshold of hearing.
 const AMBIENT_LEVEL = 0.14
-// Zoom air: centre frequency at zoom 0, peak loudness (kept very low).
-const ZOOM_AIR_HZ = 950
-const ZOOM_PEAK = 0.02
 
 let ctx = null
 let master = null
 let sfxBus = null
-let whooshGain = null
-let whooshFilter = null
 let muted = readMuted()
 let started = false
 let suspendTimer = null
-let zoomIdleTimer = null
 let lastSfxAt = 0
 const listeners = new Set()
 
@@ -117,29 +110,6 @@ function build() {
     o.connect(og); og.connect(ambient)
     o.start()
   })
-
-  // Zoom "air": soft high-passed noise that swells with camera speed — like
-  // wind passing — with its colour drifting up when approaching and down when
-  // pulling away. Kept in the high band so there's no low-end mud.
-  const wNoise = ctx.createBufferSource()
-  wNoise.buffer = makeNoiseBuffer(ctx, 4, false)
-  wNoise.loop = true
-  const wHp = ctx.createBiquadFilter()
-  wHp.type = 'highpass'
-  wHp.frequency.value = 400
-  wHp.Q.value = 0.5
-  whooshFilter = ctx.createBiquadFilter()
-  whooshFilter.type = 'bandpass'
-  whooshFilter.frequency.value = ZOOM_AIR_HZ
-  whooshFilter.Q.value = 0.7
-  whooshGain = ctx.createGain()
-  whooshGain.gain.value = 0
-  const wLp = ctx.createBiquadFilter() // roll off the hiss so it reads as breath, not static
-  wLp.type = 'lowpass'
-  wLp.frequency.value = 2200
-  wLp.Q.value = 0.3
-  wNoise.connect(wHp); wHp.connect(whooshFilter); whooshFilter.connect(wLp); wLp.connect(whooshGain); whooshGain.connect(master)
-  wNoise.start()
 
   noise.start(); air.start(); lfo.start()
   return true
@@ -374,25 +344,4 @@ export const sfx = {
 
   // played right after unmuting
   on() { if (!ready()) return; blip({ type: 'sine', f0: 600, f1: 900, t: 0.12, peak: 0.04 }) },
-}
-
-// Camera zoom: `velocity` is in zoom levels per second (+ in, - out) and drives
-// the volume; `zoom` is the current level and tints the air — brighter when
-// close, softer and darker when far.
-export function zoomMotion(velocity, zoom) {
-  if (!ctx || !whooshGain || muted || ctx.state !== 'running') return
-  const now = ctx.currentTime
-  // dead zone + gentle curve: small nudges stay silent, only real camera
-  // moves (flights, big scrolls) breathe
-  const speed = Math.max(0, Math.abs(velocity) - 0.15)
-  const level = Math.pow(Math.min(1, speed / 2), 1.5) * ZOOM_PEAK
-  whooshGain.gain.setTargetAtTime(level, now, 0.25)
-  if (zoom !== undefined) {
-    const f = ZOOM_AIR_HZ * Math.pow(2, Math.max(0, zoom) * 0.08)
-    whooshFilter.frequency.setTargetAtTime(f, now, 0.15)
-  }
-  clearTimeout(zoomIdleTimer)
-  zoomIdleTimer = setTimeout(() => {
-    if (whooshGain) whooshGain.gain.setTargetAtTime(0, ctx.currentTime, 0.4)
-  }, 200)
 }

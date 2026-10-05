@@ -108,7 +108,7 @@ export default function SearchBar({ volcanoes, onSelect, selected, compareMode, 
               key={v.id}
               className={`search-item ${i === highlight ? 'highlighted' : ''}`}
               onMouseDown={() => pick(v)}
-              onMouseEnter={() => setHighlight(i)}
+              onMouseEnter={() => { sfx.uiHover(); setHighlight(i) }}
             >
               <span className="si-emoji">{statusEmoji(v.status)}</span>
               <span className="si-name">{v.name}</span>
