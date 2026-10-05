@@ -237,6 +237,11 @@
   color: #fff;
 }
 
+.lc-segment-disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
 /* ── Mobile: volcano filters and geological layers get independent toggle
    buttons — they're unrelated concerns, so one shouldn't have to open to see
    the other. On desktop .lc-root is a transparent pass-through div and both

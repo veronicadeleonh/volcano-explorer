@@ -86,7 +86,11 @@ export default function App() {
   }, [compareMode])
 
   const handleToggleLayer = useCallback((id) => {
-    setLayers(prev => ({ ...prev, [id]: !prev[id] }))
+    setLayers(prev => {
+      const next = { ...prev, [id]: !prev[id] }
+      if (id === 'showActive' && !next.showActive) next.recencyFilter = 'all'
+      return next
+    })
   }, [])
 
   const handleSetRecency = useCallback((recencyFilter) => {
