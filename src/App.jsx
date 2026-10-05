@@ -6,6 +6,7 @@ import VolcanoPanel from './components/VolcanoPanel'
 import LayerControls from './components/LayerControls'
 import CountryPanel from './components/CountryPanel'
 import CompareBar from './components/CompareBar'
+import { sfx } from './lib/sound'
 import CompareModal from './components/CompareModal'
 import PlateModal from './components/PlateModal'
 import TokenGate from './components/TokenGate'
@@ -48,19 +49,23 @@ export default function App() {
   }
 
   const handleAddToCompare = useCallback((volcano) => {
+    // sound lives out here, not inside the state updater (StrictMode runs
+    // updaters twice, which would play it twice)
+    if (compareList.find(v => v.id === volcano.id)) sfx.compareRemove()
+    else if (compareList.length >= 3) sfx.compareFull()
+    else sfx.compareAdd(compareList.length + 1)
     setCompareList(prev => {
       if (prev.find(v => v.id === volcano.id)) return prev.filter(v => v.id !== volcano.id)
       if (prev.length >= 3) return prev
       return [...prev, volcano]
     })
-  }, [])
+  }, [compareList])
 
   const handleToggleCompareMode = useCallback(() => {
-    setCompareMode(m => {
-      if (m) { setCompareList([]); setCompareOpen(false) }
-      return !m
-    })
-  }, [])
+    sfx.compareMode(!compareMode)
+    if (compareMode) { setCompareList([]); setCompareOpen(false) }
+    setCompareMode(!compareMode)
+  }, [compareMode])
 
   // Volcano and plate selection are mutually exclusive -- opening one always
   // closes the other, in every path (search, map click, compare mode).
@@ -146,8 +151,8 @@ export default function App() {
           compareList={compareList}
           volcanoes={volcanoes}
           onAdd={handleAddToCompare}
-          onRemove={(id) => setCompareList(prev => prev.filter(v => v.id !== id))}
-          onOpen={() => setCompareOpen(true)}
+          onRemove={(id) => { sfx.compareRemove(); setCompareList(prev => prev.filter(v => v.id !== id)) }}
+          onOpen={() => { sfx.compareOpen(); setCompareOpen(true) }}
           onCancel={handleToggleCompareMode}
         />
       )}
@@ -165,7 +170,7 @@ export default function App() {
       {compareOpen && (
         <CompareModal
           volcanoes={compareList}
-          onClose={() => setCompareOpen(false)}
+          onClose={() => { sfx.compareClose(); setCompareOpen(false) }}
         />
       )}
       {selectedPlate && (

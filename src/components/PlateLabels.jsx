@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { PLATE_META } from '../data/plateMeta'
+import { sfx } from '../lib/sound'
 import './PlateLabels.css'
 
 // Sourced from PLATE_META (src/data/plateMeta.js) so the label position and
@@ -18,46 +19,6 @@ function facingDot(center, plateLon, plateLat) {
     Math.sin(lat1) * Math.sin(lat2) +
     Math.cos(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1)
   )
-}
-
-// ── hover tick sound ────────────────────────────────────────────────────
-// A tiny synthesized blip rather than an audio file -- nothing extra to
-// load, and it's cheap to make it feel native to the map's UI. Browsers
-// won't let a fresh AudioContext produce sound before the page has had any
-// user gesture, so this quietly no-ops until one has happened (the very
-// first hover in a session may be silent; every one after works).
-let audioCtx = null
-function getAudioCtx() {
-  if (typeof window === 'undefined') return null
-  const Ctx = window.AudioContext || window.webkitAudioContext
-  if (!Ctx) return null
-  if (!audioCtx) audioCtx = new Ctx()
-  return audioCtx
-}
-
-function playHoverTick() {
-  try {
-    const ctx = getAudioCtx()
-    if (!ctx) return
-    if (ctx.state === 'suspended') { ctx.resume().catch(() => {}); return }
-    if (ctx.state !== 'running') return
-
-    const now = ctx.currentTime
-    const osc = ctx.createOscillator()
-    const gain = ctx.createGain()
-    osc.type = 'sine'
-    osc.frequency.setValueAtTime(880, now)
-    osc.frequency.exponentialRampToValueAtTime(1180, now + 0.06)
-    gain.gain.setValueAtTime(0, now)
-    gain.gain.linearRampToValueAtTime(0.05, now + 0.008)
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.11)
-    osc.connect(gain)
-    gain.connect(ctx.destination)
-    osc.start(now)
-    osc.stop(now + 0.12)
-  } catch {
-    // Audio not available -- the visual hover effect still works fine.
-  }
 }
 
 export default function PlateLabels({ map, visible, onPlateClick, selectedPlateName, modalAnchor }) {
@@ -199,7 +160,7 @@ export default function PlateLabels({ map, visible, onPlateClick, selectedPlateN
           opacity={0}
           className="plate-label-group"
           onClick={(e) => onPlateClick?.(plate.name, { x: e.clientX, y: e.clientY })}
-          onMouseEnter={playHoverTick}
+          onMouseEnter={sfx.plateHover}
           style={{ cursor: onPlateClick ? 'pointer' : undefined }}
         >
           <line

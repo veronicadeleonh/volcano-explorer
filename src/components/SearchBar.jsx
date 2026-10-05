@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { sfx } from '../lib/sound'
 import './SearchBar.css'
 
 const STATUS_EMOJI = { Active: '🔴', Dormant: '🟡', Extinct: '⚫' }
@@ -124,6 +125,7 @@ export default function SearchBar({ volcanoes, onSelect, selected, compareMode, 
 
       <button
         className={`compare-cta ${compareMode ? 'on' : ''}`}
+        onMouseEnter={sfx.uiHover}
         onClick={onToggleCompare}
       >
         <span className="compare-cta-icon">⚖</span>

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { sfx } from '../lib/sound'
 import './LayerControls.css'
 
 const LAYERS = [
@@ -84,7 +85,8 @@ export default function LayerControls({ layers, onToggle, onSetRecency }) {
                   key={f.id}
                   className={`lc-chip ${on ? 'on' : ''}`}
                   style={on ? { '--chip-color': f.color } : {}}
-                  onClick={() => onToggle(f.id)}
+                  onMouseEnter={sfx.uiHover}
+                  onClick={() => { sfx.toggle(!on); onToggle(f.id) }}
                 >
                   <span>{f.icon}</span>
                   {f.label}
@@ -99,7 +101,8 @@ export default function LayerControls({ layers, onToggle, onSetRecency }) {
                 <button
                   key={f.id}
                   className={`lc-seg-btn ${layers.recencyFilter === f.id ? 'on' : ''}`}
-                  onClick={() => onSetRecency(f.id)}
+                  onMouseEnter={sfx.uiHover}
+                  onClick={() => { sfx.uiClick(); onSetRecency(f.id) }}
                   disabled={!layers.showActive}
                   title={f.id === 'all' ? 'Show all volcanoes' : `Active in the last ${f.label === '6M' ? '6 months' : 'year'}`}
                 >
@@ -120,7 +123,8 @@ export default function LayerControls({ layers, onToggle, onSetRecency }) {
                   key={f.id}
                   className={`lc-chip lc-chip-type ${on ? 'on' : ''}`}
                   style={on ? { '--chip-color': '#a0a0d0' } : {}}
-                  onClick={() => onToggle(f.id)}
+                  onMouseEnter={sfx.uiHover}
+                  onClick={() => { sfx.toggle(!on); onToggle(f.id) }}
                 >
                   {f.label}
                 </button>
@@ -138,7 +142,8 @@ export default function LayerControls({ layers, onToggle, onSetRecency }) {
             <div key={layer.id} className={`lc-item ${active ? 'active' : ''}`}>
               <button
                 className="lc-btn"
-                onClick={() => onToggle(layer.id)}
+                onMouseEnter={sfx.uiHover}
+                onClick={() => { sfx.layer(!active); onToggle(layer.id) }}
                 title={active ? `Hide ${layer.label}` : `Show ${layer.label}`}
               >
                 <span className="lc-icon">{layer.icon}</span>

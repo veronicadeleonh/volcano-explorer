@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import PlateLabels from './PlateLabels'
 import { PLATE_META } from '../data/plateMeta'
 import mapboxgl from 'mapbox-gl'
+import { sfx, zoomMotion, isMuted, toggleMuted, subscribe } from '../lib/sound'
 import './Map.css'
 
 // ── helpers ───────────────────────────────────────────────────────────────
@@ -123,6 +124,33 @@ function makePlateStripePattern() {
 const VIS = (on) => (on ? 'visible' : 'none')
 
 // ── component ─────────────────────────────────────────────────────────────
+
+// Speaker button that lives in the same top-right control group as the zoom
+// buttons so it matches them; state comes from the shared sound module.
+class SoundControl {
+  onAdd() {
+    const c = document.createElement('div')
+    c.className = 'mapboxgl-ctrl mapboxgl-ctrl-group ve-sound-ctrl'
+    const b = document.createElement('button')
+    b.type = 'button'
+    const paint = () => {
+      const m = isMuted()
+      b.setAttribute('aria-label', m ? 'Unmute sound' : 'Mute sound')
+      b.title = m ? 'Sound off' : 'Sound on'
+      b.innerHTML = m
+        ? '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>'
+        : '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>'
+    }
+    paint()
+    b.addEventListener('click', toggleMuted)
+    this._unsub = subscribe(paint)
+    c.appendChild(b)
+    this._c = c
+    return c
+  }
+  onRemove() { this._unsub?.(); this._c?.remove() }
+}
+
 export default function Map({ token, volcanoes, selected, compareList = [], onSelect, onCountryClick, activeCountry, flyTo, layers, selectedPlate, onPlateClick, modalArrowPoint }) {
   const containerRef  = useRef(null)
   const mapRef        = useRef(null)
@@ -204,6 +232,18 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
     })
 
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right')
+    map.addControl(new SoundControl(), 'top-right')
+
+    // zoom whoosh — velocity in zoom levels / second, rising pitch zooming in
+    let lastZoom = map.getZoom()
+    let lastZoomT = performance.now()
+    map.on('zoom', () => {
+      const z = map.getZoom(), t = performance.now()
+      const dt = Math.max(16, t - lastZoomT)
+      zoomMotion(((z - lastZoom) / dt) * 1000, z)
+      lastZoom = z; lastZoomT = t
+    })
+    map.on('zoomend', () => { lastZoom = map.getZoom(); lastZoomT = performance.now(); zoomMotion(0, map.getZoom()) })
 
     // ── ambient globe rotation — slow drift until the user takes over ──────
     const SECONDS_PER_REVOLUTION = 180
@@ -611,7 +651,9 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
         if (hoveredCountryId !== null) {
           map.setFeatureState({ source: 'country-boundaries', sourceLayer: 'country_boundaries', id: hoveredCountryId }, { hover: false })
         }
+        const prevHoveredId = hoveredCountryId
         hoveredCountryId = e.features[0].id
+        if (hoveredCountryId !== prevHoveredId) sfx.countryHover()
         map.setFeatureState({ source: 'country-boundaries', sourceLayer: 'country_boundaries', id: hoveredCountryId }, { hover: true })
         map.getCanvas().style.cursor = 'pointer'
 

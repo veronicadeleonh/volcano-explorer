@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { sfx } from '../lib/sound'
 import './CompareBar.css'
 
 const MAX = 3
@@ -81,12 +82,13 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
               <div className="cb-slot filled">
                 <span className="cb-dot" style={{ background: getColor(v.status) }} />
                 <span className="cb-name">{v.name}</span>
-                <button className="cb-remove" onClick={() => onRemove(v.id)} title="Remove">✕</button>
+                <button className="cb-remove" onMouseEnter={sfx.uiHover} onClick={() => onRemove(v.id)} title="Remove">✕</button>
               </div>
             ) : (
               <button
                 className={`cb-slot empty ${openSlot === i ? 'open' : ''}`}
-                onClick={() => openSlot === i ? setOpenSlot(null) : openDropdown(i)}
+                onMouseEnter={sfx.uiHover}
+                onClick={() => { sfx.uiClick(); if (openSlot === i) setOpenSlot(null); else openDropdown(i) }}
               >
                 <span className="cb-plus">+</span>
                 <span className="cb-placeholder">Add volcano</span>
@@ -120,6 +122,7 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
 
         <button
           className={`cb-go ${canCompare ? 'ready' : 'disabled'}`}
+          onMouseEnter={canCompare ? sfx.uiHover : undefined}
           onClick={canCompare ? onOpen : undefined}
           title={canCompare ? 'View comparison' : 'Select at least 2 volcanoes'}
         >

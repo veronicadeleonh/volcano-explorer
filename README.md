@@ -43,6 +43,7 @@ An interactive 3D globe for exploring the world's volcanoes — search, filter, 
 ## What's new in v3
 
 - **Tectonic plate panels** — click any plate label to open a detail panel (type, area, velocity, crust, boundary composition, neighboring plates, notable features). The globe pulls back and recenters on the plate, which is highlighted with an amber fill, hatch pattern, and outline.
+- **Sound design** — a subtle, fully synthesized soundscape (Web Audio API, no audio files): a faint ambient void, a soft airy swell when zooming, metallic/electric ticks on tectonic plate labels, and gentle cues for filters, layers, country hover, Compare mode, and links. A speaker button under the zoom controls mutes everything and remembers your choice.
 - **Richer tooltips** — Wikipedia thumbnails on volcano hover, volcano counts on country hover, and a VEI history tooltip with a short explainer of the scale.
 - **More data** — 5 new Indonesian volcanoes (78 total), eruption dates updated through 2026, all descriptions in English.
 - **Smarter filters** — Last Eruption (6 months / 1 year) applies to Active volcanoes only and disables itself when Active is off; unified control styling.
@@ -58,6 +59,7 @@ An interactive 3D globe for exploring the world's volcanoes — search, filter, 
 |---|---|
 | Framework | React 19 + Vite |
 | Map | Mapbox GL JS v3 — globe projection, GeoJSON layers, custom animated markers |
+| Audio | Web Audio API — synthesized sound effects and ambience, no audio files |
 | Charts | Recharts — VEI eruption history |
 | Images | Wikipedia REST API |
 | News | Tavily API — real-time eruption detection and latest articles |
