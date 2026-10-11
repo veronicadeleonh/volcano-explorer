@@ -167,8 +167,8 @@
 }
 
 .lc-chip.on {
-  background: color-mix(in srgb, var(--chip-color) 20%, transparent);
-  border-color: color-mix(in srgb, var(--chip-color) 60%, transparent);
+  background: color-mix(in srgb, var(--chip-color) 35%, transparent);
+  border-color: var(--chip-color);
   color: var(--color-text-primary);
 }
 

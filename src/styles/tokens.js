@@ -96,6 +96,8 @@ export const tokens = {
       "subtle": "rgba(255, 255, 255, 0.06)",
       "default": "rgba(255, 255, 255, 0.1)",
       "strong": "rgba(255, 255, 255, 0.15)",
+      "focus": "#ff6432",
+      "control": "rgba(255, 255, 255, 0.5)",
       "accent": "rgba(255, 100, 50, 0.2)",
       "accent-strong": "rgba(255, 100, 50, 0.4)"
     },

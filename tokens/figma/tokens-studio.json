@@ -716,6 +716,16 @@
           "value": "{color.white.15}",
           "type": "color"
         },
+        "focus": {
+          "value": "{color.accent.default}",
+          "type": "color",
+          "description": "Keyboard focus ring (WCAG 2.4.7). Used by the global :focus-visible rule in index.css."
+        },
+        "control": {
+          "value": "{color.white.50}",
+          "type": "color",
+          "description": "Boundary of form fields and other controls that need it to be identified (WCAG 1.4.11, 3:1 against the surface)."
+        },
         "accent": {
           "value": "{color.ember.20}",
           "type": "color"

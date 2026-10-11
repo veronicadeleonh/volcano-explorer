@@ -13,7 +13,7 @@
   align-items: center;
   gap: var(--space-10);
   background: var(--color-surface-overlay-soft);
-  border: 1px solid var(--color-white-12);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-lg);
   padding: var(--space-6) var(--space-14);
   backdrop-filter: blur(var(--blur-16));

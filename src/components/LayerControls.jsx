@@ -85,6 +85,7 @@ export default function LayerControls({ layers, onToggle, onSetRecency }) {
                 <button
                   key={f.id}
                   className={`lc-chip ${on ? 'on' : ''}`}
+                  aria-pressed={on}
                   style={on ? { '--chip-color': f.color } : {}}
                   onMouseEnter={sfx.uiHover}
                   onClick={() => { sfx.toggle(!on); onToggle(f.id) }}
@@ -102,6 +103,7 @@ export default function LayerControls({ layers, onToggle, onSetRecency }) {
                 <button
                   key={f.id}
                   className={`lc-seg-btn ${layers.recencyFilter === f.id ? 'on' : ''}`}
+                  aria-pressed={layers.recencyFilter === f.id}
                   onMouseEnter={sfx.uiHover}
                   onClick={() => { sfx.uiClick(); onSetRecency(f.id) }}
                   disabled={!layers.showActive}
@@ -123,6 +125,7 @@ export default function LayerControls({ layers, onToggle, onSetRecency }) {
                 <button
                   key={f.id}
                   className={`lc-chip lc-chip-type ${on ? 'on' : ''}`}
+                  aria-pressed={on}
                   style={on ? { '--chip-color': '#a0a0d0' } : {}}
                   onMouseEnter={sfx.uiHover}
                   onClick={() => { sfx.toggle(!on); onToggle(f.id) }}

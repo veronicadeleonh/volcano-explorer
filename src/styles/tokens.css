@@ -93,8 +93,10 @@
   /* color.border */
   --color-border-accent: var(--color-ember-20);
   --color-border-accent-strong: var(--color-ember-40);
+  --color-border-control: var(--color-white-50);
   --color-border-default: var(--color-white-10);
   --color-border-faint: var(--color-white-04);
+  --color-border-focus: var(--color-accent-default);
   --color-border-strong: var(--color-white-15);
   --color-border-subtle: var(--color-white-06);
 
