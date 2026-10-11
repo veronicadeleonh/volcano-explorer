@@ -146,7 +146,6 @@ export const tokens = {
   },
   "font": {
     "size": {
-      "10": "10px",
       "11": "11px",
       "12": "12px",
       "13": "13px",

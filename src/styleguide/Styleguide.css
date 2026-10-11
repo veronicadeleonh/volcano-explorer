@@ -14,7 +14,7 @@ body.sg-body #root { width: auto; height: auto; }
   background: var(--color-surface-faint);
 }
 .sg-brand { font-weight: var(--font-weight-bold); font-size: var(--font-size-14); text-decoration: none; }
-.sg-eyebrow { font-size: var(--font-size-10); text-transform: uppercase; letter-spacing: var(--font-tracking-p0-8px); color: var(--color-accent-default); }
+.sg-eyebrow { font-size: var(--font-size-11); text-transform: uppercase; letter-spacing: var(--font-tracking-p0-8px); color: var(--color-accent-default); }
 .sg-nav nav { display: flex; flex-direction: column; gap: var(--space-2); }
 .sg-nav nav a {
   padding: var(--space-6) var(--space-10); border-radius: var(--radius-sm);

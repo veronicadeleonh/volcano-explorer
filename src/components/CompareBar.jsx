@@ -95,6 +95,7 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
                 <input
                   ref={inputRef}
                   className="cb-search"
+                  aria-label="Search volcanoes by name or country"
                   placeholder="Search by name or country…"
                   value={query}
                   onChange={e => setQuery(e.target.value)}

@@ -88,6 +88,7 @@ export default function SearchBar({ volcanoes, onSelect, selected, compareMode, 
           ref={inputRef}
           className="search-input"
           type="text"
+          aria-label={compareMode ? 'Search a volcano to compare' : 'Search volcanoes, countries or regions'}
           placeholder={compareMode ? 'Search volcano to compare...' : 'Search volcano, country or region...'}
           value={query}
           onChange={handleChange}

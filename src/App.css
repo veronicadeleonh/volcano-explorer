@@ -9,25 +9,26 @@
   position: fixed;
   bottom: 12px;
   right: 12px;
-  font-size: var(--font-size-10);
+  font-size: var(--font-size-11);
   color: var(--color-text-subtle);
   display: flex;
   align-items: center;
   gap: 5px;
+  /* Chip behind the text so it stays readable over the globe and stars. */
+  padding: var(--space-2) var(--space-8);
+  background: var(--color-surface-overlay-soft);
+  border-radius: var(--radius-sm);
   pointer-events: auto;
   z-index: var(--z-attribution);
 
   a {
-    color: var(--color-white-60);
+    color: var(--color-text-muted);
     font-weight: var(--font-weight-medium);
-    text-decoration: none;
+    text-decoration: underline;
+    text-underline-offset: 2px;
     transition: color var(--duration-200);
-    &:hover { color: var(--color-white-85); }
+    &:hover { color: var(--color-text-primary); }
   }
-}
-
-.app-attribution-sep {
-  opacity: 0.4;
 }
 
 @media (max-width: 640px) {
@@ -37,7 +38,7 @@
     shrink further since screen width is at a premium here. */
     bottom: 8px;
     right: 8px;
-    font-size: var(--font-size-10);
+    font-size: var(--font-size-11);
     gap: var(--space-4);
   }
 }

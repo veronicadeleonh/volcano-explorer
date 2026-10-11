@@ -124,6 +124,7 @@ export default function App() {
 
   return (
     <main className="app">
+      <h1 className="sr-only">Volcano Explorer: interactive 3D globe of the world's volcanoes</h1>
       <WelcomeModal />
       <Map
         token={token}
@@ -184,7 +185,7 @@ export default function App() {
       )}
       <div className="app-attribution">
         By <a href="https://veronicadeleonh.de" target="_blank" rel="noopener noreferrer">Verónica De León Hernández</a>
-        <span className="app-attribution-sep">·</span>
+        <span className="app-attribution-sep" aria-hidden="true">·</span>
         Data: <a href="https://volcano.si.edu" target="_blank" rel="noopener noreferrer">GVP / Smithsonian</a>,{' '}
         <a href="https://en.wikipedia.org" target="_blank" rel="noopener noreferrer">Wikipedia</a>,{' '}
         <a href="https://github.com/fraxen/tectonicplates" target="_blank" rel="noopener noreferrer">PB2002</a>

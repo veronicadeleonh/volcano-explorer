@@ -98,7 +98,7 @@
   border: none;
   color: var(--color-text-subtle);
   cursor: pointer;
-  font-size: var(--font-size-10);
+  font-size: var(--font-size-11);
   padding: var(--space-2);
   flex-shrink: 0;
   transition: color var(--duration-150);

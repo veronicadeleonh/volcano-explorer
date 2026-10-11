@@ -160,7 +160,7 @@
 
 .vp-stat-label {
   display: block;
-  font-size: var(--font-size-10);
+  font-size: var(--font-size-11);
   text-transform: uppercase;
   letter-spacing: var(--font-tracking-p0-8px);
   color: var(--color-text-subtle);
@@ -210,7 +210,7 @@
   border-radius: var(--radius-full);
   background: var(--color-white-10);
   color: var(--color-text-subtle);
-  font-size: var(--font-size-10);
+  font-size: var(--font-size-11);
   font-weight: var(--font-weight-bold);
   cursor: help;
   position: relative;
@@ -281,7 +281,7 @@
 
 .ve-vei {
   display: inline-block;
-  font-size: var(--font-size-10);
+  font-size: var(--font-size-11);
   font-weight: var(--font-weight-bold);
   background: var(--color-surface-accent-soft);
   color: var(--color-accent-text);

@@ -256,10 +256,6 @@
     },
     "font": {
       "size": {
-        "10": {
-          "value": "10px",
-          "type": "fontSizes"
-        },
         "11": {
           "value": "11px",
           "type": "fontSizes"

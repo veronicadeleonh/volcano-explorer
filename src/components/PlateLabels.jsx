@@ -137,6 +137,7 @@ export default function PlateLabels({ map, visible, onPlateClick, selectedPlateN
   return (
     <svg
       ref={svgRef}
+      aria-hidden="true"
       style={{
         position: 'absolute',
         inset: 0,

@@ -7,6 +7,19 @@ button, input, select, textarea {
   font-family: inherit;
 }
 
+/* Visually hidden, still announced by screen readers. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 body {
   font-family: var(--font-family-mono);
   background: var(--color-surface-canvas);
