@@ -4,11 +4,12 @@ const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), selec
 
 // Focus management for true modals (the page behind is blocked):
 //  - On open, focus moves to the dialog itself, so a screen reader announces its title.
-//  - Tab / Shift+Tab cycle inside it and can't escape to the page behind.
+//  - Tab / Shift+Tab cycle inside it and can't escape to the page behind
+//    (skipped with { trap: false }, for non-modal panels).
 //  - On close, focus goes back to whatever opened it.
 // Attach the ref to the dialog element, with tabIndex={-1}, role="dialog",
 // aria-modal="true" and aria-labelledby. Closing on Escape stays in the component.
-export function useModalFocus() {
+export function useModalFocus({ trap = true } = {}) {
   const ref = useRef(null)
 
   useEffect(() => {
@@ -17,8 +18,8 @@ export function useModalFocus() {
     dialog?.focus({ preventScroll: true })
 
     const onKeyDown = (e) => {
-      if (e.key !== 'Tab' || !dialog) return
-      const items = [...dialog.querySelectorAll(FOCUSABLE)].filter(el => el.offsetParent !== null)
+      if (!trap || e.key !== 'Tab' || !dialog || !dialog.isConnected) return
+      const items = [...dialog.querySelectorAll(FOCUSABLE)].filter(el => el.getClientRects().length > 0)
       if (!items.length) { e.preventDefault(); return }
       const first = items[0]
       const last = items[items.length - 1]
@@ -35,7 +36,7 @@ export function useModalFocus() {
         previous.focus({ preventScroll: true })
       }
     }
-  }, [])
+  }, [trap])
 
   return ref
 }

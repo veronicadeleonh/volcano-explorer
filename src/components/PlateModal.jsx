@@ -33,7 +33,7 @@ export default function PlateModal({ plateName, side = 'right', onArrowPositione
   const meta = PLATE_META[plateName]
   const [stats, setStats] = useState(null)
   // Focus moves in on open, Escape closes, focus returns on close.
-  const modalRef = useDrawerFocus(onClose)
+  const modalRef = useDrawerFocus(onClose, { trap: false })
 
   // Boundary composition + neighbors, computed client-side from the
   // boundaries dataset -- no extra network request beyond the one fetch.

@@ -1,9 +1,10 @@
 import { useRef, useState } from 'react'
 import './WelcomeModal.css'
+import { useDrawerFocus } from '../lib/useDrawerFocus'
 
 const STEPS = [
   { icon: '🌍', text: 'The globe rotates on its own — volcanoes active in the last year pulse in red, others show as solid or dormant dots' },
-  { icon: '🔍', text: 'Search by name, country or place to fly to any volcano instantly' },
+  { icon: '🔍', text: 'Search by volcano or country to fly to it instantly' },
   { icon: '📋', text: 'Click a volcano to open its detail panel — eruption history, VEI charts and geological data' },
   { icon: '⚖️', text: 'Use Compare mode to select up to 3 volcanoes and see them side by side' },
   { icon: '🗺️', text: 'Hover a country to highlight it, click to see every volcano it has' },
@@ -11,10 +12,16 @@ const STEPS = [
 
 export default function WelcomeModal() {
   const [open, setOpen] = useState(true)
+  if (!open) return null
+  return <WelcomeDialog onClose={() => setOpen(false)} />
+}
+
+// Separate component so the focus handling (trap, Escape, restore) only
+// exists while the dialog is on screen.
+function WelcomeDialog({ onClose }) {
   const [activeStep, setActiveStep] = useState(0)
   const stepsRef = useRef(null)
-
-  if (!open) return null
+  const dialogRef = useDrawerFocus(onClose)
 
   const scrollToStep = (i) => {
     const el = stepsRef.current
@@ -31,7 +38,7 @@ export default function WelcomeModal() {
 
   return (
     <div className="wm-overlay">
-      <div className="wm-card">
+      <div className="wm-card" ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="wm-title">
         {/* Scrolls internally if content is taller than the modal -- the
         "Start exploring" button below lives outside this wrapper so it's
         always visible, never pushed off-screen. */}
@@ -53,7 +60,7 @@ export default function WelcomeModal() {
             </div>
           </div>
 
-          <h2>Volcano Explorer</h2>
+          <h2 id="wm-title">Volcano Explorer</h2>
 
           <p className="wm-sub">
             An interactive 3D globe of the world's volcanoes — explore eruption history,
@@ -89,7 +96,7 @@ export default function WelcomeModal() {
           </div>
         </div>
 
-        <button className="wm-btn" onClick={() => setOpen(false)}>
+        <button className="wm-btn" onClick={onClose}>
           Start exploring
         </button>
       </div>

@@ -96,7 +96,7 @@ async function fetchVolcanoNews(name, country) {
 }
 
 export default function VolcanoPanel({ volcano: v, onClose }) {
-  const panelRef = useDrawerFocus(onClose)
+  const panelRef = useDrawerFocus(onClose, { trap: false })
   const [imgSrc, setImgSrc]     = useState(null)
   const [imgLoaded, setImgLoaded] = useState(false)
   const [imgError, setImgError]  = useState(false)

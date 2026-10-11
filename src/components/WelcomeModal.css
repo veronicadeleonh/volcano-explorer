@@ -186,7 +186,8 @@
 
 .wm-steps:focus-visible {
   outline: 2px solid var(--color-accent-default);
-  outline-offset: 2px;
+  /* inset: the modal clips anything drawn outside the tips box */
+  outline-offset: -2px;
 }
 
 /* 24px hit area (WCAG 2.5.8) around a 6px visible dot. Negative margins keep
@@ -314,3 +315,6 @@
     font-size: var(--font-size-14);
   }
 }
+
+/* Focused programmatically when the dialog opens; it isn't a control, so no ring. */
+.wm-card:focus { outline: none; }

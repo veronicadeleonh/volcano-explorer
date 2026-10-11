@@ -65,7 +65,7 @@ function VolcanoCard({ volcano: v, onClick }) {
 }
 
 export default function CountryPanel({ country, onClose, onSelectVolcano }) {
-  const panelRef = useDrawerFocus(onClose)
+  const panelRef = useDrawerFocus(onClose, { trap: false })
   const { name, iso, volcanoes } = country
   const sorted = [...volcanoes].sort((a, b) => a.name.localeCompare(b.name))
 

@@ -110,12 +110,12 @@ export default function SearchBar({ volcanoes, onSelect, onSelectCountry, select
           className="search-input"
           type="text"
           role="combobox"
-          aria-label={compareMode ? 'Search a volcano to compare' : 'Search volcanoes, countries or places'}
+          aria-label={compareMode ? 'Search a volcano to compare' : 'Search volcanoes or countries'}
           aria-expanded={open && results.length > 0}
           aria-controls="search-listbox"
           aria-autocomplete="list"
           aria-activedescendant={open && highlight >= 0 ? `search-option-${highlight}` : undefined}
-          placeholder={compareMode ? 'Search volcano to compare...' : 'Search volcano, country or place...'}
+          placeholder={compareMode ? 'Search volcano to compare...' : 'Search volcano or country...'}
           value={query}
           onChange={handleChange}
           onFocus={() => query && setOpen(true)}

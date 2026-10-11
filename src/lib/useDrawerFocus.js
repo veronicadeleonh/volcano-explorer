@@ -1,20 +1,21 @@
 import { useEffect, useRef } from 'react'
+import { useModalFocus } from './useModalFocus'
 
-// Focus management for the side drawers (VolcanoPanel, CountryPanel), which are
-// non-modal: the map stays usable behind them.
-//  - On open, focus moves into the drawer so the next Tab lands on its content.
-//  - Escape closes it.
-//  - On close, focus returns to whatever had it before (e.g. the search box).
-// Attach the returned ref to the drawer element and give it tabIndex={-1}.
-export function useDrawerFocus(onClose) {
-  const ref = useRef(null)
+// Focus management for dialogs that close on Escape: focus moves in on open,
+// Escape closes, and focus goes back to whatever opened it.
+//  - { trap: true } (default): true modal (WelcomeModal) -- Tab cycles inside it.
+//    Give it aria-modal="true".
+//  - { trap: false }: non-modal side panels (VolcanoPanel, CountryPanel,
+//    PlateModal) -- the map stays usable behind them, so Tab can leave at the
+//    end; Escape and the close button are the way back.
+// Attach the returned ref to the dialog element, with tabIndex={-1},
+// role="dialog" and aria-labelledby.
+export function useDrawerFocus(onClose, { trap = true } = {}) {
+  const ref = useModalFocus({ trap })
   const onCloseRef = useRef(onClose)
   useEffect(() => { onCloseRef.current = onClose }, [onClose])
 
   useEffect(() => {
-    const previous = document.activeElement
-    ref.current?.focus({ preventScroll: true })
-
     const onKeyDown = (e) => {
       if (e.key !== 'Escape' || e.defaultPrevented) return
       // Escape inside the search box belongs to its own dropdown.
@@ -22,13 +23,7 @@ export function useDrawerFocus(onClose) {
       onCloseRef.current()
     }
     document.addEventListener('keydown', onKeyDown)
-
-    return () => {
-      document.removeEventListener('keydown', onKeyDown)
-      if (previous && previous !== document.body && document.contains(previous)) {
-        previous.focus({ preventScroll: true })
-      }
-    }
+    return () => document.removeEventListener('keydown', onKeyDown)
   }, [])
 
   return ref

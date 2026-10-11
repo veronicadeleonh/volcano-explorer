@@ -30,6 +30,7 @@
   margin-bottom: var(--space-10);
 }
 .tg-input:focus { border-color: var(--color-ember-60); background: var(--color-white-08); }
+.tg-input:focus-visible { outline: 2px solid var(--color-border-focus); outline-offset: 2px; }
 .tg-input::placeholder { color: var(--color-text-subtle); }
 .tg-error { color: var(--color-status-error); font-size: var(--font-size-12); text-align: left; margin-bottom: var(--space-8); }
 .tg-btn {

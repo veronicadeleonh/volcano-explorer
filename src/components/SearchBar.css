@@ -31,6 +31,13 @@
   border-color: var(--color-border-accent-strong);
 }
 
+/* The input itself has outline: none (a ring inside the box would look odd), so
+   the ring goes around the whole box while the input has keyboard/text focus. */
+.search-box:has(.search-input:focus-visible) {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
 .search-icon { font-size: var(--font-size-14); opacity: 0.6; flex-shrink: 0; }
 
 .search-input {
