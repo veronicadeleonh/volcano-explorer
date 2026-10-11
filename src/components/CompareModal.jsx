@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './CompareModal.css'
 import { tokens } from '../styles/tokens'
 import { statusColor } from '../lib/statusColor'
+import { useModalFocus } from '../lib/useModalFocus'
 
 async function fetchWikiImage(wikiUrl, fallbackUrl) {
   if (!wikiUrl) return fallbackUrl || null
@@ -48,6 +49,7 @@ const ROWS = [
 
 export default function CompareModal({ volcanoes, onClose }) {
   const [images, setImages] = useState({})
+  const dialogRef = useModalFocus()
 
   // Close on Escape
   useEffect(() => {
@@ -67,11 +69,11 @@ export default function CompareModal({ volcanoes, onClose }) {
 
   return (
     <div className="cm-overlay" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <div className="cm-modal" style={{ '--ncols': volcanoes.length }}>
+      <div className="cm-modal" ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="cm-title" style={{ '--ncols': volcanoes.length }}>
         {/* Header */}
         <div className="cm-header">
-          <span className="cm-title">⚖ Volcano Comparison</span>
-          <button className="cm-close" onClick={onClose}>✕</button>
+          <span className="cm-title" id="cm-title">⚖ Volcano Comparison</span>
+          <button className="cm-close" onClick={onClose} aria-label="Close comparison">✕</button>
         </div>
 
         {/* Volcano name columns */}

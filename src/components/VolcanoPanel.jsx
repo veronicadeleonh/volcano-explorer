@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import EruptionChart from './EruptionChart'
 import './VolcanoPanel.css'
+import { useDrawerFocus } from '../lib/useDrawerFocus'
 import { tokens } from '../styles/tokens'
 
 const STATUS_COLORS = {
@@ -95,6 +96,7 @@ async function fetchVolcanoNews(name, country) {
 }
 
 export default function VolcanoPanel({ volcano: v, onClose }) {
+  const panelRef = useDrawerFocus(onClose)
   const [imgSrc, setImgSrc]     = useState(null)
   const [imgLoaded, setImgLoaded] = useState(false)
   const [imgError, setImgError]  = useState(false)
@@ -126,11 +128,11 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
 
   return (
     <div className="vp-overlay" onClick={onClose}>
-      <div className="vp-panel" onClick={e => e.stopPropagation()}>
+      <div className="vp-panel" ref={panelRef} tabIndex={-1} role="dialog" aria-labelledby="vp-title" onClick={e => e.stopPropagation()}>
 
         {/* ── Header ── */}
         <div className="vp-header">
-          <button className="vp-close" onClick={onClose} title="Close">✕</button>
+          <button className="vp-close" onClick={onClose} title="Close" aria-label="Close">✕</button>
           <div className="vp-badges">
             <div className="vp-badge" style={{ background: sc.bg, color: sc.text }}>
               <span style={{ color: sc.dot }}>●</span> {v.status}
@@ -141,7 +143,7 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
               </div>
             )}
           </div>
-          <h2 className="vp-title">{v.name}</h2>
+          <h2 className="vp-title" id="vp-title">{v.name}</h2>
           <p className="vp-subtitle">{v.country} · {v.region}</p>
         </div>
 

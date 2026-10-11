@@ -399,3 +399,6 @@
 .ve-desc {
   font-family: var(--font-family-sans);
 }
+
+/* Focused programmatically when the drawer opens; it isn't a control, so no ring. */
+.vp-panel:focus { outline: none; }

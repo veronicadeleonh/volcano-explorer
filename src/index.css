@@ -7,6 +7,15 @@ button, input, select, textarea {
   font-family: inherit;
 }
 
+/* Keyboard focus ring (WCAG 2.4.7). :focus-visible shows it for keyboard users
+   only, never after a mouse click. Components that clip or sit flush against
+   an edge override the offset locally. */
+:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+.mapboxgl-canvas:focus-visible { outline-offset: -4px; }
+
 /* Visually hidden, still announced by screen readers. */
 .sr-only {
   position: absolute;

@@ -334,3 +334,6 @@
     z-index: -1;
   }
 }
+
+/* Focused programmatically when the modal opens; it isn't a control, so no ring. */
+.cm-modal:focus { outline: none; }

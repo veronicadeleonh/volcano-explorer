@@ -119,6 +119,13 @@
 }
 
 .cp-card {
+  /* it's a <button> now: reset the native look */
+  width: 100%;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
   display: flex;
   align-items: center;
   gap: var(--space-12);
@@ -128,6 +135,8 @@
   transition: background var(--duration-150);
 }
 .cp-card:hover { background: var(--color-surface-raised); }
+/* inside a scrolling list an outer ring would be clipped, so draw it inset */
+.cp-card:focus-visible { outline-offset: -2px; }
 
 .cp-card-img-wrap {
   position: relative;
@@ -207,3 +216,6 @@
   font-size: var(--font-size-16);
   flex-shrink: 0;
 }
+
+/* Focused programmatically when the drawer opens; it isn't a control, so no ring. */
+.cp-panel:focus { outline: none; }

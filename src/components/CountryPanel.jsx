@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { sfx } from '../lib/sound'
 import './CountryPanel.css'
+import { useDrawerFocus } from '../lib/useDrawerFocus'
 import { statusColor } from '../lib/statusColor'
 
 function isoToFlag(iso) {
@@ -37,7 +38,7 @@ function VolcanoCard({ volcano: v, onClick }) {
   }, [v.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="cp-card" onMouseEnter={sfx.uiHover} onClick={() => { sfx.uiClick(); onClick(v) }}>
+    <button type="button" className="cp-card" onMouseEnter={sfx.uiHover} onClick={() => { sfx.uiClick(); onClick(v) }}>
       <div className={`cp-card-img-wrap ${loaded ? 'loaded' : ''}`}>
         {!error && imgSrc && (
           <img
@@ -58,12 +59,13 @@ function VolcanoCard({ volcano: v, onClick }) {
           {v.region} · {v.elevation > 0 ? `${v.elevation.toLocaleString()} m` : 'Submarine'}
         </span>
       </div>
-      <span className="cp-card-arrow">›</span>
-    </div>
+      <span className="cp-card-arrow" aria-hidden="true">›</span>
+    </button>
   )
 }
 
 export default function CountryPanel({ country, onClose, onSelectVolcano }) {
+  const panelRef = useDrawerFocus(onClose)
   const { name, iso, volcanoes } = country
   const sorted = [...volcanoes].sort((a, b) => a.name.localeCompare(b.name))
 
@@ -80,11 +82,11 @@ export default function CountryPanel({ country, onClose, onSelectVolcano }) {
 
   return (
     <div className="cp-overlay" onClick={onClose}>
-      <div className="cp-panel" onClick={e => e.stopPropagation()}>
+      <div className="cp-panel" ref={panelRef} tabIndex={-1} role="dialog" aria-labelledby="cp-title" onClick={e => e.stopPropagation()}>
         <div className="cp-header">
-          <button className="cp-close" onMouseEnter={sfx.uiHover} onClick={onClose} title="Close">✕</button>
+          <button className="cp-close" onMouseEnter={sfx.uiHover} onClick={onClose} title="Close" aria-label="Close">✕</button>
           <div className="cp-eyebrow">Country</div>
-          <h2 className="cp-title">
+          <h2 className="cp-title" id="cp-title">
             <span className="cp-flag">{isoToFlag(iso)}</span> {name}
           </h2>
           <p className="cp-subtitle">{volcanoes.length} volcano{volcanoes.length !== 1 ? 'es' : ''}</p>

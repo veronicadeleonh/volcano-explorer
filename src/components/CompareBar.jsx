@@ -10,6 +10,7 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
   const canCompare = compareList.length >= 2
   const [openSlot, setOpenSlot] = useState(null)   // index of the slot whose dropdown is open
   const [query, setQuery] = useState('')
+  const [highlight, setHighlight] = useState(-1)  // keyboard-highlighted option in the dropdown
   const wrapRef    = useRef(null)
   const dropdownRef = useRef(null)
   const inputRef = useRef(null)
@@ -24,14 +25,39 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
   const openDropdown = (i) => {
     setOpenSlot(i)
     setQuery('')
+    setHighlight(-1)
     setTimeout(() => inputRef.current?.focus(), 0)
   }
+
+  // Put focus somewhere sensible once the dropdown closes, so a keyboard user
+  // doesn't lose their place: back on the slot that opened it (Esc), or on the
+  // next free slot / the Compare button (after adding a volcano).
+  const focusSoon = (find) => setTimeout(() => find(wrapRef.current)?.focus(), 0)
 
   const pick = (v) => {
     onAdd(v)
     setOpenSlot(null)
     setQuery('')
+    setHighlight(-1)
+    focusSoon(root => root?.querySelector('.cb-slot.empty') || root?.querySelector('.cb-go'))
   }
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); setHighlight(h => Math.min(h + 1, filtered.length - 1)) }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setHighlight(h => Math.max(h - 1, 0)) }
+    else if (e.key === 'Enter' && highlight >= 0 && filtered[highlight]) { e.preventDefault(); pick(filtered[highlight]) }
+    else if (e.key === 'Escape') {
+      e.preventDefault()
+      const i = openSlot
+      setOpenSlot(null)
+      focusSoon(root => root?.querySelectorAll('.cb-slot-wrap')[i]?.querySelector('.cb-slot'))
+    }
+  }
+
+  // Keep the highlighted option in view when arrowing through a long list.
+  useEffect(() => {
+    if (highlight >= 0) document.getElementById(`cb-option-${highlight}`)?.scrollIntoView({ block: 'nearest' })
+  }, [highlight])
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -77,7 +103,7 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
               <div className="cb-slot filled">
                 <span className="cb-dot" style={{ background: statusColor(v.status) }} />
                 <span className="cb-name">{v.name}</span>
-                <button className="cb-remove" onMouseEnter={sfx.uiHover} onClick={() => onRemove(v.id)} title="Remove">✕</button>
+                <button className="cb-remove" onMouseEnter={sfx.uiHover} onClick={() => onRemove(v.id)} title="Remove" aria-label={`Remove ${v.name}`}>✕</button>
               </div>
             ) : (
               <button
@@ -95,20 +121,36 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
                 <input
                   ref={inputRef}
                   className="cb-search"
+                  role="combobox"
                   aria-label="Search volcanoes by name or country"
+                  aria-expanded={filtered.length > 0}
+                  aria-controls="cb-listbox"
+                  aria-autocomplete="list"
+                  aria-activedescendant={highlight >= 0 ? `cb-option-${highlight}` : undefined}
                   placeholder="Search by name or country…"
                   value={query}
-                  onChange={e => setQuery(e.target.value)}
+                  onChange={e => { setQuery(e.target.value); setHighlight(-1) }}
+                  onKeyDown={handleSearchKeyDown}
+                  autoComplete="off"
+                  spellCheck={false}
                 />
-                <ul className="cb-list">
-                  {filtered.length > 0 ? filtered.map(v => (
-                    <li key={v.id} className="cb-option" onMouseEnter={sfx.uiHover} onMouseDown={() => pick(v)}>
-                      <span className="cb-opt-dot" style={{ background: statusColor(v.status) }} />
+                <ul className="cb-list" id="cb-listbox" role="listbox" aria-label="Volcanoes to add">
+                  {filtered.length > 0 ? filtered.map((v, idx) => (
+                    <li
+                      key={v.id}
+                      id={`cb-option-${idx}`}
+                      role="option"
+                      aria-selected={idx === highlight}
+                      className={`cb-option ${idx === highlight ? 'highlighted' : ''}`}
+                      onMouseEnter={sfx.uiHover}
+                      onMouseDown={() => pick(v)}
+                    >
+                      <span className="cb-opt-dot" aria-hidden="true" style={{ background: statusColor(v.status) }} />
                       <span className="cb-opt-name">{v.name}</span>
                       <span className="cb-opt-country">{v.country}</span>
                     </li>
                   )) : (
-                    <li className="cb-empty-msg">No volcanoes found</li>
+                    <li className="cb-empty-msg" role="status">No volcanoes found</li>
                   )}
                 </ul>
               </div>

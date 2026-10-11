@@ -148,8 +148,9 @@
   color: var(--color-text-primary);
   font-size: var(--font-size-13);
   font-family: inherit;
-  outline: none;
 }
+/* the dropdown clips overflow, so the focus ring is drawn inset */
+.cb-search:focus-visible { outline-offset: -2px; }
 .cb-search::placeholder { color: var(--color-text-subtle); }
 
 .cb-list {
@@ -168,7 +169,8 @@
   cursor: pointer;
   transition: background var(--duration-150);
 }
-.cb-option:hover { background: var(--color-sky-10); }
+.cb-option:hover,
+.cb-option.highlighted { background: var(--color-sky-10); }
 
 .cb-opt-dot {
   width: 7px;
