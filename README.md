@@ -91,6 +91,12 @@ npm run dev
 
 ---
 
+## Design tokens
+
+All colors, type, spacing, radii, shadows, motion and z-index layers live in [`tokens/tokens.json`](tokens/tokens.json) (W3C Design Tokens format). `npm run tokens` generates the CSS variables the app uses, a JS module for Mapbox/canvas/charts, and a [Tokens Studio](https://tokens.studio) file to import the same system into Figma. See [`tokens/README.md`](tokens/README.md).
+
+---
+
 ## Data
 
 73 volcanoes across every major volcanic region — active and dormant — each with coordinates, elevation, type, eruption history (year + VEI + description), and links to Wikipedia and the Global Volcanism Program. Geological boundaries from the PB2002 dataset by Peter Bird.
