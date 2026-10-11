@@ -14,7 +14,7 @@ An interactive 3D globe for exploring the world's volcanoes — search, filter, 
 
 ![Globe](.github/screenshots/globe.png)
 
-**Search** — Look up any volcano by name, country, or region; pick a result to fly the globe straight to it and open its detail panel. In Compare mode, picking a result adds it to your comparison list instead.
+**Search** — Look up any volcano by name or country; pick a result to fly the globe straight to it and open its detail panel. In Compare mode, picking a result adds it to your comparison list instead.
 
 ![Search](.github/screenshots/search.png)
 
@@ -99,4 +99,4 @@ All colors, type, spacing, radii, shadows, motion and z-index layers live in [`t
 
 ## Data
 
-73 volcanoes across every major volcanic region — active and dormant — each with coordinates, elevation, type, eruption history (year + VEI + description), and links to Wikipedia and the Global Volcanism Program. Geological boundaries from the PB2002 dataset by Peter Bird.
+78 volcanoes across every major volcanic region — active and dormant — each with coordinates, elevation, type, eruption history (year + VEI + description), and links to Wikipedia and the Global Volcanism Program. Geological boundaries from the PB2002 dataset by Peter Bird.

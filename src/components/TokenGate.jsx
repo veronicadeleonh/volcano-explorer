@@ -20,7 +20,7 @@ export default function TokenGate({ onSave }) {
       <div className="tg-card">
         <div className="tg-icon">🌋</div>
         <h1>Volcano Explorer</h1>
-        <p className="tg-sub">Explore 50 volcanoes around the world on an interactive 3D globe.<br/>You need a free Mapbox token to get started.</p>
+        <p className="tg-sub">Explore the world's volcanoes on an interactive 3D globe.<br/>You need a free Mapbox token to get started.</p>
         <form onSubmit={handleSubmit}>
           <input
             className="tg-input"
