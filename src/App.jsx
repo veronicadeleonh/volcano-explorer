@@ -120,10 +120,10 @@ export default function App() {
     })
   }, [])
 
-  if (!token) return <TokenGate onSave={handleSaveToken} />
+  if (!token) return <main><TokenGate onSave={handleSaveToken} /></main>
 
   return (
-    <div className="app">
+    <main className="app">
       <WelcomeModal />
       <Map
         token={token}
@@ -190,6 +190,6 @@ export default function App() {
         <a href="https://github.com/fraxen/tectonicplates" target="_blank" rel="noopener noreferrer">PB2002</a>
       </div>
       <Analytics />
-    </div>
+    </main>
   )
 }

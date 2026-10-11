@@ -184,28 +184,48 @@
   line-height: var(--font-line-height-1-5);
 }
 
+.wm-steps:focus-visible {
+  outline: 2px solid var(--color-accent-default);
+  outline-offset: 2px;
+}
+
+/* 24px hit area (WCAG 2.5.8) around a 6px visible dot. Negative margins keep
+   the dots where they were before the hit area grew. */
 .wm-dots {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 7px;
-  margin-bottom: 26px;
+  margin: -9px 0 17px;
 }
 
 .wm-dot {
-  width: 6px;
-  height: 6px;
+  position: relative;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border: none;
-  border-radius: var(--radius-full);
-  background: var(--color-white-22);
+  background: none;
   cursor: pointer;
+}
+
+.wm-dot::before {
+  content: '';
+  position: absolute;
+  inset: 9px;
+  border-radius: var(--radius-full);
+  background: var(--color-white-40);
   transition: background var(--duration-200), transform var(--duration-200);
 }
 
-.wm-dot.active {
+.wm-dot.active::before {
   background: var(--color-accent-default);
   transform: scale(1.35);
+}
+
+.wm-dot:focus-visible {
+  outline: 2px solid var(--color-accent-default);
+  outline-offset: -2px;
+  border-radius: var(--radius-full);
 }
 
 .wm-btn {
@@ -286,7 +306,7 @@
   }
 
   .wm-dots {
-    margin-bottom: var(--space-18);
+    margin-bottom: var(--space-8);
   }
 
   .wm-btn {

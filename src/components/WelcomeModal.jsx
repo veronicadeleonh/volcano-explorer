@@ -60,7 +60,14 @@ export default function WelcomeModal() {
             geological layers, and compare volcanoes side by side.
           </p>
 
-          <div className="wm-steps" ref={stepsRef} onScroll={handleStepsScroll}>
+          <div
+            className="wm-steps"
+            ref={stepsRef}
+            onScroll={handleStepsScroll}
+            role="region"
+            aria-label="How to use Volcano Explorer"
+            tabIndex={0}
+          >
             {STEPS.map(({ icon, text }) => (
               <div key={icon} className="wm-step">
                 <span className="wm-step-icon">{icon}</span>
@@ -69,7 +76,7 @@ export default function WelcomeModal() {
             ))}
           </div>
 
-          <div className="wm-dots">
+          <div className="wm-dots" role="group" aria-label="Choose a tip">
             {STEPS.map((_, i) => (
               <button
                 key={i}
