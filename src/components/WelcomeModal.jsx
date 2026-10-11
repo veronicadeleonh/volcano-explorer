@@ -3,7 +3,7 @@ import './WelcomeModal.css'
 
 const STEPS = [
   { icon: '🌍', text: 'The globe rotates on its own — volcanoes active in the last year pulse in red, others show as solid or dormant dots' },
-  { icon: '🔍', text: 'Search by name, country or region to fly to any volcano instantly' },
+  { icon: '🔍', text: 'Search by name, country or place to fly to any volcano instantly' },
   { icon: '📋', text: 'Click a volcano to open its detail panel — eruption history, VEI charts and geological data' },
   { icon: '⚖️', text: 'Use Compare mode to select up to 3 volcanoes and see them side by side' },
   { icon: '🗺️', text: 'Hover a country to highlight it, click to see every volcano it has' },

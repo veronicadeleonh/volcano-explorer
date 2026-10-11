@@ -126,23 +126,14 @@ export default function App() {
     <main className="app">
       <h1 className="sr-only">Volcano Explorer: interactive 3D globe of the world's volcanoes</h1>
       <WelcomeModal />
-      <Map
-        token={token}
-        volcanoes={volcanoes}
-        selected={compareMode ? null : selected}
-        compareList={compareList}
-        onSelect={handleSelect}
-        onCountryClick={handleCountryClick}
-        activeCountry={selectedCountry}
-        flyTo={flyTo}
-        layers={layers}
-        selectedPlate={selectedPlate}
-        onPlateClick={handlePlateClick}
-        modalArrowPoint={plateArrowPoint}
-      />
+      {/* DOM order = keyboard Tab order (WCAG 2.4.3): filters → search → compare → map
+          (+ its zoom/sound/logo controls) → panels → credits. Everything is absolutely
+          positioned, so this doesn't change the layout. */}
+      <LayerControls layers={layers} onToggle={handleToggleLayer} onSetRecency={handleSetRecency} />
       <SearchBar
         volcanoes={volcanoes}
         onSelect={handleSelect}
+        onSelectCountry={handleCountryClick}
         selected={compareMode ? null : selected}
         compareMode={compareMode}
         onToggleCompare={handleToggleCompareMode}
@@ -157,7 +148,20 @@ export default function App() {
           onCancel={handleToggleCompareMode}
         />
       )}
-      <LayerControls layers={layers} onToggle={handleToggleLayer} onSetRecency={handleSetRecency} />
+      <Map
+        token={token}
+        volcanoes={volcanoes}
+        selected={compareMode ? null : selected}
+        compareList={compareList}
+        onSelect={handleSelect}
+        onCountryClick={handleCountryClick}
+        activeCountry={selectedCountry}
+        flyTo={flyTo}
+        layers={layers}
+        selectedPlate={selectedPlate}
+        onPlateClick={handlePlateClick}
+        modalArrowPoint={plateArrowPoint}
+      />
       {!compareMode && selected && (
         <VolcanoPanel key={selected.id} volcano={selected} onClose={() => setSelected(null)} />
       )}
