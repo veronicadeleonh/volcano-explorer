@@ -133,7 +133,7 @@
   font-weight: var(--font-weight-semibold);
   letter-spacing: var(--font-tracking-p0-8px);
   text-transform: uppercase;
-  color: var(--color-text-faint);
+  color: var(--color-text-subtle);
   margin-bottom: var(--space-8);
 }
 
@@ -196,7 +196,7 @@
   font-weight: var(--font-weight-semibold);
   letter-spacing: var(--font-tracking-p0-8px);
   text-transform: uppercase;
-  color: var(--color-text-faint);
+  color: var(--color-text-subtle);
 }
 
 .lc-seg-btns {
@@ -229,7 +229,7 @@
 .lc-seg-btn.on {
   background: var(--color-ember-85);
   border-color: var(--color-ember-85);
-  color: var(--color-text-primary);
+  color: var(--color-text-on-accent);
 }
 
 .lc-segment-disabled {

@@ -71,12 +71,11 @@
   --color-sky-100: #64a0ff;
 
   /* color.text */
-  --color-text-disabled: var(--color-white-30);
-  --color-text-faint: var(--color-white-35);
-  --color-text-muted: var(--color-white-55);
+  --color-text-muted: var(--color-white-60);
+  --color-text-on-accent: #1f0800;
   --color-text-primary: var(--color-white-100);
   --color-text-secondary: var(--color-white-80);
-  --color-text-subtle: var(--color-white-45);
+  --color-text-subtle: var(--color-white-50);
   --color-text-tertiary: var(--color-white-70);
 
   /* color.surface */
@@ -100,7 +99,7 @@
   --color-border-subtle: var(--color-white-06);
 
   /* color.accent */
-  --color-accent-deep: #cc2800;
+  --color-accent-deep: #e04a1a;
   --color-accent-default: var(--color-ember-100);
   --color-accent-text: rgba(255, 140, 90, 0.9);
 

@@ -96,7 +96,7 @@
   font-size: var(--font-size-10);
   text-transform: uppercase;
   letter-spacing: var(--font-tracking-p0-8px);
-  color: var(--color-text-faint);
+  color: var(--color-text-subtle);
   margin-bottom: 3px;
 }
 
@@ -196,14 +196,14 @@
 
 .cp-card-meta {
   font-size: var(--font-size-11);
-  color: var(--color-white-40);
+  color: var(--color-text-subtle);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .cp-card-arrow {
-  color: var(--color-white-25);
+  color: var(--color-text-subtle);
   font-size: var(--font-size-16);
   flex-shrink: 0;
 }

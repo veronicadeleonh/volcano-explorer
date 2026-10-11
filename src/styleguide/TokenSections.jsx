@@ -16,10 +16,11 @@ export function Section({ id, title, lead, children }) {
 function Swatch({ t, mode = 'fill' }) {
   const [done, setDone] = useState(false)
   const onClick = () => { copy(`var(${t.cssVar})`); setDone(true); setTimeout(() => setDone(false), 900) }
-  const ratio = mode === 'text' ? contrastOnPanel(t.resolved) : null
+  const onAccent = t.path === 'color.text.on-accent' // dark text: shown on the accent fill it is meant for
+  const ratio = mode === 'text' ? contrastOnPanel(t.resolved, onAccent ? '#ff6432' : undefined) : null
   return (
     <button className={`sg-sw sg-sw-${mode}`} style={{ '--c': `var(${t.cssVar})` }} onClick={onClick} title={`Copiar var(${t.cssVar})`}>
-      <span className="sg-sw-chip">{mode === 'text' ? 'Aa' : ''}</span>
+      <span className="sg-sw-chip" style={onAccent ? { background: 'var(--color-accent-default)' } : undefined}>{mode === 'text' ? 'Aa' : ''}</span>
       <span className="sg-sw-name">{t.path.replace(/^color\./, '')}</span>
       <span className="sg-sw-val">{done ? 'copiado' : t.alias ? `→ ${t.alias.replace(/^color\./, '')}` : t.resolved}</span>
       {ratio && <span className={`sg-badge ${ratio >= 4.5 ? 'ok' : 'bad'}`}>{ratio.toFixed(1)}:1</span>}

@@ -10,7 +10,7 @@
   bottom: 12px;
   right: 12px;
   font-size: var(--font-size-10);
-  color: var(--color-text-faint);
+  color: var(--color-text-subtle);
   display: flex;
   align-items: center;
   gap: 5px;

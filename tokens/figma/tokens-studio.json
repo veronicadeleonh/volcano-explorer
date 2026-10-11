@@ -637,20 +637,17 @@
           "type": "color"
         },
         "muted": {
-          "value": "{color.white.55}",
+          "value": "{color.white.60}",
           "type": "color"
         },
         "subtle": {
-          "value": "{color.white.45}",
+          "value": "{color.white.50}",
           "type": "color"
         },
-        "faint": {
-          "value": "{color.white.35}",
-          "type": "color"
-        },
-        "disabled": {
-          "value": "{color.white.30}",
-          "type": "color"
+        "on-accent": {
+          "value": "#1f0800",
+          "type": "color",
+          "description": "Dark text on filled accent / info buttons (AA on ember and sky fills)."
         }
       },
       "surface": {
@@ -736,9 +733,9 @@
           "description": "Orange labels on dark panels."
         },
         "deep": {
-          "value": "#cc2800",
+          "value": "#e04a1a",
           "type": "color",
-          "description": "Darker end of the accent gradient."
+          "description": "Darker end of the accent gradient (keeps dark button text at AA)."
         }
       },
       "status": {

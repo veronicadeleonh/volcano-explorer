@@ -45,9 +45,10 @@ function parse(v) {
 }
 const lin = (x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4 }
 const lum = (c) => 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2])
-export function contrastOnPanel(value) {
+export function contrastOnPanel(value, bgValue) {
   const [r, g, b, a] = parse(value)
-  const fg = [r * a + PANEL[0] * (1 - a), g * a + PANEL[1] * (1 - a), b * a + PANEL[2] * (1 - a)]
-  const [hi, lo] = [lum(fg), lum(PANEL)].sort((x, y) => y - x)
+  const bg = bgValue ? parse(bgValue).slice(0, 3) : PANEL
+  const fg = [r * a + bg[0] * (1 - a), g * a + bg[1] * (1 - a), b * a + bg[2] * (1 - a)]
+  const [hi, lo] = [lum(fg), lum(bg)].sort((x, y) => y - x)
   return (hi + 0.05) / (lo + 0.05)
 }

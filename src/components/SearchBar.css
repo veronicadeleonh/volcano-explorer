@@ -43,11 +43,11 @@
   font-family: inherit;
 }
 
-.search-input::placeholder { color: var(--color-text-disabled); }
+.search-input::placeholder { color: var(--color-text-subtle); }
 
 .search-clear {
   background: none; border: none; cursor: pointer;
-  color: var(--color-text-faint); font-size: var(--font-size-12);
+  color: var(--color-text-subtle); font-size: var(--font-size-12);
   padding: var(--space-2) var(--space-4); border-radius: var(--radius-xs);
   transition: color var(--duration-150);
 }
@@ -81,7 +81,7 @@
 
 .si-emoji { font-size: var(--font-size-11); flex-shrink: 0; }
 .si-name { color: var(--color-text-primary); font-size: var(--font-size-14); font-weight: var(--font-weight-medium); flex: 1; }
-.si-meta { color: var(--color-white-38); font-size: var(--font-size-12); flex-shrink: 0; }
+.si-meta { color: var(--color-text-subtle); font-size: var(--font-size-12); flex-shrink: 0; }
 
 .search-empty {
   background: var(--color-surface-overlay);
@@ -91,7 +91,7 @@
   border-bottom-right-radius: var(--radius-lg);
   padding: var(--space-12) var(--space-14);
   font-size: var(--font-size-13);
-  color: var(--color-text-faint);
+  color: var(--color-text-subtle);
   text-align: center;
 }
 
@@ -105,7 +105,7 @@
 
 .si-add {
   font-size: var(--font-size-11);
-  color: var(--color-sky-70);
+  color: var(--color-info-text-muted);
   font-weight: var(--font-weight-semibold);
   flex-shrink: 0;
   letter-spacing: var(--font-tracking-p0-2px);

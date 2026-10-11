@@ -22,7 +22,7 @@
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: var(--font-tracking-p0-5px);
-  color: var(--color-sky-50);
+  color: var(--color-info-text-muted);
   white-space: nowrap;
 }
 
@@ -57,7 +57,7 @@
 .cb-slot.empty {
   background: var(--color-sky-05);
   border: 1px dashed var(--color-sky-25);
-  color: var(--color-sky-50);
+  color: var(--color-info-text-muted);
   justify-content: center;
   font-size: var(--font-size-12);
   cursor: pointer;
@@ -96,7 +96,7 @@
 .cb-remove {
   background: none;
   border: none;
-  color: var(--color-text-disabled);
+  color: var(--color-text-subtle);
   cursor: pointer;
   font-size: var(--font-size-10);
   padding: var(--space-2);
@@ -104,7 +104,7 @@
   transition: color var(--duration-150);
   line-height: var(--font-line-height-1);
 }
-.cb-remove:hover { color: var(--color-ember-80); }
+.cb-remove:hover { color: var(--color-accent-text); }
 
 .cb-placeholder {
   font-size: var(--font-size-12);
@@ -143,7 +143,7 @@
   font-family: inherit;
   outline: none;
 }
-.cb-search::placeholder { color: var(--color-white-25); }
+.cb-search::placeholder { color: var(--color-text-subtle); }
 
 .cb-list {
   list-style: none;
@@ -182,14 +182,14 @@
 
 .cb-opt-country {
   font-size: var(--font-size-11);
-  color: var(--color-text-faint);
+  color: var(--color-text-subtle);
   white-space: nowrap;
 }
 
 .cb-empty-msg {
   padding: var(--space-12);
   font-size: var(--font-size-12);
-  color: var(--color-text-disabled);
+  color: var(--color-text-subtle);
   text-align: center;
 }
 
@@ -209,7 +209,7 @@
 
 .cb-go.ready {
   background: var(--color-sky-90);
-  color: var(--color-text-primary);
+  color: var(--color-text-on-accent);
 }
 .cb-go.ready:hover {
   background: var(--color-info-solid-hover);

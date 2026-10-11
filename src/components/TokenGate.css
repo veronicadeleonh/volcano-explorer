@@ -30,13 +30,13 @@
   margin-bottom: var(--space-10);
 }
 .tg-input:focus { border-color: var(--color-ember-60); background: var(--color-white-08); }
-.tg-input::placeholder { color: var(--color-white-22); }
+.tg-input::placeholder { color: var(--color-text-subtle); }
 .tg-error { color: var(--color-status-error); font-size: var(--font-size-12); text-align: left; margin-bottom: var(--space-8); }
 .tg-btn {
   width: 100%;
   background: linear-gradient(135deg, var(--color-accent-default) 0%, var(--color-accent-deep) 100%);
   border: none; border-radius: var(--radius-sm);
-  padding: 13px; color: var(--color-text-primary);
+  padding: 13px; color: var(--color-text-on-accent);
   font-size: var(--font-size-16); font-weight: var(--font-weight-semibold); cursor: pointer;
   transition: transform var(--duration-150), box-shadow var(--duration-150);
   margin-top: var(--space-2);
@@ -46,7 +46,7 @@
 .tg-help {
   margin-top: var(--space-22); padding-top: var(--space-20);
   border-top: 1px solid var(--color-white-06);
-  font-size: var(--font-size-13); color: var(--color-text-faint);
+  font-size: var(--font-size-13); color: var(--color-text-subtle);
 }
 .tg-help a { color: var(--color-ember-85); text-decoration: none; }
 .tg-help a:hover { color: var(--color-accent-default); text-decoration: underline; }

@@ -75,10 +75,9 @@ export const tokens = {
       "primary": "#ffffff",
       "secondary": "rgba(255, 255, 255, 0.8)",
       "tertiary": "rgba(255, 255, 255, 0.7)",
-      "muted": "rgba(255, 255, 255, 0.55)",
-      "subtle": "rgba(255, 255, 255, 0.45)",
-      "faint": "rgba(255, 255, 255, 0.35)",
-      "disabled": "rgba(255, 255, 255, 0.3)"
+      "muted": "rgba(255, 255, 255, 0.6)",
+      "subtle": "rgba(255, 255, 255, 0.5)",
+      "on-accent": "#1f0800"
     },
     "surface": {
       "faint": "rgba(255, 255, 255, 0.03)",
@@ -103,7 +102,7 @@ export const tokens = {
     "accent": {
       "default": "#ff6432",
       "text": "rgba(255, 140, 90, 0.9)",
-      "deep": "#cc2800"
+      "deep": "#e04a1a"
     },
     "status": {
       "active": "#ff4422",
