@@ -39,7 +39,7 @@ export default function WelcomeModal() {
           <div className="wm-volcano" aria-hidden="true">
             <div className="wm-volcano-glow" />
             {/* Icon: Material Symbols "volcano" (Google, Apache License 2.0) */}
-            <svg className="wm-volcano-svg" viewBox="0 -960 960 960">
+            <svg className="wm-volcano-svg" viewBox="0 -960 960 960" aria-hidden="true" focusable="false">
               <path
                 className="wm-volcano-cone"
                 d="m80-80 160-360h120l80-200h280L880-80H80Zm92-60h628L675-580H480l-80 200H279L172-140Zm371-640v-140h60v140h-60Zm181 76-42-42 99-99 43 42-100 99Zm-302 0-99-99 42-43 99 100-42 42Zm378 564H172h628Z"
