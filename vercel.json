@@ -1,0 +1,3 @@
+{
+  "rewrites": [{ "source": "/styleguide", "destination": "/index.html" }]
+}

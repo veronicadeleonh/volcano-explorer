@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import EruptionChart from './EruptionChart'
 import './VolcanoPanel.css'
+import { tokens } from '../styles/tokens'
 
 const STATUS_COLORS = {
-  Active:  { bg: 'rgba(255,68,34,0.15)',  text: '#ff7755', dot: '#ff4422' },
-  Dormant: { bg: 'rgba(255,170,34,0.15)', text: '#ffcc55', dot: '#ffaa22' },
-  Extinct: { bg: 'rgba(130,130,170,0.15)', text: '#aaaacc', dot: '#8888aa' },
+  Active:  { bg: tokens.color.status['active-bg'],  text: tokens.color.status['active-text'], dot: tokens.color.status.active },
+  Dormant: { bg: tokens.color.status['dormant-bg'], text: tokens.color.status['dormant-text'], dot: tokens.color.status.dormant },
+  Extinct: { bg: tokens.color.status['extinct-bg'], text: tokens.color.status['extinct-text'], dot: tokens.color.status.extinct },
 }
 
 function getStatusStyle(status) {

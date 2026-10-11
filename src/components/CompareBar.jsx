@@ -1,14 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
 import { sfx } from '../lib/sound'
 import './CompareBar.css'
+import { statusColor } from '../lib/statusColor'
 
 const MAX = 3
-
-function getColor(status = '') {
-  if (status.includes('Active'))  return '#ff4422'
-  if (status.includes('Dormant')) return '#ffaa22'
-  return '#8888aa'
-}
 
 export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemove, onOpen, onCancel }) {
   const slots = Array.from({ length: MAX }, (_, i) => compareList[i] || null)
@@ -80,7 +75,7 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
           <div key={i} className="cb-slot-wrap">
             {v ? (
               <div className="cb-slot filled">
-                <span className="cb-dot" style={{ background: getColor(v.status) }} />
+                <span className="cb-dot" style={{ background: statusColor(v.status) }} />
                 <span className="cb-name">{v.name}</span>
                 <button className="cb-remove" onMouseEnter={sfx.uiHover} onClick={() => onRemove(v.id)} title="Remove">✕</button>
               </div>
@@ -107,7 +102,7 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
                 <ul className="cb-list">
                   {filtered.length > 0 ? filtered.map(v => (
                     <li key={v.id} className="cb-option" onMouseEnter={sfx.uiHover} onMouseDown={() => pick(v)}>
-                      <span className="cb-opt-dot" style={{ background: getColor(v.status) }} />
+                      <span className="cb-opt-dot" style={{ background: statusColor(v.status) }} />
                       <span className="cb-opt-name">{v.name}</span>
                       <span className="cb-opt-country">{v.country}</span>
                     </li>

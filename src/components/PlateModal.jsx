@@ -1,11 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { PLATE_META, PLATE_CODE_NAMES, computePlateStats } from '../data/plateMeta'
 import './PlateModal.css'
+import { tokens } from '../styles/tokens'
 
 const BOUNDARY_INFO = {
-  divergent:  { label: 'divergent',              color: '#4da8da' },
-  transform:  { label: 'transform',              color: '#a0a0c0' },
-  subduction: { label: 'convergent (subduction)', color: '#b56cf0' },
+  divergent:  { label: 'divergent',              color: tokens.color.boundary.divergent },
+  transform:  { label: 'transform',              color: tokens.color.boundary.transform },
+  subduction: { label: 'convergent (subduction)', color: tokens.color.boundary.subduction },
 }
 
 // Same plate_boundaries.json already driving the geo-transform /

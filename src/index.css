@@ -1,10 +1,5 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-:root {
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
-}
-
 /* Buttons/inputs/selects don't inherit the body font by default in browsers'
    own stylesheets — without this every control silently falls back to the
    platform UI font instead of --font-mono. */
@@ -13,9 +8,9 @@ button, input, select, textarea {
 }
 
 body {
-  font-family: var(--font-mono);
-  background: #0a0a0f;
-  color: #f0f0f0;
+  font-family: var(--font-family-mono);
+  background: var(--color-surface-canvas);
+  color: var(--color-text-primary);
   overflow: hidden;
   height: 100vh;
   width: 100vw;
@@ -28,50 +23,50 @@ body {
 
 /* Mapbox overrides */
 .mapboxgl-popup-content {
-  background: #1a1a2e;
-  color: #f0f0f0;
-  border: 1px solid rgba(255,100,50,0.4);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 13px;
+  background: var(--color-surface-popup);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-accent-strong);
+  border-radius: var(--radius-sm);
+  padding: var(--space-8) var(--space-12);
+  font-size: var(--font-size-13);
   font-family: inherit;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 24px var(--color-black-50);
 }
 
 /* Tooltip thumbnail */
 .vt-img-wrap {
-  margin: -8px -12px 8px -12px;
+  margin: -8px -12px var(--space-8) -12px;
   height: 110px;
   overflow: hidden;
   border-radius: 6px 6px 0 0;
-  background: rgba(255,255,255,0.05);
+  background: var(--color-white-04);
   opacity: 0;
-  transition: opacity 0.25s;
+  transition: opacity var(--duration-250);
 }
 .vt-img-wrap.loaded { opacity: 1; }
 .vt-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .vt-info { display: flex; flex-direction: column; gap: 3px; }
-.vt-name { color: #fff; font-weight: 600; font-size: 13px; }
-.vt-status { font-size: 11px; }
-.vt-meta { color: rgba(255,255,255,0.45); font-size: 11px; }
-.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip { border-top-color: rgba(255,100,50,0.4); }
+.vt-name { color: var(--color-text-primary); font-weight: var(--font-weight-semibold); font-size: var(--font-size-13); }
+.vt-status { font-size: var(--font-size-11); }
+.vt-meta { color: var(--color-text-subtle); font-size: var(--font-size-11); }
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip { border-top-color: var(--color-border-accent-strong); }
 .country-popup .mapboxgl-popup-content {
-  border-color: rgba(64,160,220,0.45);
+  border-color: var(--color-country-border);
   padding: 7px 11px;
 }
-.country-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip { border-top-color: rgba(64,160,220,0.45); }
-.ct-root { display: flex; flex-direction: column; gap: 2px; }
-.ct-name { color: #fff; font-weight: 600; font-size: 13px; }
-.ct-count { color: rgba(100,180,220,0.8); font-size: 11px; }
-.mapboxgl-ctrl-group { background: rgba(20,20,30,0.9) !important; border: 1px solid rgba(255,255,255,0.1) !important; }
+.country-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip { border-top-color: var(--color-country-border); }
+.ct-root { display: flex; flex-direction: column; gap: var(--space-2); }
+.ct-name { color: var(--color-text-primary); font-weight: var(--font-weight-semibold); font-size: var(--font-size-13); }
+.ct-count { color: var(--color-country-text); font-size: var(--font-size-11); }
+.mapboxgl-ctrl-group { background: var(--color-surface-overlay-soft) !important; border: 1px solid var(--color-border-default) !important; }
 .mapboxgl-ctrl-group button { background: transparent !important; }
 .mapboxgl-ctrl-icon { filter: invert(1) opacity(0.7); }
-.ve-sound-ctrl button { color: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; }
-.ve-sound-ctrl button:hover { color: #fff; }
+.ve-sound-ctrl button { color: var(--color-text-tertiary); display: flex; align-items: center; justify-content: center; }
+.ve-sound-ctrl button:hover { color: var(--color-text-primary); }
 .mapboxgl-ctrl-attrib { display: none !important; }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
-::-webkit-scrollbar-thumb { background: rgba(255,100,50,0.3); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,100,50,0.5); }
+::-webkit-scrollbar-track { background: var(--color-surface-faint); }
+::-webkit-scrollbar-thumb { background: var(--color-ember-30); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-ember-50); }

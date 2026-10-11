@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import './CompareModal.css'
+import { tokens } from '../styles/tokens'
+import { statusColor } from '../lib/statusColor'
 
 async function fetchWikiImage(wikiUrl, fallbackUrl) {
   if (!wikiUrl) return fallbackUrl || null
@@ -14,12 +16,6 @@ async function fetchWikiImage(wikiUrl, fallbackUrl) {
   } catch {
     return fallbackUrl || null
   }
-}
-
-function getColor(status = '') {
-  if (status.includes('Active'))  return '#ff4422'
-  if (status.includes('Dormant')) return '#ffaa22'
-  return '#8888aa'
 }
 
 function maxVEI(eruptions = []) {
@@ -88,7 +84,7 @@ export default function CompareModal({ volcanoes, onClose }) {
                   ? <img src={images[v.id]} alt={v.name} className="cm-vol-img" />
                   : <div className="cm-vol-img-skeleton" />
                 }
-                <span className="cm-vol-dot" style={{ background: getColor(v.status) }} />
+                <span className="cm-vol-dot" style={{ background: statusColor(v.status) }} />
               </div>
               <div className="cm-vol-name">{v.name}</div>
               <div className="cm-vol-sub">{v.country}</div>
@@ -106,7 +102,7 @@ export default function CompareModal({ volcanoes, onClose }) {
             { label: 'Region',        render: v => v.region },
             { label: 'Type',          render: v => v.type },
             { label: 'Status',        render: v => (
-              <span style={{ color: getColor(v.status), fontWeight: 600 }}>{v.status}</span>
+              <span style={{ color: statusColor(v.status), fontWeight: 600 }}>{v.status}</span>
             )},
             { label: 'Last eruption', render: v => v.last_eruption || '—' },
             { label: 'Eruptions',     render: v => v.eruptions?.length ? `${v.eruptions.length} recorded` : '—' },
@@ -149,13 +145,13 @@ function ElevationRow({ volcanoes }) {
         const isHighest = v.elevation === maxElev && v.elevation > 0
         return (
           <div key={v.id} className="cm-cell cm-elev-cell">
-            <div className="cm-elev-text" style={{ color: isHighest ? '#ffd080' : '#fff' }}>
+            <div className="cm-elev-text" style={{ color: isHighest ? tokens.color.highlight.peak : tokens.color.white['100'] }}>
               {v.elevation > 0 ? `${Number(v.elevation).toLocaleString()} m` : 'Submarine'}
               {isHighest && <span className="cm-crown"> 👑</span>}
             </div>
             {v.elevation > 0 && (
               <div className="cm-elev-bar-wrap">
-                <div className="cm-elev-bar" style={{ width: `${pct}%`, background: isHighest ? '#ffd080' : 'rgba(100,160,255,0.7)' }} />
+                <div className="cm-elev-bar" style={{ width: `${pct}%`, background: isHighest ? tokens.color.highlight.peak : tokens.color.sky['70'] }} />
               </div>
             )}
           </div>

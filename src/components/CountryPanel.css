@@ -1,7 +1,7 @@
 .cp-overlay {
   position: absolute;
   inset: 0;
-  z-index: 200;
+  z-index: var(--z-panel);
   pointer-events: none;
 }
 
@@ -10,13 +10,13 @@
   top: 0; right: 0; bottom: 0;
   width: 340px;
   max-width: 100vw;
-  background: rgba(10, 10, 18, 0.96);
-  border-left: 1px solid rgba(255, 100, 50, 0.2);
-  backdrop-filter: blur(24px);
+  background: var(--color-surface-overlay);
+  border-left: 1px solid var(--color-border-accent);
+  backdrop-filter: blur(var(--blur-24));
   overflow-y: auto;
   pointer-events: all;
-  animation: cpSlideIn 0.25s ease-out;
-  box-shadow: -8px 0 48px rgba(0, 0, 0, 0.6);
+  animation: cpSlideIn var(--duration-250) ease-out;
+  box-shadow: var(--shadow-drawer);
 }
 
 @keyframes cpSlideIn {
@@ -25,86 +25,86 @@
 }
 
 .cp-header {
-  padding: 20px 20px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: var(--space-20) var(--space-20) var(--space-16);
+  border-bottom: 1px solid var(--color-border-subtle);
   position: relative;
 }
 
 .cp-close {
   position: absolute;
   top: 16px; right: 16px;
-  background: rgba(255, 255, 255, 0.08);
-  border: none; color: rgba(255, 255, 255, 0.5);
-  width: 28px; height: 28px; border-radius: 50%;
-  cursor: pointer; font-size: 11px;
-  transition: background 0.15s, color 0.15s;
+  background: var(--color-surface-hover);
+  border: none; color: var(--color-white-50);
+  width: 28px; height: 28px; border-radius: var(--radius-full);
+  cursor: pointer; font-size: var(--font-size-11);
+  transition: background var(--duration-150), color var(--duration-150);
   display: flex; align-items: center; justify-content: center;
 }
-.cp-close:hover { background: rgba(255, 100, 50, 0.25); color: #fff; }
+.cp-close:hover { background: var(--color-ember-25); color: var(--color-text-primary); }
 
 .cp-eyebrow {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.8px;
+  font-size: var(--font-size-10);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--font-tracking-p0-8px);
   text-transform: uppercase;
-  color: rgba(255, 138, 92, 0.9);
-  margin-bottom: 6px;
+  color: var(--color-accent-text);
+  margin-bottom: var(--space-6);
 }
 
 .cp-title {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 22px;
-  font-weight: 700;
-  color: #fff;
-  margin: 0 0 4px;
-  letter-spacing: -0.3px;
+  font-size: var(--font-size-22);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-4);
+  letter-spacing: var(--font-tracking-n0-5px);
 }
 
 .cp-flag {
-  font-size: 22px;
-  line-height: 1;
+  font-size: var(--font-size-22);
+  line-height: var(--font-line-height-1);
 }
 
 .cp-subtitle {
-  font-size: 12.5px;
-  color: rgba(255, 255, 255, 0.45);
-  margin: 0 0 16px;
+  font-size: var(--font-size-13);
+  color: var(--color-text-subtle);
+  margin: 0 0 var(--space-16);
 }
 
 /* Aggregate stats — same visual language as the volcano detail panel */
 .cp-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 10px;
+  gap: var(--space-2);
+  background: var(--color-surface-base);
+  border-radius: var(--radius-sm);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .cp-stat {
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.02);
+  padding: var(--space-10) var(--space-12);
+  background: var(--color-white-02);
   min-width: 0;
 }
-.cp-stat:nth-child(odd) { border-right: 1px solid rgba(255, 255, 255, 0.04); }
+.cp-stat:nth-child(odd) { border-right: 1px solid var(--color-border-faint); }
 
 .cp-stat-label {
   display: block;
-  font-size: 10px;
+  font-size: var(--font-size-10);
   text-transform: uppercase;
-  letter-spacing: 0.7px;
-  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: var(--font-tracking-p0-8px);
+  color: var(--color-text-faint);
   margin-bottom: 3px;
 }
 
 .cp-stat-value {
   display: block;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #fff;
+  font-size: var(--font-size-13);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -114,20 +114,20 @@
 .cp-cards {
   display: flex;
   flex-direction: column;
-  padding: 8px;
-  gap: 6px;
+  padding: var(--space-8);
+  gap: var(--space-6);
 }
 
 .cp-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px;
-  border-radius: 12px;
+  gap: var(--space-12);
+  padding: var(--space-8);
+  border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background var(--duration-150);
 }
-.cp-card:hover { background: rgba(255, 255, 255, 0.06); }
+.cp-card:hover { background: var(--color-surface-raised); }
 
 .cp-card-img-wrap {
   position: relative;
@@ -136,7 +136,7 @@
   flex-shrink: 0;
   border-radius: 9px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--color-surface-faint);
 }
 
 .cp-card-img {
@@ -144,18 +144,18 @@
   object-fit: cover;
   display: block;
   opacity: 0;
-  transition: opacity 0.35s ease;
+  transition: opacity var(--duration-350) ease;
 }
 .cp-card-img-wrap.loaded .cp-card-img { opacity: 1; }
 
 .cp-card-skeleton {
   width: 100%; height: 100%;
   background: linear-gradient(90deg,
-    rgba(255, 255, 255, 0.04) 0%,
-    rgba(255, 255, 255, 0.09) 50%,
-    rgba(255, 255, 255, 0.04) 100%);
+    var(--color-surface-base) 0%,
+    var(--color-white-08) 50%,
+    var(--color-surface-base) 100%);
   background-size: 200% 100%;
-  animation: cpShimmer 1.4s ease-in-out infinite;
+  animation: cpShimmer var(--duration-1400) ease-in-out infinite;
 }
 @keyframes cpShimmer {
   0%   { background-position: -200% 0; }
@@ -165,7 +165,7 @@
 .cp-card-fallback {
   width: 100%; height: 100%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 22px;
+  font-size: var(--font-size-22);
   opacity: 0.4;
 }
 
@@ -173,8 +173,8 @@
   position: absolute;
   bottom: 4px; right: 4px;
   width: 9px; height: 9px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(10, 10, 18, 0.9);
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-surface-overlay);
 }
 
 .cp-card-body {
@@ -186,24 +186,24 @@
 }
 
 .cp-card-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: #fff;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .cp-card-meta {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
+  font-size: var(--font-size-11);
+  color: var(--color-white-40);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .cp-card-arrow {
-  color: rgba(255, 255, 255, 0.25);
-  font-size: 16px;
+  color: var(--color-white-25);
+  font-size: var(--font-size-16);
   flex-shrink: 0;
 }

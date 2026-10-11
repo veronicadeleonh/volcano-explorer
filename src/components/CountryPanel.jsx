@@ -1,16 +1,11 @@
 import { useState, useEffect } from 'react'
 import { sfx } from '../lib/sound'
 import './CountryPanel.css'
+import { statusColor } from '../lib/statusColor'
 
 function isoToFlag(iso) {
   if (!iso || iso.length !== 2) return '🌐'
   return iso.toUpperCase().replace(/./g, c => String.fromCodePoint(127397 + c.charCodeAt(0)))
-}
-
-function statusColor(status = '') {
-  if (status.includes('Active'))  return '#ff4422'
-  if (status.includes('Dormant')) return '#ffaa22'
-  return '#8888aa'
 }
 
 // Same lookup VolcanoPanel uses — fetch a real photo from Wikipedia's REST

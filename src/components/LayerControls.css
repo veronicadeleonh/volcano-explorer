@@ -5,82 +5,77 @@
    button/chip control shares one radius so Active/Dormant, the
    volcano-type tags, and the Last-eruption segmented buttons all read
    as the same shape language instead of three different roundings. */
-:root {
-  --lc-radius-container: 10px;
-  --lc-radius-btn: 8px;
-}
-
 .lc-wrap {
   position: absolute;
   bottom: 32px;
-  z-index: 100;
+  z-index: var(--z-controls);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-6);
 }
 
 .lc-wrap-left  { left: 16px; bottom: auto; top: 20px; }
 .lc-wrap-right { left: 16px; }
 
 .lc-item {
-  background: rgba(10, 10, 20, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--lc-radius-container);
+  background: var(--color-surface-overlay-soft);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
   overflow: hidden;
-  backdrop-filter: blur(16px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
-  transition: border-color 0.2s;
+  backdrop-filter: blur(var(--blur-16));
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--duration-200);
   min-width: 200px;
 }
 
 .lc-item.active {
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: var(--color-white-20);
 }
 
 .lc-btn {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 9px 12px;
+  gap: var(--space-8);
+  padding: 9px var(--space-12);
   background: none;
   border: none;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 13px;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-13);
   font-family: inherit;
   text-align: left;
-  transition: color 0.15s;
+  transition: color var(--duration-150);
 }
 
 .lc-item.active .lc-btn {
-  color: #fff;
+  color: var(--color-text-primary);
 }
 
 .lc-btn:hover {
-  color: #fff;
+  color: var(--color-text-primary);
 }
 
 .lc-icon {
-  font-size: 14px;
+  font-size: var(--font-size-14);
   flex-shrink: 0;
 }
 
 .lc-label {
   flex: 1;
-  font-weight: 500;
-  letter-spacing: 0.1px;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--font-tracking-p0-2px);
 }
 
 /* Toggle switch */
 .lc-toggle {
   width: 28px;
   height: 16px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-sm);
+  background: var(--color-white-15);
   flex-shrink: 0;
   position: relative;
-  transition: background 0.2s;
+  transition: background var(--duration-200);
 }
 
 .lc-toggle::after {
@@ -88,58 +83,58 @@
   position: absolute;
   width: 12px;
   height: 12px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-full);
+  background: var(--color-white-50);
   top: 2px;
   left: 2px;
-  transition: transform 0.2s, background 0.2s;
+  transition: transform var(--duration-200), background var(--duration-200);
 }
 
 .lc-toggle.on {
-  background: rgba(255, 100, 50, 0.6);
+  background: var(--color-ember-60);
 }
 
 .lc-toggle.on::after {
   transform: translateX(12px);
-  background: #fff;
+  background: var(--color-white-100);
 }
 
 /* Legend */
 .lc-legend {
-  padding: 4px 12px 10px;
+  padding: var(--space-4) var(--space-12) var(--space-10);
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  gap: var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .lc-legend-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.45);
+  gap: var(--space-6);
+  font-size: var(--font-size-11);
+  color: var(--color-text-subtle);
 }
 
 .lc-legend-dot {
   width: 20px;
   height: 3px;
-  border-radius: 2px;
+  border-radius: var(--radius-xxs);
   flex-shrink: 0;
 }
 
 /* Volcano filter chip group */
 .lc-group {
-  padding: 10px 12px 12px;
+  padding: var(--space-10) var(--space-12) var(--space-12);
 }
 
 .lc-group-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.8px;
+  font-size: var(--font-size-10);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--font-tracking-p0-8px);
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.35);
-  margin-bottom: 8px;
+  color: var(--color-text-faint);
+  margin-bottom: var(--space-8);
 }
 
 .lc-chips {
@@ -152,28 +147,28 @@
   align-items: center;
   gap: 5px;
   padding: 5px 11px;
-  border-radius: var(--lc-radius-btn);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface-raised);
+  color: var(--color-text-subtle);
+  font-size: var(--font-size-12);
   font-family: inherit;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.18s;
+  transition: all var(--duration-200);
   flex: 1;
   justify-content: center;
 }
 
 .lc-chip:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  color: rgba(255, 255, 255, 0.8);
+  border-color: var(--color-white-30);
+  color: var(--color-text-secondary);
 }
 
 .lc-chip.on {
   background: color-mix(in srgb, var(--chip-color) 20%, transparent);
   border-color: color-mix(in srgb, var(--chip-color) 60%, transparent);
-  color: #fff;
+  color: var(--color-text-primary);
 }
 
 .lc-chips-wrap {
@@ -182,59 +177,59 @@
 
 .lc-chip-type {
   flex: none;
-  font-size: 11px;
-  padding: 4px 9px;
+  font-size: var(--font-size-11);
+  padding: var(--space-4) 9px;
 }
 
 /* Recency filter — segmented control (All / 6M / 1Y), Seismic-style pills */
 .lc-segment {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  gap: var(--space-6);
+  margin-top: var(--space-10);
+  padding-top: var(--space-10);
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .lc-seg-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.8px;
+  font-size: var(--font-size-10);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--font-tracking-p0-8px);
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--color-text-faint);
 }
 
 .lc-seg-btns {
   display: flex;
-  gap: 4px;
+  gap: var(--space-4);
 }
 
 .lc-seg-btn {
   flex: 1;
-  padding: 5px 6px;
-  border-radius: var(--lc-radius-btn);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 10.5px;
+  padding: 5px var(--space-6);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-white-12);
+  background: var(--color-surface-base);
+  color: var(--color-text-subtle);
+  font-size: var(--font-size-11);
   font-family: inherit;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--font-tracking-p0-5px);
   text-transform: uppercase;
   cursor: pointer;
   text-align: center;
-  transition: all 0.15s;
+  transition: all var(--duration-150);
 }
 
 .lc-seg-btn:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  color: rgba(255, 255, 255, 0.8);
+  border-color: var(--color-white-30);
+  color: var(--color-text-secondary);
 }
 
 .lc-seg-btn.on {
-  background: rgba(255, 100, 50, 0.85);
-  border-color: rgba(255, 100, 50, 0.85);
-  color: #fff;
+  background: var(--color-ember-85);
+  border-color: var(--color-ember-85);
+  color: var(--color-text-primary);
 }
 
 .lc-segment-disabled {
@@ -259,29 +254,29 @@
   .lc-root {
     position: fixed;
     inset: auto 0 0 0;
-    z-index: 100;
+    z-index: var(--z-controls);
     pointer-events: none;
   }
 
   .lc-mobile-toggle {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-6);
     position: fixed;
     bottom: 30px;
-    z-index: 101;
-    padding: 10px 16px;
-    border-radius: var(--lc-radius-btn);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background: rgba(10, 10, 20, 0.92);
-    color: #fff;
+    z-index: var(--z-controls-raised);
+    padding: var(--space-10) var(--space-16);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface-overlay);
+    color: var(--color-text-primary);
     font-family: inherit;
-    font-size: 12.5px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
+    font-size: var(--font-size-13);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--font-tracking-p0-2px);
     cursor: pointer;
-    backdrop-filter: blur(16px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(var(--blur-16));
+    box-shadow: var(--shadow-sm);
     pointer-events: auto;
   }
 
@@ -289,8 +284,8 @@
   .lc-mobile-toggle-right { right: 8px; }
 
   .lc-mobile-toggle.open {
-    background: rgba(255, 100, 50, 0.9);
-    border-color: rgba(255, 100, 50, 0.9);
+    background: var(--color-ember-90);
+    border-color: var(--color-ember-90);
   }
 
   .lc-wrap-left,
@@ -301,9 +296,9 @@
     right: 8px;
     bottom: 82px;
     top: auto;
-    z-index: 100;
+    z-index: var(--z-controls);
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-6);
     max-height: 50vh;
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -321,24 +316,24 @@
   }
 
   .lc-group {
-    padding: 8px 10px 10px;
+    padding: var(--space-8) var(--space-10) var(--space-10);
   }
 
   .lc-chip {
-    padding: 6px 8px;
-    font-size: 11.5px;
+    padding: var(--space-6) var(--space-8);
+    font-size: var(--font-size-12);
   }
 
   .lc-chip-type {
-    padding: 5px 8px;
-    font-size: 10.5px;
+    padding: 5px var(--space-8);
+    font-size: var(--font-size-11);
   }
 
   .lc-seg-btn {
-    padding: 7px 4px;
+    padding: 7px var(--space-4);
   }
 
   .lc-legend {
-    padding: 4px 10px 8px;
+    padding: var(--space-4) var(--space-10) var(--space-8);
   }
 }

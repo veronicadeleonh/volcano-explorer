@@ -1,4 +1,5 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
+import { tokens } from '../styles/tokens'
 
 function formatYear(y) {
   if (y < 0) return `${Math.abs(y)}BCE`
@@ -31,14 +32,14 @@ const CustomTooltip = ({ active, payload }) => {
       fontSize: 12,
       maxWidth: 210,
     }}>
-      <p style={{ color: 'rgba(255,100,50,0.9)', fontWeight: 700, marginBottom: 4 }}>
+      <p style={{ color: tokens.color.ember['90'], fontWeight: 700, marginBottom: 4 }}>
         {formatYear(d.year)}
-        {vei !== null && <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 400, marginLeft: 8 }}>VEI {vei}</span>}
+        {vei !== null && <span style={{ color: tokens.color.white['50'], fontWeight: 400, marginLeft: 8 }}>VEI {vei}</span>}
       </p>
       {info && <>
-        <p style={{ color: '#fff', fontWeight: 600, marginBottom: 2 }}>{info.label}</p>
-        <p style={{ color: 'rgba(255,255,255,0.45)', marginBottom: 3 }}>{info.volume} ejected</p>
-        <p style={{ color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>e.g. {info.ref}</p>
+        <p style={{ color: tokens.color.white['100'], fontWeight: 600, marginBottom: 2 }}>{info.label}</p>
+        <p style={{ color: tokens.color.white['45'], marginBottom: 3 }}>{info.volume} ejected</p>
+        <p style={{ color: tokens.color.white['30'], fontStyle: 'italic' }}>e.g. {info.ref}</p>
       </>}
     </div>
   )
@@ -51,7 +52,7 @@ export default function EruptionChart({ eruptions }) {
     .map(e => ({ ...e, vei: e.vei || 1 }))
 
   if (data.length === 0) return (
-    <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 12, fontStyle: 'italic' }}>
+    <p style={{ color: tokens.color.white['30'], fontSize: 12, fontStyle: 'italic' }}>
       No VEI data available.
     </p>
   )
@@ -64,19 +65,19 @@ export default function EruptionChart({ eruptions }) {
           <XAxis
             dataKey="year"
             tickFormatter={formatYear}
-            tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10 }}
-            axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+            tick={{ fill: tokens.color.white['30'], fontSize: 10 }}
+            axisLine={{ stroke: tokens.color.white['08'] }}
             tickLine={false}
             interval="preserveStartEnd"
           />
           <YAxis
             domain={[0, 8]}
             ticks={[0, 2, 4, 6, 8]}
-            tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10 }}
+            tick={{ fill: tokens.color.white['30'], fontSize: 10 }}
             axisLine={false}
             tickLine={false}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: tokens.color.white['04'] }} />
           <Bar dataKey="vei" radius={[3, 3, 0, 0]} maxBarSize={28}>
             {data.map((entry, i) => {
               const intensity = Math.min(entry.vei / 8, 1)

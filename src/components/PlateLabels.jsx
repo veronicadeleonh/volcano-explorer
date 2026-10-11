@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { PLATE_META } from '../data/plateMeta'
 import { sfx } from '../lib/sound'
 import './PlateLabels.css'
+import { tokens } from '../styles/tokens'
 
 // Sourced from PLATE_META (src/data/plateMeta.js) so the label position and
 // the camera target used when the plate is selected (see Map.jsx) never
@@ -148,7 +149,7 @@ export default function PlateLabels({ map, visible, onPlateClick, selectedPlateN
     >
       <line
         ref={connectorRef}
-        stroke="rgba(255,255,255,0.4)"
+        stroke={tokens.color.white['40']}
         strokeWidth="1"
         strokeDasharray="3 2"
         opacity={0}
@@ -165,19 +166,19 @@ export default function PlateLabels({ map, visible, onPlateClick, selectedPlateN
         >
           <line
             className="plate-tick-line"
-            stroke="rgba(255,255,255,0.4)"
+            stroke={tokens.color.white['40']}
             strokeWidth="1"
             strokeDasharray="3 2"
           />
-          <circle className="plate-root-dot" r="2" fill="rgba(255,255,255,0.5)" pointerEvents="none" />
+          <circle className="plate-root-dot" r="2" fill={tokens.color.white['50']} pointerEvents="none" />
           {/* Hit area behind the dot + label -- generous enough to tap on mobile,
               but the connector line above stays non-interactive so it never eats
               a map drag. */}
           <circle className="plate-hit-circle" r="14" fill="transparent" pointerEvents="auto" />
-          <circle className="plate-tip-dot" r="2.5" fill="rgba(255,255,255,0.7)" pointerEvents="none" />
+          <circle className="plate-tip-dot" r="2.5" fill={tokens.color.white['70']} pointerEvents="none" />
           <text
             className="plate-label-text"
-            fill="rgba(255,255,255,0.75)"
+            fill={tokens.color.white['75']}
             fontSize="9.5"
             fontFamily="'JetBrains Mono', ui-monospace, monospace"
             dominantBaseline="middle"

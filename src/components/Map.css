@@ -17,27 +17,27 @@
 .vm-dot {
   width: 12px;
   height: 12px;
-  border-radius: 50%;
-  background: var(--color, #ff4422);
-  border: 2px solid rgba(255,255,255,0.7);
-  box-shadow: 0 0 6px var(--color, #ff4422);
+  border-radius: var(--radius-full);
+  background: var(--color, var(--color-status-active));
+  border: 2px solid var(--color-white-70);
+  box-shadow: 0 0 6px var(--color, var(--color-status-active));
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: transform var(--duration-150), box-shadow var(--duration-150);
   z-index: 2;
 }
 
 .vm-pulse {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
-  background: var(--color, #ff4422);
+  border-radius: var(--radius-full);
+  background: var(--color, var(--color-status-active));
   opacity: 0;
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%) scale(0.4);
-  animation: pulse 2.5s ease-out infinite;
+  animation: pulse var(--duration-2500) ease-out infinite;
   z-index: 1;
 }
 
@@ -49,16 +49,16 @@
 .volcano-marker:hover .vm-dot,
 .volcano-marker.selected .vm-dot {
   transform: translate(-50%, -50%) scale(1.4);
-  box-shadow: 0 0 14px var(--color, #ff4422), 0 0 4px #fff;
+  box-shadow: 0 0 14px var(--color, var(--color-status-active)), 0 0 4px var(--color-white-100);
 }
 
 .volcano-marker.selected .vm-dot {
-  border-color: #fff;
-  box-shadow: 0 0 16px var(--color, #ff4422), 0 0 6px #fff;
+  border-color: var(--color-white-100);
+  box-shadow: 0 0 16px var(--color, var(--color-status-active)), 0 0 6px var(--color-white-100);
 }
 
 .volcano-marker.selected .vm-pulse {
-  animation-duration: 1.2s;
+  animation-duration: var(--duration-1200);
 }
 
 @media (max-width: 640px) {

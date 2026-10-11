@@ -4,7 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "tokens": "node scripts/build-tokens.mjs",
+    "predev": "npm run tokens",
     "dev": "vite",
+    "prebuild": "npm run tokens",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"

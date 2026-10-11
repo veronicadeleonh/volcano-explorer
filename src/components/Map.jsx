@@ -4,14 +4,10 @@ import { PLATE_META } from '../data/plateMeta'
 import mapboxgl from 'mapbox-gl'
 import { sfx, isMuted, toggleMuted, subscribe } from '../lib/sound'
 import './Map.css'
+import { tokens } from '../styles/tokens'
+import { statusColor } from '../lib/statusColor'
 
 // ── helpers ───────────────────────────────────────────────────────────────
-function getColor(status = '') {
-  if (status.includes('Active'))  return '#ff4422'
-  if (status.includes('Dormant')) return '#ffaa22'
-  return '#8888aa'
-}
-
 // Maps the `country` field used in our dataset to ISO 3166-1 alpha-2 codes,
 // which is how mapbox.country-boundaries-v1 identifies each country polygon.
 // Only covers the countries actually present in volcanoes.json.
@@ -41,7 +37,7 @@ function toGeoJSON(volcanoes) {
       geometry: { type: 'Point', coordinates: [v.lon, v.lat] },
       properties: {
         ...v,
-        color: getColor(v.status),
+        color: statusColor(v.status),
         recentlyActive: (v.last_eruption ?? -Infinity) >= recentCutoff,
       },
     })),
@@ -83,7 +79,7 @@ function makePulsingDot(map) {
       // solid center dot
       ctx.beginPath()
       ctx.arc(r, r, r * 0.26, 0, Math.PI * 2)
-      ctx.fillStyle = '#ff4422'
+      ctx.fillStyle = tokens.color.status.active
       ctx.fill()
       ctx.strokeStyle = 'rgba(255,255,255,0.9)'
       ctx.lineWidth = 2
@@ -314,7 +310,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
         'source-layer': 'country_boundaries',
         filter: ['in', ['get', 'iso_3166_1'], ['literal', []]], // populated once volcano data loads
         paint: {
-          'fill-color': '#ff6432',
+          'fill-color': tokens.color.accent.default,
           'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 0.14, 0],
         },
       })
@@ -330,7 +326,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
         'source-layer': 'country_boundaries',
         filter: ['==', ['get', 'iso_3166_1'], '__none__'],
         paint: {
-          'fill-color': '#ff6432',
+          'fill-color': tokens.color.accent.default,
           'fill-opacity': 0.22,
         },
       })
@@ -354,7 +350,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 13, 8, 22],
           'circle-color': 'transparent',
           'circle-stroke-width': 2.5,
-          'circle-stroke-color': '#64a0ff',
+          'circle-stroke-color': tokens.color.sky['100'],
         },
       })
 
@@ -368,7 +364,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 10, 8, 18],
           'circle-color': 'transparent',
           'circle-stroke-width': 2.5,
-          'circle-stroke-color': '#ffffff',
+          'circle-stroke-color': tokens.color.white['100'],
         },
       })
 
@@ -382,7 +378,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 4, 8, 7],
           'circle-color': ['get', 'color'],
           'circle-stroke-width': 1.5,
-          'circle-stroke-color': 'rgba(255,255,255,0.7)',
+          'circle-stroke-color': tokens.color.white['70'],
         },
       })
 
@@ -416,7 +412,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 4, 8, 7],
           'circle-color': ['get', 'color'],
           'circle-stroke-width': 1.5,
-          'circle-stroke-color': 'rgba(255,255,255,0.7)',
+          'circle-stroke-color': tokens.color.white['70'],
         },
       })
 
@@ -440,7 +436,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
             source: 'plate-boundaries',
             filter: ['==', ['get', 'boundaryType'], 'transform'],
             layout: { 'line-cap': 'round', 'visibility': VIS(layerCacheRef.current.boundaries) },
-            paint: { 'line-color': '#a0a0c0', 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 0.4, 6, 1.2], 'line-opacity': 0.5 },
+            paint: { 'line-color': tokens.color.boundary.transform, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 0.4, 6, 1.2], 'line-opacity': 0.5 },
           }, geoLayersBefore)
 
           map.addLayer({
@@ -449,7 +445,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
             source: 'plate-boundaries',
             filter: ['==', ['get', 'boundaryType'], 'divergent'],
             layout: { 'line-cap': 'round', 'visibility': VIS(layerCacheRef.current.boundaries) },
-            paint: { 'line-color': '#4da8da', 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 0.6, 6, 1.8], 'line-opacity': 0.65 },
+            paint: { 'line-color': tokens.color.boundary.divergent, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 0.6, 6, 1.8], 'line-opacity': 0.65 },
           }, geoLayersBefore)
 
           map.addLayer({
@@ -458,7 +454,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
             source: 'plate-boundaries',
             filter: ['==', ['get', 'boundaryType'], 'subduction'],
             layout: { 'line-cap': 'round', 'visibility': VIS(layerCacheRef.current.boundaries) },
-            paint: { 'line-color': '#b56cf0', 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 0.8, 6, 2.2], 'line-opacity': 0.75 },
+            paint: { 'line-color': tokens.color.boundary.subduction, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 0.8, 6, 2.2], 'line-opacity': 0.75 },
           }, geoLayersBefore)
 
           // Plate polygons (PB2002) -- fill only, purely visual: highlights the
@@ -478,7 +474,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
           const boundaryFilter = code
             ? ['any', ['==', ['get', 'plateA'], code], ['==', ['get', 'plateB'], code]]
             : ['==', ['get', 'plateA'], '__none__']
-          const PLATE_AMBER = '#f5a623'
+          const PLATE_AMBER = tokens.color.boundary['plate-highlight']
 
           map.addLayer({
             id: 'plate-active-fill',
@@ -537,7 +533,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
             type: 'line',
             source: 'ring-of-fire',
             layout: { 'line-cap': 'round', 'visibility': VIS(layerCacheRef.current.ringOfFire) },
-            paint: { 'line-color': '#ff6a35', 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 4, 6, 10], 'line-opacity': 0.16, 'line-blur': 5 },
+            paint: { 'line-color': tokens.color.boundary['ring-of-fire'], 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 4, 6, 10], 'line-opacity': 0.16, 'line-blur': 5 },
           }, geoLayersBefore)
 
           map.addLayer({
@@ -546,7 +542,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
             source: 'ring-of-fire',
             layout: { 'line-cap': 'round', 'visibility': VIS(layerCacheRef.current.ringOfFire) },
             paint: {
-              'line-color': '#ff6a35',
+              'line-color': tokens.color.boundary['ring-of-fire'],
               'line-width': ['interpolate', ['linear'], ['zoom'], 1, 0.9, 6, 2],
               'line-opacity': 0.92,
               'line-dasharray': [1, 1.3],

@@ -1,25 +1,25 @@
 .wm-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.6);
+  z-index: var(--z-welcome);
+  background: var(--color-black-60);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  backdrop-filter: blur(4px);
+  padding: var(--space-20);
+  backdrop-filter: blur(var(--blur-6));
   overflow-y: auto;
 }
 
 .wm-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 100, 50, 0.2);
-  border-radius: 20px;
-  padding: 40px;
+  background: var(--color-surface-base);
+  border: 1px solid var(--color-border-accent);
+  border-radius: var(--radius-pill);
+  padding: var(--space-40);
   max-width: 440px;
   width: 100%;
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-modal);
+  backdrop-filter: blur(var(--blur-16));
   max-height: min(680px, 100%);
   /* .wm-scroll (below) owns the internal scrolling now -- the card itself
   no longer scrolls, so .wm-btn (a direct child, outside .wm-scroll) can
@@ -44,7 +44,7 @@
   position: relative;
   width: 100%;
   height: 150px;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-16);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -57,8 +57,8 @@
   width: 150px;
   height: 150px;
   transform: translateX(-50%);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 120, 60, 0.4) 0%, rgba(255, 100, 50, 0) 70%);
+  border-radius: var(--radius-full);
+  background: radial-gradient(circle, var(--color-ember-40) 0%, var(--color-ember-00) 70%);
   animation: wmGlowPulse 3.2s ease-in-out infinite;
   pointer-events: none;
 }
@@ -67,11 +67,11 @@
   width: 132px;
   height: 132px;
   position: relative;
-  filter: drop-shadow(0 6px 16px rgba(255, 90, 40, 0.3));
+  filter: drop-shadow(0 6px 16px var(--color-ember-30));
 }
 
 .wm-volcano-cone {
-  fill: rgba(255, 232, 214, 0.95);
+  fill: var(--color-highlight-cream);
 }
 
 .wm-volcano-crater {
@@ -91,17 +91,17 @@
   left: 0;
   width: 4px;
   height: 4px;
-  border-radius: 50%;
-  background: #ffb066;
-  box-shadow: 0 0 8px 2px rgba(255, 140, 60, 0.85);
+  border-radius: var(--radius-full);
+  background: var(--color-highlight-spark);
+  box-shadow: 0 0 8px 2px var(--color-highlight-spark-glow);
   opacity: 0;
-  animation: wmEmberRise 2.8s ease-in infinite;
+  animation: wmEmberRise var(--duration-2800) ease-in infinite;
 }
 
 .wm-ember-1 { left: -7px; animation-delay: 0s; }
-.wm-ember-2 { left:  1px; animation-delay: 0.7s; }
-.wm-ember-3 { left: -2px; animation-delay: 1.4s; }
-.wm-ember-4 { left:  6px; animation-delay: 2.1s; }
+.wm-ember-2 { left:  1px; animation-delay: var(--duration-700); }
+.wm-ember-3 { left: -2px; animation-delay: var(--duration-1400); }
+.wm-ember-4 { left:  6px; animation-delay: var(--duration-2100); }
 
 @keyframes wmGlowPulse {
   0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
@@ -124,18 +124,18 @@
 }
 
 .wm-card h2 {
-  font-size: 22px;
-  font-weight: 700;
-  color: #fff;
-  margin: 0 0 8px;
-  letter-spacing: -0.5px;
+  font-size: var(--font-size-22);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-8);
+  letter-spacing: var(--font-tracking-n0-5px);
 }
 
 .wm-sub {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.55);
-  line-height: 1.6;
-  margin: 0 0 22px;
+  font-size: var(--font-size-14);
+  color: var(--color-text-muted);
+  line-height: var(--font-line-height-1-6);
+  margin: 0 0 var(--space-22);
 }
 
 /* ── Onboarding steps — horizontal scroll-snap slider ────────────────────
@@ -149,8 +149,8 @@
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  margin: 0 0 12px;
-  border-radius: 10px;
+  margin: 0 0 var(--space-12);
+  border-radius: var(--radius-sm);
 }
 
 .wm-steps::-webkit-scrollbar {
@@ -163,25 +163,25 @@
   scroll-snap-stop: always;
   box-sizing: border-box;
   display: flex;
-  gap: 12px;
+  gap: var(--space-12);
   align-items: flex-start;
-  padding: 14px;
+  padding: var(--space-14);
   min-height: 64px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
+  background: var(--color-surface-base);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
 }
 
 .wm-step-icon {
-  font-size: 17px;
+  font-size: var(--font-size-16);
   flex-shrink: 0;
   margin-top: 1px;
 }
 
 .wm-step-text {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.55);
-  line-height: 1.5;
+  font-size: var(--font-size-13);
+  color: var(--color-text-muted);
+  line-height: var(--font-line-height-1-5);
 }
 
 .wm-dots {
@@ -197,14 +197,14 @@
   height: 6px;
   padding: 0;
   border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius-full);
+  background: var(--color-white-22);
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition: background var(--duration-200), transform var(--duration-200);
 }
 
 .wm-dot.active {
-  background: #ff6432;
+  background: var(--color-accent-default);
   transform: scale(1.35);
 }
 
@@ -212,36 +212,36 @@
   flex-shrink: 0;
   width: 100%;
   padding: 13px;
-  background: linear-gradient(135deg, #ff6432 0%, #cc2800 100%);
+  background: linear-gradient(135deg, var(--color-accent-default) 0%, var(--color-accent-deep) 100%);
   border: none;
-  border-radius: 10px;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
-  letter-spacing: -0.01em;
+  transition: transform var(--duration-150), box-shadow var(--duration-150);
+  letter-spacing: 0;
 }
 
 .wm-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 28px rgba(255, 80, 30, 0.45);
+  box-shadow: var(--shadow-glow-accent);
 }
 
 /* Long-form copy stays in the sans stack for readability; UI chrome elsewhere uses the mono default */
 .wm-sub, .wm-step-text {
-  font-family: var(--font-sans);
+  font-family: var(--font-family-sans);
 }
 
 /* ── Mobile: tighter spacing so everything fits a phone viewport ───────── */
 @media (max-width: 640px) {
   .wm-overlay {
-    padding: 12px;
+    padding: var(--space-12);
     align-items: flex-start;
   }
 
   .wm-card {
-    padding: 24px 20px;
+    padding: var(--space-24) var(--space-20);
     border-radius: 16px;
     margin: auto 0;
     max-height: min(600px, 100%);
@@ -249,7 +249,7 @@
 
   .wm-volcano {
     height: 118px;
-    margin-bottom: 10px;
+    margin-bottom: var(--space-10);
   }
 
   .wm-volcano-svg {
@@ -268,29 +268,29 @@
   }
 
   .wm-card h2 {
-    font-size: 19px;
+    font-size: var(--font-size-18);
   }
 
   .wm-sub {
-    font-size: 13px;
-    margin-bottom: 16px;
+    font-size: var(--font-size-13);
+    margin-bottom: var(--space-16);
   }
 
   .wm-step {
-    padding: 10px;
+    padding: var(--space-10);
     min-height: 58px;
   }
 
   .wm-step-text {
-    font-size: 12.5px;
+    font-size: var(--font-size-13);
   }
 
   .wm-dots {
-    margin-bottom: 18px;
+    margin-bottom: var(--space-18);
   }
 
   .wm-btn {
-    padding: 12px;
-    font-size: 14px;
+    padding: var(--space-12);
+    font-size: var(--font-size-14);
   }
 }

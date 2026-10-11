@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { sfx } from '../lib/sound'
 import './LayerControls.css'
+import { tokens } from '../styles/tokens'
 
 const LAYERS = [
   {
@@ -8,9 +9,9 @@ const LAYERS = [
     label: 'Tectonic Plates',
     icon: '🌐',
     legend: [
-      { color: '#b56cf0', label: 'Subduction' },
-      { color: '#4da8da', label: 'Divergent' },
-      { color: '#a0a0c0', label: 'Transform' },
+      { color: tokens.color.boundary.subduction, label: 'Subduction' },
+      { color: tokens.color.boundary.divergent, label: 'Divergent' },
+      { color: tokens.color.boundary.transform, label: 'Transform' },
     ],
   },
   {
@@ -18,14 +19,14 @@ const LAYERS = [
     label: 'Ring of Fire',
     icon: '🔥',
     legend: [
-      { color: '#ff6a35', label: 'Pacific Ring of Fire' },
+      { color: tokens.color.boundary['ring-of-fire'], label: 'Pacific Ring of Fire' },
     ],
   },
 ]
 
 const VOLCANO_FILTERS = [
-  { id: 'showActive',  label: 'Active',  icon: '🌋', color: '#ff4422' },
-  { id: 'showDormant', label: 'Dormant', icon: '⛰️', color: '#ffaa22' },
+  { id: 'showActive',  label: 'Active',  icon: '🌋', color: tokens.color.status.active },
+  { id: 'showDormant', label: 'Dormant', icon: '⛰️', color: tokens.color.status.dormant },
 ]
 
 const RECENCY_FILTERS = [
