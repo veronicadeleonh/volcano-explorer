@@ -185,6 +185,9 @@
   --space-40: 40px;
   --space-48: 48px;
 
+  /* size */
+  --size-target-min: 24px;
+
   /* radius */
   --radius-full: 50%;
   --radius-hair: 1px;

@@ -424,6 +424,13 @@
         "type": "spacing"
       }
     },
+    "size": {
+      "target-min": {
+        "value": "24px",
+        "type": "sizing",
+        "description": "Minimum height/width of any clickable control (WCAG 2.5.8, Target Size Minimum)."
+      }
+    },
     "radius": {
       "hair": {
         "value": "1px",

@@ -96,6 +96,7 @@ const TS_TYPE = (path, type) => {
   if (path.startsWith('font.tracking')) return 'letterSpacing'
   if (path.startsWith('radius')) return 'borderRadius'
   if (path.startsWith('space')) return 'spacing'
+  if (path.startsWith('size')) return 'sizing'
   if (path.startsWith('breakpoint')) return 'sizing'
   if (path.startsWith('shadow')) return 'boxShadow'
   if (type === 'color') return 'color'

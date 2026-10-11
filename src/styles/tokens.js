@@ -197,6 +197,9 @@ export const tokens = {
     "40": "40px",
     "48": "48px"
   },
+  "size": {
+    "target-min": "24px"
+  },
   "radius": {
     "hair": "1px",
     "xxs": "2px",

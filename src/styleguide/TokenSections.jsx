@@ -102,6 +102,10 @@ export function Spacing() {
       <div className="sg-group">
         {items.map((t) => <div key={t.path} className="sg-row"><code>{t.cssVar}</code><span className="sg-dim">{t.resolved}</span><span className="sg-bar" style={{ width: `var(${t.cssVar})` }} /></div>)}
       </div>
+      <div className="sg-group"><h3>Tamaño mínimo de objetivo</h3>
+        {under('size').map((t) => <div key={t.path} className="sg-row"><code>{t.cssVar}</code><span className="sg-dim">{t.resolved}</span><span><span className="sg-target" /></span></div>)}
+        <p className="sg-note">Todo control clicable mide al menos esto en alto y ancho (WCAG 2.5.8). Si el dibujo es más pequeño, el área de clic se amplía con padding o min-width/min-height.</p>
+      </div>
     </Section>
   )
 }
