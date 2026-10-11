@@ -7,6 +7,7 @@ import { sfx, isMuted, toggleMuted, subscribe } from '../lib/sound'
 import './Map.css'
 import { tokens } from '../styles/tokens'
 import { statusColor } from '../lib/statusColor'
+import { prefersReducedMotion } from '../lib/motion'
 
 // ── helpers ───────────────────────────────────────────────────────────────
 function toGeoJSON(volcanoes) {
@@ -129,6 +130,35 @@ class SoundControl {
   onRemove() { this._unsub?.(); this._c?.remove() }
 }
 
+// Play/pause for the ambient globe rotation (WCAG 2.2.2: moving content that
+// starts automatically must be pausable). The label says what the button will
+// do, like the sound control -- so no aria-pressed on top of it.
+class RotationControl {
+  constructor({ isPaused, toggle, subscribe }) { this.isPaused = isPaused; this.toggle = toggle; this.subscribe = subscribe }
+  onAdd() {
+    const c = document.createElement('div')
+    c.className = 'mapboxgl-ctrl mapboxgl-ctrl-group ve-sound-ctrl ve-rotate-ctrl'
+    const b = document.createElement('button')
+    b.type = 'button'
+    const svg = (inner) => `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`
+    const paint = () => {
+      const paused = this.isPaused()
+      b.setAttribute('aria-label', paused ? 'Play globe rotation' : 'Pause globe rotation')
+      b.title = paused ? 'Rotation paused' : 'Rotation on'
+      b.innerHTML = paused
+        ? svg('<polygon points="6 4 20 12 6 20 6 4"/>')
+        : svg('<line x1="8" y1="5" x2="8" y2="19"/><line x1="16" y1="5" x2="16" y2="19"/>')
+    }
+    paint()
+    b.addEventListener('click', () => { this.toggle(); paint() })
+    this._unsub = this.subscribe(paint)
+    c.appendChild(b)
+    this._c = c
+    return c
+  }
+  onRemove() { this._unsub?.(); this._c?.remove() }
+}
+
 export default function Map({ token, volcanoes, selected, compareList = [], onSelect, onCountryClick, activeCountry, flyTo, layers, selectedPlate, onPlateClick, modalArrowPoint }) {
   const containerRef  = useRef(null)
   const mapRef        = useRef(null)
@@ -146,6 +176,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   const compareListRef    = useRef(compareList)
   const spinEnabledRef    = useRef(true)   // ambient globe rotation, off after first interaction
   const spinGlobeRef      = useRef(null)   // lets other effects resume the ambient spin
+  const spinPausedRef     = useRef(prefersReducedMotion()) // user pause (or OS reduced motion): beats every auto-resume below
   const userInteractingRef = useRef(false) // true while a drag/touch is in progress on the globe
   const selectedPlateRef  = useRef(selectedPlate) // lets the async plate-polygons fetch see the latest selection
 
@@ -187,7 +218,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
       map.easeTo({
         zoom: pulledBack ? 0.3 : homeZoom,
         ...(pulledBack && coords ? { center: coords } : {}), // recenter on the plate; leave center alone on the way back
-        duration: 1900,
+        duration: prefersReducedMotion() ? 0 : 1900,
         easing: (t) => 1 - Math.pow(1 - t, 3), // easeOutCubic
       })
     }
@@ -218,13 +249,33 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right')
     map.addControl(new SoundControl(), 'top-right')
 
+    // Pause/play for the ambient rotation. Starts paused when the OS asks for
+    // reduced motion, and follows that setting if it changes while open.
+    const rotationListeners = new Set()
+    const notifyRotation = () => rotationListeners.forEach(fn => fn())
+    map.addControl(new RotationControl({
+      isPaused: () => spinPausedRef.current,
+      toggle: () => {
+        spinPausedRef.current = !spinPausedRef.current
+        if (!spinPausedRef.current) spinGlobeRef.current?.()
+      },
+      subscribe: (fn) => { rotationListeners.add(fn); return () => rotationListeners.delete(fn) },
+    }), 'top-right')
+    const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)')
+    const onMotionChange = (e) => {
+      spinPausedRef.current = e.matches
+      if (!e.matches) spinGlobeRef.current?.()
+      notifyRotation()
+    }
+    motionQuery?.addEventListener?.('change', onMotionChange)
+
     // ── ambient globe rotation — slow drift until the user takes over ──────
     const SECONDS_PER_REVOLUTION = 180
     const MAX_SPIN_ZOOM  = 4
     const SLOW_SPIN_ZOOM = 2.5
 
     const spinGlobe = () => {
-      if (!spinEnabledRef.current || userInteractingRef.current) return
+      if (spinPausedRef.current || !spinEnabledRef.current || userInteractingRef.current) return
       const zoom = map.getZoom()
       if (zoom >= MAX_SPIN_ZOOM) return
       let distancePerSecond = 360 / SECONDS_PER_REVOLUTION
@@ -315,7 +366,22 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
         filter: ['==', ['get', 'iso_3166_1'], '__none__'],
         paint: {
           'fill-color': tokens.color.accent.default,
-          'fill-opacity': 0.22,
+          'fill-opacity': 0.3,
+        },
+      })
+
+      // outline for the selected country, so it reads as selected even where
+      // the tint alone is faint (political borders are hidden on this globe)
+      map.addLayer({
+        id: 'country-active-line',
+        type: 'line',
+        source: 'country-boundaries',
+        'source-layer': 'country_boundaries',
+        filter: ['==', ['get', 'iso_3166_1'], '__none__'],
+        paint: {
+          'line-color': tokens.color.accent.default,
+          'line-width': 1.5,
+          'line-opacity': 0.9,
         },
       })
 
@@ -684,7 +750,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
 
     mapRef.current = map
     map.once('load', () => setMapInstance(map))
-    return () => { map.remove(); mapRef.current = null; setMapInstance(null) }
+    return () => { motionQuery?.removeEventListener?.('change', onMotionChange); map.remove(); mapRef.current = null; setMapInstance(null) }
   }, [token]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── update volcano source data when prop changes ──────────────────────
@@ -729,14 +795,18 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
     const map = mapRef.current
     if (!map) return
     const iso = activeCountry ? COUNTRY_ISO[activeCountry.name] : null
+    const filter = iso ? ['==', ['get', 'iso_3166_1'], iso] : ['==', ['get', 'iso_3166_1'], '__none__']
+    // Don't gate on isStyleLoaded(): it is false whenever tiles are loading
+    // (e.g. right as the camera starts travelling to a searched country), and
+    // the 'style.load' fallback would then never fire -- leaving the country
+    // without its active state. Apply as soon as the layers exist instead.
     const update = () => {
-      if (!map.getLayer('country-active-fill')) return
-      map.setFilter('country-active-fill',
-        iso ? ['==', ['get', 'iso_3166_1'], iso] : ['==', ['get', 'iso_3166_1'], '__none__']
-      )
+      if (!map.getLayer('country-active-fill')) return false
+      map.setFilter('country-active-fill', filter)
+      if (map.getLayer('country-active-line')) map.setFilter('country-active-line', filter)
+      return true
     }
-    if (map.isStyleLoaded()) update()
-    else map.once('style.load', update)
+    if (!update()) map.once('idle', update)
   }, [activeCountry])
 
   // ── keep the selected-plate fill in sync with the plate modal ──────────
@@ -786,7 +856,29 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
     const map = mapRef.current
     if (!map || !flyTo) return
     spinEnabledRef.current = false // stop ambient rotation once the user is exploring
-    map.flyTo({ center: [flyTo.lon, flyTo.lat], zoom: Math.max(map.getZoom(), 5), duration: 1400 })
+    const reduced = prefersReducedMotion() // no travelling animation: jump straight there
+    if (flyTo.bounds) {
+      // A whole country: centre on its volcanoes and pick the zoom that fits
+      // them. Computed by hand instead of fitBounds, which is imprecise on the
+      // globe projection. On wide screens the target is shifted left by half
+      // the side panel (340px + margin) so the country sits in the free area.
+      const [[w, s], [e, n]] = flyTo.bounds
+      const wide = window.innerWidth > 768
+      const panel = wide ? 364 : 0
+      const availW = window.innerWidth - panel
+      const lngSpan = Math.max(e - w, 4)
+      const latSpan = Math.max(n - s, 4)
+      const cosLat = Math.cos((((s + n) / 2) * Math.PI) / 180)
+      const fit = Math.min(availW / lngSpan, (window.innerHeight * cosLat) / latSpan)
+      const z = Math.min(5, Math.max(1.5, Math.log2((360 * 0.7 * fit) / 512)))
+      const target = { center: [(w + e) / 2, (s + n) / 2], zoom: z, offset: [-panel / 2, 0] }
+      if (reduced) map.jumpTo(target)
+      else map.flyTo({ ...target, duration: 1800 })
+      return
+    }
+    const zoom = Math.max(map.getZoom(), 5)
+    if (reduced) map.jumpTo({ center: [flyTo.lon, flyTo.lat], zoom })
+    else map.flyTo({ center: [flyTo.lon, flyTo.lat], zoom, duration: 1400 })
   }, [flyTo])
 
   // ── resume ambient rotation once nothing is selected ────────────────────

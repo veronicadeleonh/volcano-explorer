@@ -7,6 +7,8 @@ import LayerControls from './components/LayerControls'
 import CountryPanel from './components/CountryPanel'
 import CompareBar from './components/CompareBar'
 import { sfx } from './lib/sound'
+import { boundsForVolcanoes } from './lib/motion'
+import { COUNTRY_BOUNDS } from './data/countryBounds'
 import CompareModal from './components/CompareModal'
 import PlateModal from './components/PlateModal'
 import TokenGate from './components/TokenGate'
@@ -90,6 +92,18 @@ export default function App() {
     setSelected(null)
   }, [compareMode])
 
+  // Picking a country from the search box also takes the camera there
+  // (clicking it on the map doesn't -- you're already looking at it).
+  const handleSearchCountry = useCallback((country) => {
+    handleCountryClick(country)
+    if (!country) return
+    // the country's own extent (so it's centred as a whole, not just its
+    // volcanoes); falls back to the volcanoes if it isn't in the table
+    const box = COUNTRY_BOUNDS[country.name]
+    const bounds = box ? [[box[0], box[1]], [box[2], box[3]]] : boundsForVolcanoes(country.volcanoes)
+    if (bounds) setFlyTo({ bounds })
+  }, [handleCountryClick])
+
   const handleToggleLayer = useCallback((id) => {
     setLayers(prev => {
       const next = { ...prev, [id]: !prev[id] }
@@ -139,7 +153,7 @@ export default function App() {
       <SearchBar
         volcanoes={volcanoes}
         onSelect={handleSelect}
-        onSelectCountry={handleCountryClick}
+        onSelectCountry={handleSearchCountry}
         selected={compareMode ? null : selected}
         compareMode={compareMode}
         onToggleCompare={handleToggleCompareMode}

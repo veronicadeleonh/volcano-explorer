@@ -92,3 +92,15 @@ body {
 ::-webkit-scrollbar-track { background: var(--color-surface-faint); }
 ::-webkit-scrollbar-thumb { background: var(--color-ember-30); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-ember-50); }
+
+/* Reduced motion (WCAG 2.3.3, 2.2.2): when the OS asks for it, stop looping
+   pulses/shimmers and make panel/modal entrances and hover transitions instant.
+   Globe movement is handled in Map.jsx (rotation starts paused, camera jumps). */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
