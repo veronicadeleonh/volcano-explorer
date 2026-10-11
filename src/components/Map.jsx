@@ -169,24 +169,30 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
     spinEnabledRef.current = !pulledBack // pause ambient drift while examining space
     userInteractingRef.current = false
 
-    map.setFog({
-      color: 'rgb(10,10,20)',
-      'high-color': 'rgb(120,46,12)',
-      'horizon-blend': 0.02,
-      'space-color': 'rgb(4,4,12)',
-      'star-intensity': pulledBack ? 0.85 : 0.25, // boosted for the reveal moment
-    })
+    // The plate list can be used before the style has finished loading, and
+    // setFog throws until it has.
+    const apply = () => {
+      map.setFog({
+        color: 'rgb(10,10,20)',
+        'high-color': 'rgb(120,46,12)',
+        'horizon-blend': 0.02,
+        'space-color': 'rgb(4,4,12)',
+        'star-intensity': pulledBack ? 0.85 : 0.25, // boosted for the reveal moment
+      })
 
-    const vw = window.innerWidth
-    const homeZoom = vw <= 480 ? 0.75 : vw <= 768 ? 1.2 : 1.8
-    const coords = PLATE_META[selectedPlate?.name]?.coords
+      const vw = window.innerWidth
+      const homeZoom = vw <= 480 ? 0.75 : vw <= 768 ? 1.2 : 1.8
+      const coords = PLATE_META[selectedPlate?.name]?.coords
 
-    map.easeTo({
-      zoom: pulledBack ? 0.3 : homeZoom,
-      ...(pulledBack && coords ? { center: coords } : {}), // recenter on the plate; leave center alone on the way back
-      duration: 1900,
-      easing: (t) => 1 - Math.pow(1 - t, 3), // easeOutCubic
-    })
+      map.easeTo({
+        zoom: pulledBack ? 0.3 : homeZoom,
+        ...(pulledBack && coords ? { center: coords } : {}), // recenter on the plate; leave center alone on the way back
+        duration: 1900,
+        easing: (t) => 1 - Math.pow(1 - t, 3), // easeOutCubic
+      })
+    }
+    if (map.isStyleLoaded()) apply()
+    else map.once('style.load', apply)
   }, [selectedPlate])
 
   // ── init map (runs once per token) ───────────────────────────────────────

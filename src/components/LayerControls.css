@@ -52,6 +52,8 @@
   color: var(--color-text-primary);
 }
 
+.lc-btn:focus-visible { outline-offset: -2px; }  /* the card clips an outer ring */
+
 .lc-btn:hover {
   color: var(--color-text-primary);
 }
@@ -121,6 +123,35 @@
   height: 3px;
   border-radius: var(--radius-xxs);
   flex-shrink: 0;
+}
+
+/* "Browse plates" list inside the Tectonic Plates card */
+.lc-plates {
+  border-top: 1px solid var(--color-border-subtle);
+}
+.lc-plates-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-8) var(--space-12);
+  min-height: var(--size-target-min);
+  background: none;
+  border: none;
+  color: var(--color-text-subtle);
+  font-size: var(--font-size-11);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--font-tracking-p0-5px);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.lc-plates-toggle:hover { color: var(--color-text-primary); }
+.lc-plates-toggle:focus-visible { outline-offset: -2px; }
+.lc-plates-list {
+  /* padding leaves room for the focus ring, which the scroll area would clip */
+  padding: 4px var(--space-12) var(--space-12);
+  max-height: 150px;
+  overflow-y: auto;
 }
 
 /* Volcano filter chip group */

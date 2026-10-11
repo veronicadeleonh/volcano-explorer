@@ -227,3 +227,6 @@
   .pm-header { padding: var(--space-16) var(--space-18) var(--space-12); }
   .pm-stats, .pm-section, .pm-footnote { padding-left: var(--space-18); padding-right: var(--space-18); }
 }
+
+/* Focused programmatically when the card opens; it isn't a control, so no ring. */
+.pm-modal:focus { outline: none; }

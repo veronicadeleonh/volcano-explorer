@@ -129,7 +129,13 @@ export default function App() {
       {/* DOM order = keyboard Tab order (WCAG 2.4.3): filters → search → compare → map
           (+ its zoom/sound/logo controls) → panels → credits. Everything is absolutely
           positioned, so this doesn't change the layout. */}
-      <LayerControls layers={layers} onToggle={handleToggleLayer} onSetRecency={handleSetRecency} />
+      <LayerControls
+        layers={layers}
+        onToggle={handleToggleLayer}
+        onSetRecency={handleSetRecency}
+        onPlateClick={handlePlateClick}
+        selectedPlateName={selectedPlate?.name}
+      />
       <SearchBar
         volcanoes={volcanoes}
         onSelect={handleSelect}

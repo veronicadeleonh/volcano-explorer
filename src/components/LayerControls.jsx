@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { sfx } from '../lib/sound'
 import './LayerControls.css'
 import { tokens } from '../styles/tokens'
+import { PLATE_META } from '../data/plateMeta'
 
 const LAYERS = [
   {
@@ -24,6 +25,9 @@ const LAYERS = [
   },
 ]
 
+// Plates with a label on the globe, alphabetical, for the keyboard-friendly list.
+const PLATE_NAMES = Object.keys(PLATE_META).sort((a, b) => a.localeCompare(b))
+
 const VOLCANO_FILTERS = [
   { id: 'showActive',  label: 'Active',  icon: '🌋', color: tokens.color.status.active },
   { id: 'showDormant', label: 'Dormant', icon: '⛰️', color: tokens.color.status.dormant },
@@ -42,7 +46,7 @@ const TYPE_FILTERS = [
   { id: 'typeSubmarine',     label: 'Submarine' },
 ]
 
-export default function LayerControls({ layers, onToggle, onSetRecency }) {
+export default function LayerControls({ layers, onToggle, onSetRecency, onPlateClick, selectedPlateName }) {
   // Mobile-only: each group collapses behind its own toggle button instead of
   // permanently eating map space — volcano filters and geological layers are
   // independent concerns, so they get independent buttons/panels, and opening
@@ -51,6 +55,7 @@ export default function LayerControls({ layers, onToggle, onSetRecency }) {
   // query.
   const [volcanoesOpen, setVolcanoesOpen] = useState(false)
   const [geoOpen, setGeoOpen] = useState(false)
+  const [platesListOpen, setPlatesListOpen] = useState(false)
 
   const toggleVolcanoes = () => { setVolcanoesOpen(o => !o); setGeoOpen(false) }
   const toggleGeo = () => { setGeoOpen(o => !o); setVolcanoesOpen(false) }
@@ -146,6 +151,8 @@ export default function LayerControls({ layers, onToggle, onSetRecency }) {
             <div key={layer.id} className={`lc-item ${active ? 'active' : ''}`}>
               <button
                 className="lc-btn"
+                role="switch"
+                aria-checked={active}
                 onMouseEnter={sfx.uiHover}
                 onClick={() => { sfx.layer(!active); onToggle(layer.id) }}
                 title={active ? `Hide ${layer.label}` : `Show ${layer.label}`}
@@ -162,6 +169,43 @@ export default function LayerControls({ layers, onToggle, onSetRecency }) {
                       {l.label}
                     </span>
                   ))}
+                </div>
+              )}
+              {/* Keyboard (and mouse) way to pick a plate: the on-globe labels
+                  move with the rotation and fade out behind the globe. */}
+              {active && layer.id === 'boundaries' && (
+                <div className="lc-plates">
+                  <button
+                    type="button"
+                    className="lc-plates-toggle"
+                    aria-expanded={platesListOpen}
+                    aria-controls="lc-plates-list"
+                    onMouseEnter={sfx.uiHover}
+                    onClick={() => { sfx.uiClick(); setPlatesListOpen(o => !o) }}
+                  >
+                    <span>Browse plates</span>
+                    <span aria-hidden="true">{platesListOpen ? '▴' : '▾'}</span>
+                  </button>
+                  {platesListOpen && (
+                    <div id="lc-plates-list" className="lc-chips lc-chips-wrap lc-plates-list" role="group" aria-label="Tectonic plates">
+                      {PLATE_NAMES.map(name => {
+                        const on = name === selectedPlateName
+                        return (
+                          <button
+                            type="button"
+                            key={name}
+                            className={`lc-chip lc-chip-type ${on ? 'on' : ''}`}
+                            style={on ? { '--chip-color': '#a0a0d0' } : {}}
+                            aria-pressed={on}
+                            onMouseEnter={sfx.uiHover}
+                            onClick={() => { sfx.uiClick(); onPlateClick?.(name) }}
+                          >
+                            {name}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

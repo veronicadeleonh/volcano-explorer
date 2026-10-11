@@ -1,7 +1,8 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { PLATE_META, PLATE_CODE_NAMES, computePlateStats } from '../data/plateMeta'
 import './PlateModal.css'
 import { tokens } from '../styles/tokens'
+import { useDrawerFocus } from '../lib/useDrawerFocus'
 
 const BOUNDARY_INFO = {
   divergent:  { label: 'divergent',              color: tokens.color.boundary.divergent },
@@ -31,14 +32,8 @@ function formatVelocity([min, max]) {
 export default function PlateModal({ plateName, side = 'right', onArrowPositioned, onClose }) {
   const meta = PLATE_META[plateName]
   const [stats, setStats] = useState(null)
-  const modalRef = useRef(null)
-
-  // Close on Escape
-  useEffect(() => {
-    const handler = (e) => { if (e.key === 'Escape') onClose() }
-    document.addEventListener('keydown', handler)
-    return () => document.removeEventListener('keydown', handler)
-  }, [onClose])
+  // Focus moves in on open, Escape closes, focus returns on close.
+  const modalRef = useDrawerFocus(onClose)
 
   // Boundary composition + neighbors, computed client-side from the
   // boundaries dataset -- no extra network request beyond the one fetch.
@@ -61,7 +56,7 @@ export default function PlateModal({ plateName, side = 'right', onArrowPositione
     const HEADER_OFFSET = 28 // px from the card's top edge to the title's vertical center
     const rect = el.getBoundingClientRect()
     onArrowPositioned?.({ x: rect.left, y: rect.top + HEADER_OFFSET })
-  }, [stats, onArrowPositioned])
+  }, [stats, onArrowPositioned, modalRef])
 
   if (!meta) return null
 
@@ -73,14 +68,14 @@ export default function PlateModal({ plateName, side = 'right', onArrowPositione
 
   return (
     <div className={`pm-overlay pm-side-${side}`}>
-      <div className="pm-modal" ref={modalRef}>
+      <div className="pm-modal" ref={modalRef} tabIndex={-1} role="dialog" aria-labelledby="pm-title">
         <div className="pm-modal-scroll">
           <div className="pm-header">
             <div className="pm-title-wrap">
-              <span className="pm-title">{plateName}</span>
+              <span className="pm-title" id="pm-title">{plateName}</span>
               <span className="pm-code">{meta.code}</span>
             </div>
-            <button className="pm-close" onClick={onClose}>✕</button>
+            <button className="pm-close" onClick={onClose} aria-label="Close">✕</button>
           </div>
 
           <div className="pm-stats">
