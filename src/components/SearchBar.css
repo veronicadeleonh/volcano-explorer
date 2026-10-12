@@ -159,3 +159,27 @@
   font-size: var(--font-size-14);
   opacity: 0.85;
 }
+
+/* Mid widths (≈150–200% zoom): centred, the compare bar (≈626px wide) would sit
+   on top of the 359px filter panel on the left below ~1410px, so the search box
+   and the compare bar both move to the right of the panel (same column). */
+@media (min-width: 901px) and (max-width: 1420px) {
+  .search-wrap {
+    left: 391px;
+    transform: none;
+    width: min(420px, calc(100vw - 391px - 76px)); /* 76px: map controls on the right */
+  }
+}
+
+/* Compact layout: search box centred, with the same margin on both sides. The
+   map controls (zoom, sound, rotation) sit in a column below it, flush right
+   (see Map.css), and the 48px side margins keep that column clear. */
+@media (max-width: 900px) {
+  .search-wrap {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: min(420px, calc(100vw - 96px));
+    max-width: none;
+  }
+}

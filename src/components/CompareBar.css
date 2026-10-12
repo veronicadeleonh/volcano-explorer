@@ -231,18 +231,18 @@
 }
 
 
-@media (max-width: 640px) {
+@media (max-width: 900px) {
   /* Three side-by-side 130px-min slots plus the Compare button don't fit a
   phone width -- stack them full-width instead so nothing gets squeezed or
   clipped, and so each slot's dropdown (width: 100%) can never overflow the
   viewport horizontally. */
   .cb-wrap {
     top: 124px;
-    left: 20px;
-    right: 20px;
-    transform: none;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
     max-width: none;
-    width: auto;
+    width: min(420px, calc(100vw - 96px)); /* same column as the search box */
     align-items: stretch;
     box-sizing: border-box;
     padding: var(--space-10);
@@ -280,4 +280,14 @@
   .cb-name { max-width: none; }
 
   .cb-go { width: 100%; }
+}
+
+/* Mid widths: same as the search box -- keep clear of the filter panel. */
+@media (min-width: 901px) and (max-width: 1420px) {
+  .cb-wrap {
+    left: 391px;
+    transform: none;
+    max-width: calc(100vw - 391px - 76px);
+  }
+  .cb-slots { flex-wrap: wrap; justify-content: center; }
 }

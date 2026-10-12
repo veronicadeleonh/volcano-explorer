@@ -16,6 +16,7 @@ let master = null
 let sfxBus = null
 let muted = readMuted()
 let started = false
+let held = false // while true (welcome dialog open) the first keypress/click does NOT start the audio engine
 let suspendTimer = null
 let lastSfxAt = 0
 const listeners = new Set()
@@ -138,6 +139,7 @@ export function initSound() {
   started = true
 
   const unlock = () => {
+    if (held) return // the welcome dialog is open: let the person choose sound on/off first
     if (!ctx && !build()) return
     if (ctx.state === 'suspended' && !muted) ctx.resume().catch(() => {})
     window.removeEventListener('pointerdown', unlock, true)
@@ -163,6 +165,17 @@ export function initSound() {
     if (document.hidden) { if (ctx.state === 'running') ctx.suspend().catch(() => {}) }
     else if (!muted && ctx.state === 'suspended') ctx.resume().catch(() => {})
   })
+}
+
+// The welcome dialog calls hold() while it is open so the ambient drone doesn't
+// start on the very first keypress -- before a keyboard / screen-reader user
+// can reach the sound switch (WCAG 1.4.2). release() starts the engine (unless
+// muted) once the dialog closes.
+export function holdSound() { held = true }
+export function releaseSound() {
+  held = false
+  if (!ctx && !build()) return
+  if (ctx.state === 'suspended' && !muted) ctx.resume().catch(() => {})
 }
 
 export function setMuted(v) {

@@ -33,12 +33,17 @@
 
 @media (max-width: 640px) {
   .app-attribution {
-    /* Sit below the mobile filter toggle buttons (LayerControls.css --
-    those now start at bottom: 30px) instead of overlapping them, and
-    shrink further since screen width is at a premium here. */
+    /* Sits to the right of the Mapbox logo (~90px wide, which must stay
+    visible) and wraps onto as many lines as it needs instead of overflowing
+    the screen at 320px / 400% zoom. The filter toggle buttons sit above this
+    row (LayerControls.css). */
+    display: block;
+    text-align: right;
     bottom: 8px;
+    left: 104px;
     right: 8px;
     font-size: var(--font-size-11);
-    gap: var(--space-4);
+    line-height: 1.5;
   }
+  .app-attribution-sep { margin: 0 var(--space-4); }
 }

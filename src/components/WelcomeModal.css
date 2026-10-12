@@ -34,6 +34,11 @@
   overflow-x: hidden;
   flex: 1 1 auto;
   min-height: 0; /* let this flex child actually shrink and scroll instead of forcing the card taller */
+  /* Breathing room for focus rings: this box clips overflow, so a ring drawn
+     right at its edge would be cut. The negative margin cancels the padding so
+     the content stays aligned with the Start button below. */
+  padding: var(--space-4) var(--space-8) 0;
+  margin: calc(var(--space-4) * -1) calc(var(--space-8) * -1) 0;
 }
 
 /* ── Central animated volcano ────────────────────────────────────────────
@@ -135,98 +140,7 @@
   font-size: var(--font-size-14);
   color: var(--color-text-muted);
   line-height: var(--font-line-height-1-6);
-  margin: 0 0 var(--space-22);
-}
-
-/* ── Onboarding steps — horizontal scroll-snap slider ────────────────────
-   One step per "page", swipeable/scrollable instead of a tall stacked
-   list, with .wm-dots below as both a position indicator and quick nav. */
-.wm-steps {
-  display: flex;
-  flex-direction: row;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  margin: 0 0 var(--space-12);
-  border-radius: var(--radius-sm);
-}
-
-.wm-steps::-webkit-scrollbar {
-  display: none;
-}
-
-.wm-step {
-  flex: 0 0 100%;
-  scroll-snap-align: center;
-  scroll-snap-stop: always;
-  box-sizing: border-box;
-  display: flex;
-  gap: var(--space-12);
-  align-items: flex-start;
-  padding: var(--space-14);
-  min-height: 64px;
-  background: var(--color-surface-base);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-sm);
-}
-
-.wm-step-icon {
-  font-size: var(--font-size-16);
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-
-.wm-step-text {
-  font-size: var(--font-size-13);
-  color: var(--color-text-muted);
-  line-height: var(--font-line-height-1-5);
-}
-
-.wm-steps:focus-visible {
-  outline: 2px solid var(--color-accent-default);
-  /* inset: the modal clips anything drawn outside the tips box */
-  outline-offset: -2px;
-}
-
-/* 24px hit area (WCAG 2.5.8) around a 6px visible dot. Negative margins keep
-   the dots where they were before the hit area grew. */
-.wm-dots {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: -9px 0 17px;
-}
-
-.wm-dot {
-  position: relative;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-
-.wm-dot::before {
-  content: '';
-  position: absolute;
-  inset: 9px;
-  border-radius: var(--radius-full);
-  background: var(--color-white-40);
-  transition: background var(--duration-200), transform var(--duration-200);
-}
-
-.wm-dot.active::before {
-  background: var(--color-accent-default);
-  transform: scale(1.35);
-}
-
-.wm-dot:focus-visible {
-  outline: 2px solid var(--color-accent-default);
-  outline-offset: -2px;
-  border-radius: var(--radius-full);
+  margin: 0 0 var(--space-16);
 }
 
 .wm-btn {
@@ -250,7 +164,7 @@
 }
 
 /* Long-form copy stays in the sans stack for readability; UI chrome elsewhere uses the mono default */
-.wm-sub, .wm-step-text {
+.wm-sub {
   font-family: var(--font-family-sans);
 }
 
@@ -297,19 +211,6 @@
     margin-bottom: var(--space-16);
   }
 
-  .wm-step {
-    padding: var(--space-10);
-    min-height: 58px;
-  }
-
-  .wm-step-text {
-    font-size: var(--font-size-13);
-  }
-
-  .wm-dots {
-    margin-bottom: var(--space-8);
-  }
-
   .wm-btn {
     padding: var(--space-12);
     font-size: var(--font-size-14);
@@ -318,3 +219,63 @@
 
 /* Focused programmatically when the dialog opens; it isn't a control, so no ring. */
 .wm-card:focus { outline: none; }
+
+/* Sound switch: sits right after the intro so keyboard / screen-reader users reach it
+   before anything else, and the drone doesn't start until the dialog closes.
+   Deliberately not a card: it is a setting, not one of the tips below. The
+   whole title row is the button (a 28x16 track alone would be too small a
+   target), with the switch on the same line as the title. */
+.wm-sound {
+  margin: 0 0 var(--space-18);
+  padding-top: var(--space-14);
+  border-top: 1px solid var(--color-border-default); /* divider between the intro and the setting */
+}
+
+.wm-sound-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-14);
+  width: 100%;
+  min-height: 32px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.wm-sound-label { font-size: var(--font-size-14); font-weight: var(--font-weight-semibold); }
+.wm-sound-hint {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-13);
+  line-height: var(--font-line-height-1-4, 1.4);
+  color: var(--color-text-subtle);
+}
+
+/* same switch look as the layer toggles (LayerControls.css .lc-toggle) */
+.wm-sound-track {
+  position: relative;
+  flex-shrink: 0;
+  width: 28px;
+  height: 16px;
+  border-radius: var(--radius-sm);
+  background: var(--color-white-15);
+  box-shadow: inset 0 0 0 1px var(--color-border-control);
+  transition: background var(--duration-200), box-shadow var(--duration-200);
+}
+.wm-sound-track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: var(--color-white-50);
+  transition: transform var(--duration-200), background var(--duration-200);
+}
+.wm-sound-btn[aria-checked='true'] .wm-sound-track { background: var(--color-ember-60); box-shadow: none; }
+.wm-sound-btn[aria-checked='true'] .wm-sound-track::after { transform: translateX(12px); background: var(--color-white-100); }

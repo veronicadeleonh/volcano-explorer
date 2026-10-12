@@ -69,22 +69,42 @@
 }
 .cm-close:hover { background: var(--color-surface-accent-soft); color: var(--color-text-primary); }
 
-/* Column header row */
-.cm-cols {
-  display: grid;
-  grid-template-columns: 110px repeat(var(--ncols, 2), 1fr);
-  padding: var(--space-16) var(--space-22) var(--space-10);
-  gap: var(--space-12);
+/* The comparison is a real <table>. Row headers are <th scope="row">, volcano
+   names are <th scope="col">. Gutters live in the cell padding; the first and
+   last columns also carry the modal's 22px side padding, so the sticky label
+   column (mobile) can sit flush at left: 0. */
+.cm-table {
+  /* side padding as margin (not cell padding) so every volcano column is the
+     exact same width and the images line up */
+  width: calc(100% - var(--space-22) - (var(--space-22) - var(--space-6)));
+  margin: 0 calc(var(--space-22) - var(--space-6)) 0 var(--space-22); /* right side: minus the last cell's own 6px */
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.cm-table th,
+.cm-table td {
+  padding: var(--space-10) var(--space-6);
+  text-align: left;
+  font-weight: inherit;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-border-faint);
+}
+.cm-table th:first-child,
+.cm-table td:first-child  { width: 110px; padding-left: 0; }
+.cm-table tbody tr:last-child > * { border-bottom: none; }
+
+/* Column header row (images + names) */
+.cm-table thead th,
+.cm-table thead td {
+  padding-top: var(--space-16);
+  padding-bottom: var(--space-10);
+  vertical-align: top;
   border-bottom: 1px solid var(--color-border-subtle);
 }
 
-.cm-row-label-col { /* spacer */ }
-
-.cm-vol-header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-}
+.cm-vol-header { /* a <th>; its children stack as before */ }
+.cm-vol-header > * + * { margin-top: var(--space-8); }
 
 .cm-vol-img-wrap {
   position: relative;
@@ -140,47 +160,30 @@
 
 .cm-vol-sub {
   font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular, 400);
   color: var(--color-text-subtle);
-  margin-top: -4px;
+  margin-top: var(--space-4);
 }
-
-/* Table */
-.cm-table {
-  padding: var(--space-6) var(--space-22) var(--space-12);
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.cm-row {
-  display: grid;
-  grid-template-columns: 110px repeat(var(--ncols, 2), 1fr);
-  gap: var(--space-12);
-  padding: var(--space-10) 0;
-  border-bottom: 1px solid var(--color-border-faint);
-  align-items: center;
-}
-.cm-row:last-child { border-bottom: none; }
 
 .cm-row-label {
   font-size: var(--font-size-11);
   text-transform: uppercase;
   letter-spacing: var(--font-tracking-p0-8px);
   color: var(--color-text-subtle);
-  font-weight: var(--font-weight-semibold);
-  padding-top: var(--space-2);
+  font-weight: var(--font-weight-semibold) !important;
 }
 
 .cm-cell {
   font-size: var(--font-size-13);
   color: var(--color-white-85);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium) !important;
 }
 
 .cm-na { color: var(--color-text-subtle); }
 
 /* Elevation row */
-.cm-elev-row { padding: var(--space-14) 0; }
+.cm-elev-row th,
+.cm-elev-row td { padding-top: var(--space-14); padding-bottom: var(--space-14); }
 
 .cm-elev-cell {
   display: flex;
@@ -227,19 +230,13 @@
 }
 
 /* Links row */
-.cm-links-row {
-  display: grid;
-  grid-template-columns: 110px repeat(var(--ncols, 2), 1fr);
-  gap: var(--space-12);
-  padding: var(--space-12) var(--space-22) var(--space-20);
+.cm-table .cm-links-row > * {
+  padding-top: var(--space-12);
+  padding-bottom: var(--space-20);
   border-top: 1px solid var(--color-border-subtle);
 }
 
-.cm-link-cell {
-  display: flex;
-  gap: var(--space-8);
-  flex-wrap: wrap;
-}
+.cm-link-cell > .cm-link { margin-right: var(--space-8); }
 
 .cm-link {
   display: inline-flex;
@@ -258,7 +255,7 @@
   color: var(--color-info-text);
 }
 
-/* --ncols is set as inline style on .cm-modal and cascades to all children */
+/* --ncols is set as an inline style on the <table> */
 
 @media (max-width: 640px) {
   .cm-overlay {
@@ -286,34 +283,29 @@
   }
   .cm-title { font-size: var(--font-size-14); }
 
-  .cm-cols,
-  .cm-row,
-  .cm-links-row {
-    grid-template-columns: 84px repeat(var(--ncols, 2), 140px);
+  /* Fixed-width columns; the whole modal scrolls sideways so the header and
+     every row stay in sync, and the row-label column stays pinned at left. */
+  .cm-table {
+    table-layout: auto;
     width: max-content;
     min-width: 100%;
-    box-sizing: border-box;
+    margin: 0;
   }
-
-  .cm-cols,
-  .cm-links-row {
-    padding-left: var(--space-16);
-    padding-right: var(--space-16);
-  }
-
-  .cm-table {
-    padding-left: var(--space-16);
-    padding-right: var(--space-16);
-  }
+  .cm-table th:first-child,
+  .cm-table td:first-child { width: 84px; padding-left: var(--space-16); }
+  .cm-table th:last-child,
+  .cm-table td:last-child  { padding-right: var(--space-16); }
+  .cm-table thead th { width: 140px; min-width: 140px; }
+  /* the last column also carries the 16px right padding; widen it by the
+     difference so its content matches the others */
+  .cm-table thead th:last-child { width: 150px; min-width: 150px; }
 
   .cm-vol-name { font-size: var(--font-size-14); }
 
-  .cm-row-label-col,
-  .cm-row-label {
+  .cm-table th:first-child,
+  .cm-table td:first-child {
     position: sticky;
-    left: 16px; /* matches the row's own padding-left so it locks into the
-    same spot it was already sitting in, instead of jumping to the bare
-    scrollport edge */
+    left: 0;
     z-index: 2;
     background: var(--color-surface-overlay);
     border-right: 1px solid var(--color-border-subtle);
@@ -322,16 +314,6 @@
   .cm-row-label {
     font-size: var(--font-size-11);
     padding-right: var(--space-8);
-  }
-
-  .cm-row-label::before {
-    content: '';
-    position: absolute;
-    inset: -10px 0; /* bleed into .cm-row's own 10px top/bottom padding --
-    align-items: center means the label's box only wraps its text, leaving a
-    gap there that scrolled data was showing through */
-    background: var(--color-surface-overlay);
-    z-index: -1;
   }
 }
 

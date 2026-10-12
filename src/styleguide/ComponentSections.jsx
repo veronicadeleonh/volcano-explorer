@@ -103,7 +103,7 @@ export function Components() {
             <div className="sg-chart"><EruptionChart eruptions={krakatau.eruptions ?? []} /></div>
           </Stage>
           <Stage id="c-welcome" title="WelcomeModal" file="WelcomeModal.jsx · bienvenida" height={640}>
-            {() => <WelcomeModal />}
+            {() => <WelcomeModal remember={false} />}
           </Stage>
           <Stage id="c-token" title="TokenGate" file="TokenGate.jsx · pide el token de Mapbox" height={620}>
             <TokenGate onSave={noop} />

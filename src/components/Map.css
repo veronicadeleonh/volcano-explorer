@@ -61,12 +61,11 @@
   animation-duration: var(--duration-1200);
 }
 
-@media (max-width: 640px) {
-  /* Zoom is available via pinch-to-zoom on mobile -- the on-screen +/-
-  buttons just eat screen space and sit close to the filter toggles.
-  NavigationControl is the only control added (see Map.jsx), so hiding
-  its top-right corner is safe. */
-  .mapboxgl-ctrl-top-right .mapboxgl-ctrl-group:not(.ve-sound-ctrl) {
-    display: none;
-  }
+/* Compact layout: the map controls (zoom, sound, rotation) drop below the
+   centred search / compare boxes and stay flush right. The +/- buttons are
+   shown on phones too: pinch-to-zoom needs several fingers, and WCAG 2.5.1
+   asks for a single-pointer alternative. */
+@media (max-width: 900px) {
+  .mapboxgl-ctrl-top-right { top: 102px; }
 }
+

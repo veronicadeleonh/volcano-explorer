@@ -75,9 +75,13 @@
   height: 16px;
   border-radius: var(--radius-sm);
   background: var(--color-white-15);
+  /* Off state: the track alone is ~1.7:1 against the panel, so outline it
+     (WCAG 1.4.11). Inset shadow instead of border so size and thumb
+     position don't change. */
+  box-shadow: inset 0 0 0 1px var(--color-border-control);
   flex-shrink: 0;
   position: relative;
-  transition: background var(--duration-200);
+  transition: background var(--duration-200), box-shadow var(--duration-200);
 }
 
 .lc-toggle::after {
@@ -94,6 +98,7 @@
 
 .lc-toggle.on {
   background: var(--color-ember-60);
+  box-shadow: none; /* on-state track already measures 3.3:1 */
 }
 
 .lc-toggle.on::after {
@@ -282,7 +287,10 @@
   display: none;
 }
 
-@media (max-width: 640px) {
+/* Compact layout (collapsed filter panels) up to 900px: the 359px-wide filter
+   panel plus the centred search box don't fit side by side below ~1200px, and
+   below ~900px there'd be almost no room left for the search at all. */
+@media (max-width: 900px) {
   .lc-root {
     position: fixed;
     inset: auto 0 0 0;
@@ -295,7 +303,7 @@
     align-items: center;
     gap: var(--space-6);
     position: fixed;
-    bottom: 30px;
+    bottom: 44px; /* above the Mapbox logo and the attribution row (see ≤640px below for narrow screens) */
     z-index: var(--z-controls-raised);
     padding: var(--space-10) var(--space-16);
     border-radius: var(--radius-sm);
@@ -326,7 +334,7 @@
     position: fixed;
     left: 8px;
     right: 8px;
-    bottom: 82px;
+    bottom: 96px;
     top: auto;
     z-index: var(--z-controls);
     flex-direction: column;
@@ -368,4 +376,12 @@
   .lc-legend {
     padding: var(--space-4) var(--space-10) var(--space-8);
   }
+}
+
+/* Narrow phones: the attribution wraps to 2–4 lines next to the Mapbox logo,
+   so the toggles and the panels they open sit higher. */
+@media (max-width: 640px) {
+  .lc-mobile-toggle { bottom: 84px; }
+  .lc-wrap-left,
+  .lc-wrap-right { bottom: 136px; }
 }

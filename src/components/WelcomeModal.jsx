@@ -1,40 +1,33 @@
-import { useRef, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import './WelcomeModal.css'
 import { useDrawerFocus } from '../lib/useDrawerFocus'
+import { isMuted, subscribe, toggleMuted, holdSound, releaseSound } from '../lib/sound'
 
-const STEPS = [
-  { icon: '🌍', text: 'The globe rotates on its own — volcanoes active in the last year pulse in red, others show as solid or dormant dots' },
-  { icon: '🔍', text: 'Search by volcano or country to fly to it instantly' },
-  { icon: '📋', text: 'Click a volcano to open its detail panel — eruption history, VEI charts and geological data' },
-  { icon: '⚖️', text: 'Use Compare mode to select up to 3 volcanoes and see them side by side' },
-  { icon: '🗺️', text: 'Hover a country to highlight it, click to see every volcano it has' },
-]
+// Shown on the first visit only. Dismissing it is remembered per browser; if
+// storage isn't available (private window, blocked site data) it simply shows
+// every time, which is the safe fallback.
+const SEEN_KEY = 'volcano-explorer:welcome-seen'
+const hasSeenWelcome = () => { try { return localStorage.getItem(SEEN_KEY) === '1' } catch { return false } }
+const markWelcomeSeen = () => { try { localStorage.setItem(SEEN_KEY, '1') } catch { /* ignore */ } }
 
-export default function WelcomeModal() {
-  const [open, setOpen] = useState(true)
+// `remember={false}` (used by the /styleguide page) always shows it and never stores anything.
+export default function WelcomeModal({ remember = true }) {
+  const [open, setOpen] = useState(() => !remember || !hasSeenWelcome())
   if (!open) return null
-  return <WelcomeDialog onClose={() => setOpen(false)} />
+  return <WelcomeDialog onClose={() => { if (remember) markWelcomeSeen(); setOpen(false) }} />
 }
 
 // Separate component so the focus handling (trap, Escape, restore) only
 // exists while the dialog is on screen.
 function WelcomeDialog({ onClose }) {
-  const [activeStep, setActiveStep] = useState(0)
-  const stepsRef = useRef(null)
   const dialogRef = useDrawerFocus(onClose)
+  const muted = useSyncExternalStore(subscribe, isMuted)
 
-  const scrollToStep = (i) => {
-    const el = stepsRef.current
-    if (!el) return
-    el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' })
-    setActiveStep(i)
-  }
-
-  const handleStepsScroll = () => {
-    const el = stepsRef.current
-    if (!el || !el.clientWidth) return
-    setActiveStep(Math.round(el.scrollLeft / el.clientWidth))
-  }
+  // No audio until the person has had the chance to turn it off (WCAG 1.4.2).
+  useEffect(() => {
+    holdSound()
+    return releaseSound
+  }, [])
 
   return (
     <div className="wm-overlay">
@@ -63,36 +56,27 @@ function WelcomeDialog({ onClose }) {
           <h2 id="wm-title">Volcano Explorer</h2>
 
           <p className="wm-sub">
-            An interactive 3D globe of the world's volcanoes — explore eruption history,
-            geological layers, and compare volcanoes side by side.
+            An interactive 3D globe of the world's volcanoes. Search by volcano or country,
+            click to explore eruption history and geology, or compare up to three side by side.
+            Red pulsing dots erupted in the last year.
           </p>
 
-          <div
-            className="wm-steps"
-            ref={stepsRef}
-            onScroll={handleStepsScroll}
-            role="region"
-            aria-label="How to use Volcano Explorer"
-            tabIndex={0}
-          >
-            {STEPS.map(({ icon, text }) => (
-              <div key={icon} className="wm-step">
-                <span className="wm-step-icon">{icon}</span>
-                <span className="wm-step-text">{text}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="wm-dots" role="group" aria-label="Choose a tip">
-            {STEPS.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                className={`wm-dot ${i === activeStep ? 'active' : ''}`}
-                onClick={() => scrollToStep(i)}
-                aria-label={`Go to step ${i + 1}`}
-              />
-            ))}
+          <div className="wm-sound">
+            <button
+              type="button"
+              className="wm-sound-btn"
+              role="switch"
+              aria-checked={!muted}
+              aria-labelledby="wm-sound-label"
+              aria-describedby="wm-sound-hint"
+              onClick={toggleMuted}
+            >
+              <span className="wm-sound-label" id="wm-sound-label">Ambient sound</span>
+              <span className="wm-sound-track" aria-hidden="true" />
+            </button>
+            <p className="wm-sound-hint" id="wm-sound-hint">
+              Quiet background drone and interface sounds. You can change it any time with the speaker button.
+            </p>
           </div>
         </div>
 
