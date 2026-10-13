@@ -159,7 +159,27 @@ class RotationControl {
   onRemove() { this._unsub?.(); this._c?.remove() }
 }
 
-export default function Map({ token, volcanoes, selected, compareList = [], onSelect, onCountryClick, activeCountry, flyTo, layers, selectedPlate, onPlateClick, modalArrowPoint }) {
+// "About / help" button: reopens the welcome dialog. Lives with the other map
+// controls so it comes right after them in the Tab order.
+class HelpControl {
+  constructor({ onClick }) { this.onClick = onClick }
+  onAdd() {
+    const c = document.createElement('div')
+    c.className = 'mapboxgl-ctrl mapboxgl-ctrl-group ve-sound-ctrl ve-help-ctrl'
+    const b = document.createElement('button')
+    b.type = 'button'
+    b.setAttribute('aria-label', 'About Volcano Explorer')
+    b.title = 'About Volcano Explorer'
+    b.innerHTML = '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7"/><line x1="12" y1="17" x2="12" y2="17.01"/></svg>'
+    b.addEventListener('click', () => this.onClick())
+    c.appendChild(b)
+    this._c = c
+    return c
+  }
+  onRemove() { this._c?.remove() }
+}
+
+export default function Map({ token, volcanoes, selected, compareList = [], onSelect, onCountryClick, activeCountry, flyTo, layers, selectedPlate, onPlateClick, modalArrowPoint, onHelp }) {
   const containerRef  = useRef(null)
   const mapRef        = useRef(null)
   const [mapInstance, setMapInstance] = useState(null)
@@ -167,6 +187,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   const imgCacheRef   = useRef({})   // volcano id → Wikipedia thumbnail URL
   const onSelectRef   = useRef(onSelect)
   const onCountryClickRef  = useRef(onCountryClick)
+  const onHelpRef          = useRef(onHelp)
   const activeCountryRef   = useRef(activeCountry)
   // (the "active" country highlight is filter-driven — see the effect below)
 
@@ -182,6 +203,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
 
   useEffect(() => { onSelectRef.current = onSelect      }, [onSelect])
   useEffect(() => { onCountryClickRef.current  = onCountryClick }, [onCountryClick])
+  useEffect(() => { onHelpRef.current = onHelp }, [onHelp])
   useEffect(() => { activeCountryRef.current   = activeCountry  }, [activeCountry])
   useEffect(() => { volCacheRef.current = volcanoes     }, [volcanoes])
   useEffect(() => { layerCacheRef.current = layers      }, [layers])
@@ -261,6 +283,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
       },
       subscribe: (fn) => { rotationListeners.add(fn); return () => rotationListeners.delete(fn) },
     }), 'top-right')
+    map.addControl(new HelpControl({ onClick: () => onHelpRef.current?.() }), 'top-right')
     const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)')
     const onMotionChange = (e) => {
       spinPausedRef.current = e.matches

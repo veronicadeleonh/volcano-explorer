@@ -13,6 +13,7 @@ import CompareModal from './components/CompareModal'
 import PlateModal from './components/PlateModal'
 import TokenGate from './components/TokenGate'
 import WelcomeModal from './components/WelcomeModal'
+import { hasSeenWelcome } from './lib/welcomeSeen'
 import './App.css'
 
 const DEFAULT_LAYERS = {
@@ -27,6 +28,7 @@ export default function App() {
   const [selected, setSelected]             = useState(null)
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [flyTo, setFlyTo]         = useState(null)
+  const [welcomeOpen, setWelcomeOpen] = useState(() => !hasSeenWelcome()) // first visit, or reopened with the help button
   const [layers, setLayers]       = useState(DEFAULT_LAYERS)
   const [token, setToken]         = useState(
     () => import.meta.env.VITE_MAPBOX_TOKEN || localStorage.getItem('mapbox_token') || ''
@@ -139,7 +141,7 @@ export default function App() {
   return (
     <main className="app">
       <h1 className="sr-only">Volcano Explorer: interactive 3D globe of the world's volcanoes</h1>
-      <WelcomeModal />
+      <WelcomeModal open={welcomeOpen} onClose={() => setWelcomeOpen(false)} />
       {/* DOM order = keyboard Tab order (WCAG 2.4.3): filters → search → compare → map
           (+ its zoom/sound/logo controls) → panels → credits. Everything is absolutely
           positioned, so this doesn't change the layout. */}
@@ -181,6 +183,7 @@ export default function App() {
         selectedPlate={selectedPlate}
         onPlateClick={handlePlateClick}
         modalArrowPoint={plateArrowPoint}
+        onHelp={() => setWelcomeOpen(true)}
       />
       {!compareMode && selected && (
         <VolcanoPanel key={selected.id} volcano={selected} onClose={() => setSelected(null)} />

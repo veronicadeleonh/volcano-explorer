@@ -2,19 +2,25 @@ import { useEffect, useState, useSyncExternalStore } from 'react'
 import './WelcomeModal.css'
 import { useDrawerFocus } from '../lib/useDrawerFocus'
 import { isMuted, subscribe, toggleMuted, holdSound, releaseSound } from '../lib/sound'
+import { hasSeenWelcome, markWelcomeSeen } from '../lib/welcomeSeen'
 
-// Shown on the first visit only. Dismissing it is remembered per browser; if
-// storage isn't available (private window, blocked site data) it simply shows
-// every time, which is the safe fallback.
-const SEEN_KEY = 'volcano-explorer:welcome-seen'
-const hasSeenWelcome = () => { try { return localStorage.getItem(SEEN_KEY) === '1' } catch { return false } }
-const markWelcomeSeen = () => { try { localStorage.setItem(SEEN_KEY, '1') } catch { /* ignore */ } }
-
-// `remember={false}` (used by the /styleguide page) always shows it and never stores anything.
-export default function WelcomeModal({ remember = true }) {
-  const [open, setOpen] = useState(() => !remember || !hasSeenWelcome())
+// Shown automatically on the first visit only (see lib/welcomeSeen.js); the help
+// button on the map reopens it. Controlled when `open` is passed (App does this),
+// otherwise it manages itself. `remember={false}` (used by the /styleguide page)
+// always shows it and never stores anything.
+export default function WelcomeModal({ open: openProp, onClose, remember = true }) {
+  const [openState, setOpenState] = useState(() => !remember || !hasSeenWelcome())
+  const open = openProp !== undefined ? openProp : openState
   if (!open) return null
-  return <WelcomeDialog onClose={() => { if (remember) markWelcomeSeen(); setOpen(false) }} />
+  return (
+    <WelcomeDialog
+      onClose={() => {
+        if (remember) markWelcomeSeen()
+        setOpenState(false)
+        onClose?.()
+      }}
+    />
+  )
 }
 
 // Separate component so the focus handling (trap, Escape, restore) only
