@@ -77,13 +77,6 @@
   opacity: 0.7;
 }
 
-.cb-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: var(--radius-full);
-  flex-shrink: 0;
-}
-
 .cb-name {
   flex: 1;
   white-space: nowrap;
@@ -171,13 +164,6 @@
 }
 .cb-option:hover,
 .cb-option.highlighted { background: var(--color-sky-10); }
-
-.cb-opt-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: var(--radius-full);
-  flex-shrink: 0;
-}
 
 .cb-opt-name {
   flex: 1;

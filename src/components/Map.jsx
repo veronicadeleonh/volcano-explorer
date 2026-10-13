@@ -445,17 +445,18 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
         },
       })
 
-      // dormant / extinct circles
+      // dormant / extinct — hollow ring so the status doesn't rely on colour
+      // alone (WCAG 1.4.1): active volcanoes are filled dots, these are rings.
       map.addLayer({
         id: 'vl-dormant',
         type: 'circle',
         source: 'volcanoes',
         filter: ['!', ['>', ['index-of', 'Active', ['get', 'status']], -1]],
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 4, 8, 7],
-          'circle-color': ['get', 'color'],
-          'circle-stroke-width': 1.5,
-          'circle-stroke-color': tokens.color.white['70'],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 4.5, 8, 7.5],
+          'circle-color': 'transparent',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': ['get', 'color'],
         },
       })
 

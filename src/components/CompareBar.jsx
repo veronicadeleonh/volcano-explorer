@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { sfx } from '../lib/sound'
 import './CompareBar.css'
-import { statusColor } from '../lib/statusColor'
+import StatusMarker from './StatusMarker'
 
 const MAX = 3
 
@@ -101,7 +101,7 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
           <div key={i} className="cb-slot-wrap">
             {v ? (
               <div className="cb-slot filled">
-                <span className="cb-dot" style={{ background: statusColor(v.status) }} />
+                <StatusMarker status={v.status} size={10} />
                 <span className="cb-name">{v.name}</span>
                 <button className="cb-remove" onMouseEnter={sfx.uiHover} onClick={() => onRemove(v.id)} title="Remove" aria-label={`Remove ${v.name}`}>✕</button>
               </div>
@@ -145,7 +145,7 @@ export default function CompareBar({ compareList, volcanoes = [], onAdd, onRemov
                       onMouseEnter={sfx.uiHover}
                       onMouseDown={() => pick(v)}
                     >
-                      <span className="cb-opt-dot" aria-hidden="true" style={{ background: statusColor(v.status) }} />
+                      <StatusMarker status={v.status} size={10} />
                       <span className="cb-opt-name">{v.name}</span>
                       <span className="cb-opt-country">{v.country}</span>
                     </li>

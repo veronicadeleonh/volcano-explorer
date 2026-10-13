@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import StatusMarker from './StatusMarker'
 import { sfx } from '../lib/sound'
 import './LayerControls.css'
 import { tokens } from '../styles/tokens'
@@ -29,8 +30,8 @@ const LAYERS = [
 const PLATE_NAMES = Object.keys(PLATE_META).sort((a, b) => a.localeCompare(b))
 
 const VOLCANO_FILTERS = [
-  { id: 'showActive',  label: 'Active',  icon: '🌋', color: tokens.color.status.active },
-  { id: 'showDormant', label: 'Dormant', icon: '⛰️', color: tokens.color.status.dormant },
+  { id: 'showActive',  label: 'Active',  marker: 'filled', color: tokens.color.status.active },
+  { id: 'showDormant', label: 'Dormant', marker: 'ring',   color: tokens.color.status.dormant },
 ]
 
 const RECENCY_FILTERS = [
@@ -95,7 +96,7 @@ export default function LayerControls({ layers, onToggle, onSetRecency, onPlateC
                   onMouseEnter={sfx.uiHover}
                   onClick={() => { sfx.toggle(!on); onToggle(f.id) }}
                 >
-                  <span>{f.icon}</span>
+                  <StatusMarker shape={f.marker} color={f.color} />
                   {f.label}
                 </button>
               )

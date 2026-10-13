@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { sfx } from '../lib/sound'
 import './CountryPanel.css'
 import { useDrawerFocus } from '../lib/useDrawerFocus'
-import { statusColor } from '../lib/statusColor'
+import StatusMarker from './StatusMarker'
 
 function isoToFlag(iso) {
   if (!iso || iso.length !== 2) return '🌐'
@@ -51,7 +51,7 @@ function VolcanoCard({ volcano: v, onClick }) {
         )}
         {!imgSrc && !error && <div className="cp-card-skeleton" />}
         {error && <div className="cp-card-fallback">🌋</div>}
-        <span className="cp-card-status-dot" style={{ background: statusColor(v.status) }} />
+        <span className="cp-card-status-dot"><StatusMarker status={v.status} size={10} /></span>
       </div>
       <div className="cp-card-body">
         <span className="cp-card-name">{v.name}</span>

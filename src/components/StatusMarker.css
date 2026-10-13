@@ -1,0 +1,10 @@
+.status-marker {
+  display: inline-block;
+  width: var(--marker-size, 12px);
+  height: var(--marker-size, 12px);
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+.status-marker-filled { background: var(--marker-color); border: 1.5px solid var(--color-white-70); }
+.status-marker-ring   { border: 2px solid var(--marker-color); }

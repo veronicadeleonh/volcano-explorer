@@ -144,11 +144,17 @@
   position: absolute;
   bottom: 6px;
   right: 6px;
-  width: 9px;
-  height: 9px;
+  display: flex;
+  padding: 3px;
   border-radius: var(--radius-full);
-  border: 1.5px solid var(--color-black-50);
-  flex-shrink: 0;
+  background: var(--color-black-50);
+}
+
+.cm-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
 }
 
 .cm-vol-name {

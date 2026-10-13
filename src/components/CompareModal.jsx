@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './CompareModal.css'
 import { tokens } from '../styles/tokens'
 import { statusColor } from '../lib/statusColor'
+import StatusMarker from './StatusMarker'
 import { useModalFocus } from '../lib/useModalFocus'
 
 async function fetchWikiImage(wikiUrl, fallbackUrl) {
@@ -93,7 +94,7 @@ export default function CompareModal({ volcanoes, onClose }) {
                       ? <img src={images[v.id]} alt="" className="cm-vol-img" /> /* decorative: the name is right below */
                       : <div className="cm-vol-img-skeleton" />
                     }
-                    <span className="cm-vol-dot" style={{ background: statusColor(v.status) }} aria-hidden="true" />
+                    <span className="cm-vol-dot"><StatusMarker status={v.status} size={10} /></span>
                   </div>
                   <div className="cm-vol-name">{v.name}</div>
                   <div className="cm-vol-sub">{v.country}</div>
@@ -110,7 +111,7 @@ export default function CompareModal({ volcanoes, onClose }) {
               { label: 'Region',        render: v => v.region },
               { label: 'Type',          render: v => v.type },
               { label: 'Status',        render: v => (
-                <span style={{ color: statusColor(v.status), fontWeight: 600 }}>{v.status}</span>
+                <span className="cm-status" style={{ color: statusColor(v.status) }}><StatusMarker status={v.status} size={10} />{v.status}</span>
               )},
               { label: 'Last eruption', render: v => v.last_eruption || '—' },
               { label: 'Eruptions',     render: v => v.eruptions?.length ? `${v.eruptions.length} recorded` : '—' },

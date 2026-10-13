@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import StatusMarker from './StatusMarker'
 import EruptionChart from './EruptionChart'
 import './VolcanoPanel.css'
 import { useDrawerFocus } from '../lib/useDrawerFocus'
@@ -135,7 +136,7 @@ export default function VolcanoPanel({ volcano: v, onClose }) {
           <button className="vp-close" onClick={onClose} title="Close" aria-label="Close">✕</button>
           <div className="vp-badges">
             <div className="vp-badge" style={{ background: sc.bg, color: sc.text }}>
-              <span style={{ color: sc.dot }}>●</span> {v.status}
+              <StatusMarker status={v.status} color={sc.dot} size={10} />{v.status}
             </div>
             {recentEruption && (
               <div className="vp-badge vp-badge-eruption">

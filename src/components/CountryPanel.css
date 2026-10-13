@@ -181,9 +181,10 @@
 .cp-card-status-dot {
   position: absolute;
   bottom: 4px; right: 4px;
-  width: 9px; height: 9px;
+  display: flex;
+  padding: 3px;
   border-radius: var(--radius-full);
-  border: 1.5px solid var(--color-surface-overlay);
+  background: var(--color-black-50);
 }
 
 .cp-card-body {
