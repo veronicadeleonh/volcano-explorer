@@ -3,11 +3,12 @@ import { PLATE_META, PLATE_CODE_NAMES, computePlateStats } from '../data/plateMe
 import './PlateModal.css'
 import { tokens } from '../styles/tokens'
 import { useDrawerFocus } from '../lib/useDrawerFocus'
+import BoundaryLine from './BoundaryLine'
 
 const BOUNDARY_INFO = {
-  divergent:  { label: 'divergent',              color: tokens.color.boundary.divergent },
-  transform:  { label: 'transform',              color: tokens.color.boundary.transform },
-  subduction: { label: 'convergent (subduction)', color: tokens.color.boundary.subduction },
+  subduction: { label: 'Convergent (subduction)', line: 'solid',  color: tokens.color.boundary.subduction },
+  divergent:  { label: 'Divergent',               line: 'dashed', color: tokens.color.boundary.divergent },
+  transform:  { label: 'Transform',               line: 'dotted', color: tokens.color.boundary.transform },
 }
 
 // Same plate_boundaries.json already driving the geo-transform /
@@ -113,36 +114,23 @@ export default function PlateModal({ plateName, side = 'right', onArrowPositione
               <div className="pm-loading">loading…</div>
             ) : (
               <>
-                <div className="pm-boundary-legend">
-                  {Object.entries(BOUNDARY_INFO).map(([key, info]) => (
-                    stats.counts[key] > 0 && (
-                      <span key={key} className="pm-legend-item">
-                        <span className="pm-dot" style={{ background: info.color }} />
-                        {stats.counts[key]} {info.label}
-                      </span>
+                {/* Grouped by boundary type, listing the neighbouring plates:
+                    the type is the line style + its name, never colour alone. */}
+                <dl className="pm-types">
+                  {Object.entries(BOUNDARY_INFO).map(([key, info]) => {
+                    const names = neighbors.filter(n => n.types.includes(key)).map(n => n.name)
+                    if (!names.length) return null
+                    return (
+                      <div key={key} className="pm-type-row">
+                        <dt className="pm-type-label">
+                          <BoundaryLine color={info.color} line={info.line} />
+                          {info.label}
+                        </dt>
+                        <dd className="pm-type-plates">{names.join(', ')}</dd>
+                      </div>
                     )
-                  ))}
-                </div>
-
-                {neighbors.length > 0 && (
-                  <div className="pm-neighbors">
-                    <span className="pm-section-subtitle">Borders</span>
-                    <div className="pm-neighbor-list">
-                      {neighbors.map(n => (
-                        <span key={n.code} className="pm-neighbor">
-                          {n.types.map(t => (
-                            <span
-                              key={t}
-                              className="pm-dot pm-dot-sm"
-                              style={{ background: BOUNDARY_INFO[t]?.color }}
-                            />
-                          ))}
-                          {n.name}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                  })}
+                </dl>
               </>
             )}
           </div>

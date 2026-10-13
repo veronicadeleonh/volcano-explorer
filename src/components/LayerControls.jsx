@@ -1,20 +1,10 @@
 import { useState } from 'react'
 import StatusMarker from './StatusMarker'
+import BoundaryLine from './BoundaryLine'
 import { sfx } from '../lib/sound'
 import './LayerControls.css'
 import { tokens } from '../styles/tokens'
 import { PLATE_META } from '../data/plateMeta'
-
-// Legend swatch drawn like the line on the map, so type is readable without colour.
-function LegendLine({ color, line }) {
-  const dash = { dashed: '5 3.5', dotted: '0.1 4.4' }[line]
-  return (
-    <svg className="lc-legend-line" width="24" height="8" viewBox="0 0 24 8" aria-hidden="true">
-      {line === 'glow' && <line x1="2" y1="4" x2="22" y2="4" stroke={color} strokeWidth="7" strokeOpacity="0.25" strokeLinecap="round" />}
-      <line x1="2" y1="4" x2="22" y2="4" stroke={color} strokeWidth={line === 'dashed' ? 2 : 2.5} strokeLinecap="round" strokeDasharray={dash} />
-    </svg>
-  )
-}
 
 const LAYERS = [
   {
@@ -177,7 +167,7 @@ export default function LayerControls({ layers, onToggle, onSetRecency, onPlateC
                 <div className="lc-legend">
                   {layer.legend.map(l => (
                     <span key={l.label} className="lc-legend-item">
-                      <LegendLine color={l.color} line={l.line} />
+                      <BoundaryLine color={l.color} line={l.line} />
                       {l.label}
                     </span>
                   ))}
