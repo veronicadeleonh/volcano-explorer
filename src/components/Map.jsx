@@ -508,13 +508,17 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
           if (!map.getStyle()) return  // map may have been destroyed
           map.addSource('plate-boundaries', { type: 'geojson', data: boundaries })
 
+          // Boundary types differ by line style, not only colour (WCAG 1.4.1):
+          // subduction solid, divergent dashed, transform dotted; the Ring of
+          // Fire is a thick solid line with a glow. Keep LayerControls' legend
+          // swatches in sync.
           map.addLayer({
             id: 'geo-transform',
             type: 'line',
             source: 'plate-boundaries',
             filter: ['==', ['get', 'boundaryType'], 'transform'],
             layout: { 'line-cap': 'round', 'visibility': VIS(layerCacheRef.current.boundaries) },
-            paint: { 'line-color': tokens.color.boundary.transform, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 0.4, 6, 1.2], 'line-opacity': 0.5 },
+            paint: { 'line-color': tokens.color.boundary.transform, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 1, 6, 1.8], 'line-opacity': 0.75, 'line-dasharray': [0.01, 2.2] },
           }, geoLayersBefore)
 
           map.addLayer({
@@ -523,7 +527,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
             source: 'plate-boundaries',
             filter: ['==', ['get', 'boundaryType'], 'divergent'],
             layout: { 'line-cap': 'round', 'visibility': VIS(layerCacheRef.current.boundaries) },
-            paint: { 'line-color': tokens.color.boundary.divergent, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 0.6, 6, 1.8], 'line-opacity': 0.65 },
+            paint: { 'line-color': tokens.color.boundary.divergent, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 1, 6, 2], 'line-opacity': 0.8, 'line-dasharray': [3, 2.2] },
           }, geoLayersBefore)
 
           map.addLayer({
@@ -532,7 +536,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
             source: 'plate-boundaries',
             filter: ['==', ['get', 'boundaryType'], 'subduction'],
             layout: { 'line-cap': 'round', 'visibility': VIS(layerCacheRef.current.boundaries) },
-            paint: { 'line-color': tokens.color.boundary.subduction, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 0.8, 6, 2.2], 'line-opacity': 0.75 },
+            paint: { 'line-color': tokens.color.boundary.subduction, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 1.3, 6, 2.6], 'line-opacity': 0.85 },
           }, geoLayersBefore)
 
           // Plate polygons (PB2002) -- fill only, purely visual: highlights the
@@ -621,9 +625,8 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
             layout: { 'line-cap': 'round', 'visibility': VIS(layerCacheRef.current.ringOfFire) },
             paint: {
               'line-color': tokens.color.boundary['ring-of-fire'],
-              'line-width': ['interpolate', ['linear'], ['zoom'], 1, 0.9, 6, 2],
+              'line-width': ['interpolate', ['linear'], ['zoom'], 1, 1.4, 6, 3],
               'line-opacity': 0.92,
-              'line-dasharray': [1, 1.3],
             },
           }, geoLayersBefore)
         })

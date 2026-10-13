@@ -123,11 +123,9 @@
   color: var(--color-text-subtle);
 }
 
-.lc-legend-dot {
-  width: 20px;
-  height: 3px;
-  border-radius: var(--radius-xxs);
+.lc-legend-line {
   flex-shrink: 0;
+  display: block;
 }
 
 /* "Browse plates" list inside the Tectonic Plates card */

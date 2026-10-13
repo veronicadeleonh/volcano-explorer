@@ -5,15 +5,26 @@ import './LayerControls.css'
 import { tokens } from '../styles/tokens'
 import { PLATE_META } from '../data/plateMeta'
 
+// Legend swatch drawn like the line on the map, so type is readable without colour.
+function LegendLine({ color, line }) {
+  const dash = { dashed: '5 3.5', dotted: '0.1 4.4' }[line]
+  return (
+    <svg className="lc-legend-line" width="24" height="8" viewBox="0 0 24 8" aria-hidden="true">
+      {line === 'glow' && <line x1="2" y1="4" x2="22" y2="4" stroke={color} strokeWidth="7" strokeOpacity="0.25" strokeLinecap="round" />}
+      <line x1="2" y1="4" x2="22" y2="4" stroke={color} strokeWidth={line === 'dashed' ? 2 : 2.5} strokeLinecap="round" strokeDasharray={dash} />
+    </svg>
+  )
+}
+
 const LAYERS = [
   {
     id: 'boundaries',
     label: 'Tectonic Plates',
     icon: '🌐',
     legend: [
-      { color: tokens.color.boundary.subduction, label: 'Subduction' },
-      { color: tokens.color.boundary.divergent, label: 'Divergent' },
-      { color: tokens.color.boundary.transform, label: 'Transform' },
+      { color: tokens.color.boundary.subduction, label: 'Subduction', line: 'solid' },
+      { color: tokens.color.boundary.divergent, label: 'Divergent', line: 'dashed' },
+      { color: tokens.color.boundary.transform, label: 'Transform', line: 'dotted' },
     ],
   },
   {
@@ -21,7 +32,7 @@ const LAYERS = [
     label: 'Ring of Fire',
     icon: '🔥',
     legend: [
-      { color: tokens.color.boundary['ring-of-fire'], label: 'Pacific Ring of Fire' },
+      { color: tokens.color.boundary['ring-of-fire'], label: 'Pacific Ring of Fire', line: 'glow' },
     ],
   },
 ]
@@ -166,7 +177,7 @@ export default function LayerControls({ layers, onToggle, onSetRecency, onPlateC
                 <div className="lc-legend">
                   {layer.legend.map(l => (
                     <span key={l.label} className="lc-legend-item">
-                      <span className="lc-legend-dot" style={{ background: l.color }} />
+                      <LegendLine color={l.color} line={l.line} />
                       {l.label}
                     </span>
                   ))}
