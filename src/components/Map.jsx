@@ -7,7 +7,24 @@ import { sfx, isMuted, toggleMuted, subscribe } from '../lib/sound'
 import './Map.css'
 import { tokens } from '../styles/tokens'
 import { statusColor } from '../lib/statusColor'
+import { plateEdges } from '../lib/plateEdges'
 import { prefersReducedMotion } from '../lib/motion'
+
+// Boundary segments that border the given plate code (matches nothing for none).
+const plateEdgeFilter = code => code
+  ? ['any', ['==', ['get', 'plateA'], code], ['==', ['get', 'plateB'], code]]
+  : ['==', ['get', 'plateA'], '__none__']
+
+// Stack order for the selected plate's boundaries vs the Ring of Fire: the
+// plate's casing + type lines sit above the RoF line (they run along the same
+// subduction zones), while the RoF's soft glow goes back on top as a faint red
+// tint, so the RoF's path stays visible without hiding the line styles.
+// Layers load asynchronously, so this runs after each group is added.
+function stackSelectedPlateAboveRof(map, before) {
+  for (const id of ['geo-sel-casing', 'geo-subduction-sel', 'geo-divergent-sel', 'geo-transform-sel', 'geo-rof-glow']) {
+    if (map.getLayer(id)) map.moveLayer(id, before)
+  }
+}
 
 // ── helpers ───────────────────────────────────────────────────────────────
 function toGeoJSON(volcanoes) {
@@ -553,9 +570,6 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
           // clicked while this fetch was still in flight.
           const code = PLATE_META[selectedPlateRef.current?.name]?.code
           const polygonFilter = code ? ['==', ['get', 'Code'], code] : ['==', ['get', 'Code'], '__none__']
-          const boundaryFilter = code
-            ? ['any', ['==', ['get', 'plateA'], code], ['==', ['get', 'plateB'], code]]
-            : ['==', ['get', 'plateA'], '__none__']
           const PLATE_AMBER = tokens.color.boundary['plate-highlight']
 
           map.addLayer({
@@ -566,6 +580,9 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
             paint: {
               'fill-color': PLATE_AMBER,
               'fill-opacity': 0.12,
+              // The PB2002 polygons are split along +/-180, and antialiased
+              // edges leave a faint hairline where the parts meet.
+              'fill-antialias': false,
             },
           }, geoLayersBefore)
 
@@ -577,30 +594,73 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
             paint: {
               'fill-pattern': 'plate-stripe',
               'fill-opacity': 0.35,
+              'fill-antialias': false,
             },
           }, geoLayersBefore)
 
-          // The stroke traces the plate's REAL tectonic boundaries (from
-          // plate-boundaries), not the polygon ring itself. The PB2002 polygon
-          // dataset splits any plate that crosses the antimeridian -- the
-          // Pacific Plate above all -- into a MultiPolygon, and each split
-          // part's closing edge runs straight along the +/-180 meridian to
-          // make it a valid ring. Stroking that raw ring drew this synthetic
-          // cut as a bogus vertical line straight across the globe. The
-          // boundaries dataset has no such artifact, since it was never split
-          // into closed shapes in the first place.
+          // The outline sits INSIDE the plate's edge (line-offset to the right of
+          // a clockwise ring) and BELOW the boundary-type lines, so selecting a
+          // plate highlights it without covering the solid/dashed/dotted lines
+          // that run along its edge. plate-edges drops the synthetic antimeridian
+          // seams the PB2002 polygons carry (see lib/plateEdges).
+          map.addSource('plate-edges', { type: 'geojson', data: plateEdges(polygons) })
           map.addLayer({
             id: 'plate-active-stroke',
             type: 'line',
-            source: 'plate-boundaries',
-            filter: boundaryFilter,
-            layout: { 'line-cap': 'round', 'line-join': 'round' },
+            source: 'plate-edges',
+            filter: polygonFilter,
+            layout: { 'line-join': 'round' },
             paint: {
               'line-color': PLATE_AMBER,
-              'line-width': ['interpolate', ['linear'], ['zoom'], 1, 1, 6, 2.2],
-              'line-opacity': 0.8,
+              // Offset past the dark casing + selected-plate lines so a dark gap
+              // separates the band from the boundary-type lines.
+              'line-width': ['interpolate', ['linear'], ['zoom'], 1, 2, 6, 3.5],
+              'line-offset': ['interpolate', ['linear'], ['zoom'], 1, 4.2, 6, 6.25],
+              'line-opacity': 0.85,
+            },
+          }, 'geo-transform')
+
+          // Boundaries of the SELECTED plate are redrawn thicker and fully
+          // opaque (same solid/dashed/dotted style) on top of the regular ones,
+          // so the types the plate panel lists are easy to tell apart.
+          const edgeFilter = plateEdgeFilter(code)
+
+          // Dark casing under them: the gaps between dashes/dots read as dark,
+          // so the pattern (not just the colour) stays visible over the amber
+          // wash and in grayscale.
+          map.addLayer({
+            id: 'geo-sel-casing',
+            type: 'line',
+            source: 'plate-boundaries',
+            filter: edgeFilter,
+            layout: { 'line-cap': 'round', 'line-join': 'round', 'visibility': VIS(layerCacheRef.current.boundaries) },
+            paint: {
+              'line-color': tokens.color.surface.canvas,
+              'line-width': ['interpolate', ['linear'], ['zoom'], 1, 6.4, 6, 9],
+              'line-opacity': 0.85,
             },
           }, geoLayersBefore)
+
+          for (const [type, color, dash] of [
+            ['subduction', tokens.color.boundary.subduction, null],
+            ['divergent',  tokens.color.boundary.divergent,  [3, 2.2]],
+            ['transform',  tokens.color.boundary.transform,  [0.01, 2.2]],
+          ]) {
+            map.addLayer({
+              id: `geo-${type}-sel`,
+              type: 'line',
+              source: 'plate-boundaries',
+              filter: ['all', ['==', ['get', 'boundaryType'], type], edgeFilter],
+              layout: { 'line-cap': 'round', 'line-join': 'round', 'visibility': VIS(layerCacheRef.current.boundaries) },
+              paint: {
+                'line-color': color,
+                'line-width': ['interpolate', ['linear'], ['zoom'], 1, 2.4, 6, 5],
+                'line-opacity': 1,
+                ...(dash ? { 'line-dasharray': dash } : {}),
+              },
+            }, geoLayersBefore)
+          }
+          stackSelectedPlateAboveRof(map, geoLayersBefore)
         })
         .catch(() => {}) // silently ignore if data not available
 
@@ -629,6 +689,8 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
               'line-opacity': 0.92,
             },
           }, geoLayersBefore)
+
+          stackSelectedPlateAboveRof(map, geoLayersBefore)
         })
         .catch(() => {})
 
@@ -840,22 +902,20 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   // Covers every way selection can clear -- closing the modal (✕, Escape),
   // clicking the same label again, or clicking a volcano/country instead --
   // since all of those funnel through the same `selectedPlate` prop from App.
-  // plate-active-stroke uses a different filter than the fill/pattern layers
-  // -- it's sourced from plate-boundaries (plateA/plateB), not plate-polygons
-  // (Code), to avoid the antimeridian seam described where it's added.
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
     const code = PLATE_META[selectedPlate?.name]?.code
     const polygonFilter = code ? ['==', ['get', 'Code'], code] : ['==', ['get', 'Code'], '__none__']
-    const boundaryFilter = code
-      ? ['any', ['==', ['get', 'plateA'], code], ['==', ['get', 'plateB'], code]]
-      : ['==', ['get', 'plateA'], '__none__']
     const update = () => {
-      for (const id of ['plate-active-fill', 'plate-active-pattern']) {
+      for (const id of ['plate-active-fill', 'plate-active-pattern', 'plate-active-stroke']) {
         if (map.getLayer(id)) map.setFilter(id, polygonFilter)
       }
-      if (map.getLayer('plate-active-stroke')) map.setFilter('plate-active-stroke', boundaryFilter)
+      if (map.getLayer('geo-sel-casing')) map.setFilter('geo-sel-casing', plateEdgeFilter(code))
+      for (const type of ['subduction', 'divergent', 'transform']) {
+        const id = `geo-${type}-sel`
+        if (map.getLayer(id)) map.setFilter(id, ['all', ['==', ['get', 'boundaryType'], type], plateEdgeFilter(code)])
+      }
     }
     if (map.isStyleLoaded()) update()
     else map.once('style.load', update)
@@ -923,7 +983,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
     if (!map || !map.isStyleLoaded()) return
 
     const GEO_LAYERS = {
-      boundaries: ['geo-transform', 'geo-divergent', 'geo-subduction'],
+      boundaries: ['geo-transform', 'geo-divergent', 'geo-subduction', 'geo-sel-casing', 'geo-transform-sel', 'geo-divergent-sel', 'geo-subduction-sel'],
       ringOfFire: ['geo-rof-glow', 'geo-rof-line'],
     }
 
