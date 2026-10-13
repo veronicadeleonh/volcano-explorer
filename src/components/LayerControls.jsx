@@ -48,41 +48,26 @@ const TYPE_FILTERS = [
   { id: 'typeSubmarine',     label: 'Submarine' },
 ]
 
-export default function LayerControls({ layers, onToggle, onSetRecency, onPlateClick, selectedPlateName }) {
-  // Mobile-only: each group collapses behind its own toggle button instead of
-  // permanently eating map space — volcano filters and geological layers are
-  // independent concerns, so they get independent buttons/panels, and opening
-  // one closes the other rather than letting them overlap. Irrelevant on
-  // desktop — the CSS below only acts on this state inside the mobile media
-  // query.
-  const [volcanoesOpen, setVolcanoesOpen] = useState(false)
-  const [geoOpen, setGeoOpen] = useState(false)
-  const [platesListOpen, setPlatesListOpen] = useState(false)
+// DOM order = keyboard Tab order (WCAG 2.4.3), so the controls are two separate
+// components that App.jsx places around the search bar and the map:
+// filters → search → compare → map → geological layers. Both render inside their
+// own .lc-root; on desktop it is a transparent pass-through, on mobile it is a
+// zero-height fixed strip that pins the toggle buttons to the bottom corners (see
+// the @media blocks in LayerControls.css). Which mobile panel is open is lifted to
+// App so opening one closes the other.
 
-  const toggleVolcanoes = () => { setVolcanoesOpen(o => !o); setGeoOpen(false) }
-  const toggleGeo = () => { setGeoOpen(o => !o); setVolcanoesOpen(false) }
-
+export function VolcanoFilters({ layers, onToggle, onSetRecency, open, onToggleOpen }) {
   return (
-    // On desktop this div is a transparent, unpositioned pass-through — the two
-    // .lc-wrap panels keep positioning themselves against .app like before. On
-    // mobile the two toggle buttons pin to the bottom corners, each revealing
-    // its own panel above itself (see the @media block in LayerControls.css).
     <div className="lc-root">
       <button
-        className={`lc-mobile-toggle lc-mobile-toggle-left ${volcanoesOpen ? 'open' : ''}`}
-        onClick={toggleVolcanoes}
+        className={`lc-mobile-toggle lc-mobile-toggle-left ${open ? 'open' : ''}`}
+        onClick={onToggleOpen}
       >
-        {volcanoesOpen ? '✕ Close' : '🌋 Volcanoes'}
-      </button>
-      <button
-        className={`lc-mobile-toggle lc-mobile-toggle-right ${geoOpen ? 'open' : ''}`}
-        onClick={toggleGeo}
-      >
-        {geoOpen ? '✕ Close' : '🌐 Layers'}
+        {open ? '✕ Close' : '🌋 Volcanoes'}
       </button>
 
       {/* ── Volcano filters — bottom-left ── */}
-      <div className={`lc-wrap lc-wrap-left ${volcanoesOpen ? 'lc-mobile-open' : ''}`}>
+      <div className={`lc-wrap lc-wrap-left ${open ? 'lc-mobile-open' : ''}`}>
         <div className="lc-item lc-group">
           <div className="lc-group-label">Volcanoes</div>
           <div className="lc-chips">
@@ -144,9 +129,24 @@ export default function LayerControls({ layers, onToggle, onSetRecency, onPlateC
           </div>
         </div>
       </div>
+    </div>
+  )
+}
+
+export function GeoLayers({ layers, onToggle, onPlateClick, selectedPlateName, open, onToggleOpen }) {
+  const [platesListOpen, setPlatesListOpen] = useState(false)
+
+  return (
+    <div className="lc-root">
+      <button
+        className={`lc-mobile-toggle lc-mobile-toggle-right ${open ? 'open' : ''}`}
+        onClick={onToggleOpen}
+      >
+        {open ? '✕ Close' : '🌐 Layers'}
+      </button>
 
       {/* ── Geological layers — bottom-right ── */}
-      <div className={`lc-wrap lc-wrap-right ${geoOpen ? 'lc-mobile-open' : ''}`}>
+      <div className={`lc-wrap lc-wrap-right ${open ? 'lc-mobile-open' : ''}`}>
         {LAYERS.map(layer => {
           const active = layers[layer.id]
           return (

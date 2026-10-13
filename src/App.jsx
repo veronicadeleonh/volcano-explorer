@@ -3,7 +3,7 @@ import { Analytics } from '@vercel/analytics/react'
 import Map from './components/Map'
 import SearchBar from './components/SearchBar'
 import VolcanoPanel from './components/VolcanoPanel'
-import LayerControls from './components/LayerControls'
+import { VolcanoFilters, GeoLayers } from './components/LayerControls'
 import CountryPanel from './components/CountryPanel'
 import CompareBar from './components/CompareBar'
 import { sfx } from './lib/sound'
@@ -28,6 +28,8 @@ export default function App() {
   const [selected, setSelected]             = useState(null)
   const [selectedCountry, setSelectedCountry] = useState(null)
   const [flyTo, setFlyTo]         = useState(null)
+  // Mobile only: which collapsible layer panel is open ('volcanoes' | 'geo' | null); opening one closes the other.
+  const [mobilePanel, setMobilePanel] = useState(null)
   const [welcomeOpen, setWelcomeOpen] = useState(() => !hasSeenWelcome()) // first visit, or reopened with the help button
   const [layers, setLayers]       = useState(DEFAULT_LAYERS)
   const [token, setToken]         = useState(
@@ -142,15 +144,17 @@ export default function App() {
     <main className="app">
       <h1 className="sr-only">Volcano Explorer: interactive 3D globe of the world's volcanoes</h1>
       <WelcomeModal open={welcomeOpen} onClose={() => setWelcomeOpen(false)} />
-      {/* DOM order = keyboard Tab order (WCAG 2.4.3): filters → search → compare → map
-          (+ its zoom/sound/logo controls) → panels → credits. Everything is absolutely
-          positioned, so this doesn't change the layout. */}
-      <LayerControls
+      {/* DOM order = keyboard Tab order (WCAG 2.4.3), following the visual reading
+          order, left→right and top→bottom: volcano filters → search → compare →
+          map (+ its zoom/sound/logo controls) → geological layers → panels →
+          credits. Everything is absolutely positioned, so this doesn't change the
+          layout. */}
+      <VolcanoFilters
         layers={layers}
         onToggle={handleToggleLayer}
         onSetRecency={handleSetRecency}
-        onPlateClick={handlePlateClick}
-        selectedPlateName={selectedPlate?.name}
+        open={mobilePanel === 'volcanoes'}
+        onToggleOpen={() => setMobilePanel(p => p === 'volcanoes' ? null : 'volcanoes')}
       />
       <SearchBar
         volcanoes={volcanoes}
@@ -185,6 +189,14 @@ export default function App() {
         modalArrowPoint={plateArrowPoint}
         onHelp={() => setWelcomeOpen(true)}
       />
+      <GeoLayers
+        layers={layers}
+        onToggle={handleToggleLayer}
+        onPlateClick={handlePlateClick}
+        selectedPlateName={selectedPlate?.name}
+        open={mobilePanel === 'geo'}
+        onToggleOpen={() => setMobilePanel(p => p === 'geo' ? null : 'geo')}
+      />
       {!compareMode && selected && (
         <VolcanoPanel key={selected.id} volcano={selected} onClose={() => setSelected(null)} />
       )}
@@ -211,11 +223,20 @@ export default function App() {
         />
       )}
       <div className="app-attribution">
-        By <a href="https://veronicadeleonh.de" target="_blank" rel="noopener noreferrer">Verónica De León Hernández</a>
+        <span className="app-attribution-line">
+          By <a href="https://veronicadeleonh.de" target="_blank" rel="noopener noreferrer">Verónica De León Hernández</a>
+        </span>
         <span className="app-attribution-sep" aria-hidden="true">·</span>
-        Data: <a href="https://volcano.si.edu" target="_blank" rel="noopener noreferrer">GVP / Smithsonian</a>,{' '}
-        <a href="https://en.wikipedia.org" target="_blank" rel="noopener noreferrer">Wikipedia</a>,{' '}
-        <a href="https://github.com/fraxen/tectonicplates" target="_blank" rel="noopener noreferrer">PB2002</a>
+        <span className="app-attribution-line">
+          Data: <a href="https://volcano.si.edu" target="_blank" rel="noopener noreferrer">GVP / Smithsonian</a>,{' '}
+          <a href="https://en.wikipedia.org" target="_blank" rel="noopener noreferrer">Wikipedia</a>,{' '}
+          <a href="https://github.com/fraxen/tectonicplates" target="_blank" rel="noopener noreferrer">PB2002</a>
+        </span>
+        <span className="app-attribution-sep" aria-hidden="true">·</span>
+        <span className="app-attribution-line">
+          Map: <a href="https://www.mapbox.com/about/maps/" target="_blank" rel="noopener noreferrer">© Mapbox</a>,{' '}
+          <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap</a>
+        </span>
       </div>
       <Analytics />
     </main>

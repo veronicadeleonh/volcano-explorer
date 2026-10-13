@@ -376,10 +376,10 @@
   }
 }
 
-/* Narrow phones: the attribution is a full-width row (1–2 lines) above the
+/* Narrow phones: the attribution is a full-width row (2–3 lines, with the map credits) above the
    Mapbox logo, so the toggles and the panels they open sit higher. */
 @media (max-width: 640px) {
-  .lc-mobile-toggle { bottom: 92px; }
+  .lc-mobile-toggle { bottom: 112px; }
   .lc-wrap-left,
-  .lc-wrap-right { bottom: 144px; }
+  .lc-wrap-right { bottom: 164px; }
 }

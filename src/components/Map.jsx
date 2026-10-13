@@ -3,6 +3,10 @@ import PlateLabels from './PlateLabels'
 import { PLATE_META } from '../data/plateMeta'
 import { COUNTRY_ISO, ISO_TO_COUNTRY } from '../data/countryIso'
 import mapboxgl from 'mapbox-gl'
+// Bundled with the installed version (was a CDN <link> pinned to v3.3.0, which
+// mismatched the JS and set a third-party cookie). Must precede Map.css so our
+// control overrides keep winning.
+import 'mapbox-gl/dist/mapbox-gl.css'
 import { sfx, isMuted, toggleMuted, subscribe } from '../lib/sound'
 import './Map.css'
 import { tokens } from '../styles/tokens'
@@ -200,6 +204,8 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   const containerRef  = useRef(null)
   const mapRef        = useRef(null)
   const [mapInstance, setMapInstance] = useState(null)
+  // Visible keyboard hint, shown while the globe canvas has keyboard focus.
+  const [kbdHint, setKbdHint] = useState(false)
   const popupRef      = useRef(null)
   const imgCacheRef   = useRef({})   // volcano id → Wikipedia thumbnail URL
   const onSelectRef   = useRef(onSelect)
@@ -283,7 +289,28 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
       zoom: initialZoom,
       projection: 'globe',
       attributionControl: false,
+      // Accessible name of the focusable canvas (Mapbox's default is just "Map"):
+      // says what it is and which keys work (WCAG 2.1.1 / 4.1.2).
+      locale: { 'Map.Title': 'Interactive globe. Arrow keys rotate, plus and minus zoom.' },
     })
+
+    // Sighted keyboard users can't tell that the globe takes arrow keys and +/-
+    // (the aria-label above only reaches screen readers). Show the hint while
+    // the canvas has keyboard focus (not on mouse click), hide it on blur or on
+    // the first movement key. No timer, so nobody loses it while reading (2.2.1).
+    const canvas = map.getCanvas()
+    canvas.addEventListener('focus', () => { if (canvas.matches(':focus-visible')) setKbdHint(true) })
+    canvas.addEventListener('blur', () => setKbdHint(false))
+    canvas.addEventListener('keydown', (e) => {
+      if (e.key.startsWith('Arrow') || '+-=_'.includes(e.key)) setKbdHint(false)
+    })
+
+    // The Mapbox logo is a tertiary link; as a Tab stop it sits between the globe
+    // controls and the layer panels. Take it out of the Tab order (still visible
+    // and clickable); the attribution links live in the credits row, at the end.
+    const untabLogo = () => map.getContainer().querySelectorAll('a.mapboxgl-ctrl-logo').forEach(a => a.setAttribute('tabindex', '-1'))
+    untabLogo()
+    map.on('style.load', untabLogo)
 
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right')
     map.addControl(new SoundControl(), 'top-right')
@@ -1050,6 +1077,10 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   return (
     <>
       <div ref={containerRef} className="map-container" />
+      {/* Decorative: screen readers already get this from the canvas aria-label. */}
+      <div className={`map-kbd-hint${kbdHint ? ' is-visible' : ''}`} aria-hidden="true">
+        Arrow keys rotate the globe · + and − zoom
+      </div>
       <PlateLabels map={mapInstance} visible={layers.boundaries} onPlateClick={onPlateClick} selectedPlateName={selectedPlate?.name} modalAnchor={modalArrowPoint} />
     </>
   )

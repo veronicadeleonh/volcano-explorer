@@ -5,6 +5,35 @@
   inset: 0;
 }
 
+/* Keyboard hint shown while the globe canvas has keyboard focus. */
+.map-kbd-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 56px;
+  transform: translateX(-50%);
+  max-width: calc(100% - 16px);
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-overlay);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-13);
+  line-height: var(--font-line-height-1-4);
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-150);
+  z-index: var(--z-attribution);
+}
+.map-kbd-hint.is-visible { opacity: 1; }
+
+@media (max-width: 640px) {
+  .map-kbd-hint { bottom: 170px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-kbd-hint { transition: none; }
+}
+
 /* Volcano markers */
 .volcano-marker {
   position: relative;
