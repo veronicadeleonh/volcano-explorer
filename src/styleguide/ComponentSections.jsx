@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Section } from './TokenSections'
-import LayerControls from '../components/LayerControls'
+import { VolcanoFilters, GeoLayers } from '../components/LayerControls'
 import SearchBar from '../components/SearchBar'
 import CompareBar from '../components/CompareBar'
 import VolcanoPanel from '../components/VolcanoPanel'
@@ -10,6 +10,10 @@ import CompareModal from '../components/CompareModal'
 import WelcomeModal from '../components/WelcomeModal'
 import TokenGate from '../components/TokenGate'
 import EruptionChart from '../components/EruptionChart'
+import StatusMarker from '../components/StatusMarker'
+import BoundaryLine from '../components/BoundaryLine'
+import KeyboardHint from '../components/KeyboardHint'
+import { tokens } from '../styles/tokens'
 
 const DEFAULT_LAYERS = {
   boundaries: true, ringOfFire: true, showActive: true, showDormant: true,
@@ -42,12 +46,65 @@ function Stage({ id, title, file, note, height = 560, children }) {
 
 function LayerDemo() {
   const [layers, setLayers] = useState(DEFAULT_LAYERS)
+  const [mobilePanel, setMobilePanel] = useState(null)
+  const onToggle = (id) => setLayers((l) => ({ ...l, [id]: !l[id] }))
   return (
-    <LayerControls
-      layers={layers}
-      onToggle={(id) => setLayers((l) => ({ ...l, [id]: !l[id] }))}
-      onSetRecency={(r) => setLayers((l) => ({ ...l, recencyFilter: r }))}
-    />
+    <>
+      <VolcanoFilters
+        layers={layers}
+        onToggle={onToggle}
+        onSetRecency={(r) => setLayers((l) => ({ ...l, recencyFilter: r }))}
+        open={mobilePanel === 'volcanoes'}
+        onToggleOpen={() => setMobilePanel((p) => (p === 'volcanoes' ? null : 'volcanoes'))}
+      />
+      <GeoLayers
+        layers={layers}
+        onToggle={onToggle}
+        onPlateClick={noop}
+        open={mobilePanel === 'geo'}
+        onToggleOpen={() => setMobilePanel((p) => (p === 'geo' ? null : 'geo'))}
+      />
+    </>
+  )
+}
+
+const STATUS_ROWS = [
+  ['Active', 'Punto relleno con borde blanco'],
+  ['Dormant', 'Anillo'],
+  ['Extinct', 'Anillo'],
+]
+const BOUNDARY_ROWS = [
+  ['Convergent (subduction)', 'solid', tokens.color.boundary.subduction, 'Línea continua'],
+  ['Divergent', 'dashed', tokens.color.boundary.divergent, 'Línea de rayas'],
+  ['Transform', 'dotted', tokens.color.boundary.transform, 'Línea de puntos'],
+  ['Ring of Fire', 'glow', tokens.color.boundary['ring-of-fire'], 'Línea continua con halo'],
+]
+
+function StatusDemo() {
+  return (
+    <div className="sg-legend">
+      {STATUS_ROWS.map(([status, cue]) => (
+        <div key={status} className="sg-legend-row">
+          <StatusMarker status={status} size={16} />
+          <span className="sg-legend-label">{status}</span>
+          <span className="sg-dim">{cue}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function BoundaryDemo() {
+  return (
+    <div className="sg-legend">
+      {BOUNDARY_ROWS.map(([label, line, color, cue]) => (
+        <div key={label} className="sg-legend-row">
+          <BoundaryLine color={color} line={line} />
+          <span className="sg-legend-label">{label}</span>
+          <span className="sg-dim">{cue}</span>
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -84,7 +141,10 @@ export function Components() {
     <Section id="components" title="Componentes" lead="Son los componentes reales de la app con datos reales de volcanoes.json, no copias. Cada uno funciona dentro de su recuadro. El mapa y las etiquetas de placas necesitan Mapbox y no se muestran aquí.">
       {!ready ? <p className="sg-note">Cargando volcanes…</p> : (
         <>
-          <Stage id="c-layers" title="LayerControls" file="LayerControls.jsx · filtros y capas" note="Chips de estado, tipo, 'Last eruption' y las dos capas geológicas. Los sonidos de hover funcionan igual que en la app."><LayerDemo /></Stage>
+          <Stage id="c-layers" title="LayerControls" file="LayerControls.jsx · VolcanoFilters + GeoLayers" note="Chips de estado, tipo y 'Last eruption' (VolcanoFilters) y las dos capas geológicas (GeoLayers). Son dos componentes porque en el DOM, y por tanto en el orden de Tab, el mapa va entre ambos. Los sonidos de hover funcionan igual que en la app."><LayerDemo /></Stage>
+          <Stage id="c-status" title="StatusMarker" file="StatusMarker.jsx · estado del volcán sin depender del color" height={200} note="Relleno = activo, anillo = dormant / extinct. El color refuerza, no es la única pista (WCAG 1.4.1). Es el mismo símbolo del mapa, de los filtros, de las pills y de la tabla de comparación."><StatusDemo /></Stage>
+          <Stage id="c-boundary" title="BoundaryLine" file="BoundaryLine.jsx · tipo de límite de placa sin depender del color" height={240} note="Continua, rayas, puntos o halo: el trazo repite el de las capas geo-* del mapa, para distinguir el tipo aunque no se vea el color."><BoundaryDemo /></Stage>
+          <Stage id="c-kbd" title="KeyboardHint" file="KeyboardHint.jsx · aviso de teclado del globo" height={160} note="En la app aparece solo mientras el globo tiene foco de teclado (no con el clic) y se oculta con la primera flecha o +/−, o al salir con Tab. Aquí se muestra fijo."><KeyboardHint visible /></Stage>
           <Stage id="c-search" title="SearchBar" file="SearchBar.jsx · búsqueda y modo Compare" height={420}><SearchDemo volcanoes={volcanoes} /></Stage>
           <Stage id="c-comparebar" title="CompareBar" file="CompareBar.jsx · hasta 3 volcanes" height={360}><CompareBarDemo volcanoes={volcanoes} /></Stage>
           <Stage id="c-volcano" title="VolcanoPanel" file="VolcanoPanel.jsx · detalle de volcán" height={720}>

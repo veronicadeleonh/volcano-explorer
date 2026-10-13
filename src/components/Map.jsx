@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import PlateLabels from './PlateLabels'
+import KeyboardHint from './KeyboardHint'
 import { PLATE_META } from '../data/plateMeta'
 import { COUNTRY_ISO, ISO_TO_COUNTRY } from '../data/countryIso'
 import mapboxgl from 'mapbox-gl'
@@ -1077,10 +1078,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   return (
     <>
       <div ref={containerRef} className="map-container" />
-      {/* Decorative: screen readers already get this from the canvas aria-label. */}
-      <div className={`map-kbd-hint${kbdHint ? ' is-visible' : ''}`} aria-hidden="true">
-        Arrow keys rotate the globe · + and − zoom
-      </div>
+      <KeyboardHint visible={kbdHint} />
       <PlateLabels map={mapInstance} visible={layers.boundaries} onPlateClick={onPlateClick} selectedPlateName={selectedPlate?.name} modalAnchor={modalArrowPoint} />
     </>
   )
