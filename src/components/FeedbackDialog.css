@@ -1,0 +1,201 @@
+.fb-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-welcome);
+  background: var(--color-black-60);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-20);
+  backdrop-filter: blur(var(--blur-6));
+  overflow-y: auto;
+}
+
+.fb-card {
+  background: var(--color-surface-overlay);
+  border: 1px solid var(--color-border-accent);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-modal);
+  width: 100%;
+  max-width: 460px;
+  max-height: min(680px, 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--color-text-secondary);
+}
+
+.fb-form { display: flex; flex-direction: column; min-height: 0; flex: 1 1 auto; }
+
+/* Only this area scrolls (at 400% zoom, say), so the buttons stay visible. The
+   padding keeps focus rings from being clipped at the edge of the scroll box. */
+.fb-scroll {
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--space-24) var(--space-24) var(--space-8);
+}
+
+.fb-kicker {
+  margin: 0 0 var(--space-8);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--font-tracking-p0-8px);
+  text-transform: uppercase;
+  color: var(--color-accent-text);
+}
+
+/* Progress: filled segments are also stated in words ("Question 2 of 5"). */
+.fb-bar { display: flex; gap: var(--space-4); margin-bottom: var(--space-20); }
+.fb-bar span { flex: 1; height: 4px; border-radius: 2px; background: var(--color-border-strong); }
+.fb-bar span.is-done { background: var(--color-accent-default); }
+
+.fb-card h2 {
+  font-size: var(--font-size-22);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-12);
+  letter-spacing: var(--font-tracking-n0-5px);
+  line-height: var(--font-line-height-1-2);
+}
+.fb-card h2.fb-q { font-size: var(--font-size-18); letter-spacing: 0; }
+.fb-card h2:focus { outline: none; }
+.fb-step-n {
+  display: block;
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: 0;
+  color: var(--color-text-muted);
+}
+.fb-cover { padding: var(--space-8) 0 var(--space-4); }
+.fb-card h2.fb-cover-title { margin-bottom: var(--space-12); }
+
+.fb-sub { margin: var(--space-16) 0 var(--space-8); font-size: var(--font-size-14); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); }
+
+.fb-note, .fb-privacy {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-14);
+  line-height: var(--font-line-height-1-5);
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-16);
+}
+.fb-note a { color: var(--color-text-primary); text-underline-offset: 2px; }
+.fb-privacy { font-size: var(--font-size-12); margin: var(--space-12) 0 0; }
+
+.fb-field { border: none; padding: 0; margin: 0 0 var(--space-12); min-width: 0; position: relative; }
+
+.fb-hint { font-size: var(--font-size-12); color: var(--color-text-muted); margin: var(--space-6) 0 var(--space-12); }
+.fb-count { display: block; text-align: right; font-size: var(--font-size-11); color: var(--color-text-subtle); margin-top: var(--space-4); }
+
+.fb-error { font-size: var(--font-size-12); color: var(--color-status-error); margin: var(--space-6) 0 0; }
+.fb-error-box {
+  border: 1px solid var(--color-status-error);
+  border-radius: var(--radius-sm);
+  padding: var(--space-8) var(--space-12);
+  margin: var(--space-12) 0 0;
+}
+
+.fb-card textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--color-surface-faint);
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: var(--font-size-14);
+  line-height: var(--font-line-height-1-4);
+  padding: var(--space-8) var(--space-10);
+  resize: vertical;
+}
+
+/* Rating 1-5: the real radios are visually hidden, the labels are the buttons.
+   Selected = filled + dark text, not only a colour change. */
+.fb-rating { display: flex; gap: var(--space-8); margin-top: var(--space-12); }
+.fb-rating-opt { position: relative; flex: 1 1 0; max-width: 56px; }
+.fb-rating-opt input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.fb-rating-opt label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-faint);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-semibold);
+  pointer-events: none;
+}
+.fb-rating-opt input:hover + label { background: var(--color-surface-hover); }
+.fb-rating-opt input:checked + label {
+  background: var(--color-accent-default);
+  border-color: var(--color-accent-default);
+  color: var(--color-text-on-accent);
+}
+.fb-rating-opt input:focus-visible + label { outline: 2px solid var(--color-border-focus); outline-offset: 2px; }
+
+/* Options as tappable rows. The checkbox / radio inside shows the state too. */
+.fb-choice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-10);
+  min-height: 40px;
+  box-sizing: border-box;
+  padding: var(--space-6) var(--space-12);
+  margin-bottom: var(--space-6);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-14);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+.fb-choice:hover { background: var(--color-surface-hover); }
+.fb-choice.is-on { border-color: var(--color-accent-default); background: var(--color-surface-accent-soft); color: var(--color-text-primary); }
+.fb-choice:has(input:focus-visible) { outline: 2px solid var(--color-border-focus); outline-offset: 2px; }
+.fb-choice input { accent-color: var(--color-accent-default); width: 16px; height: 16px; margin: 0; flex-shrink: 0; }
+
+/* Off-screen (not display:none, so naive bots still see it). */
+.fb-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.fb-actions {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--space-24) var(--space-20);
+  border-top: 1px solid var(--color-border-default);
+}
+.fb-btn {
+  min-height: 40px;
+  padding: 0 var(--space-16);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-control);
+  background: var(--color-surface-faint);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: var(--font-size-13);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.fb-btn:hover { background: var(--color-surface-hover); }
+.fb-btn-primary {
+  background: linear-gradient(135deg, var(--color-accent-default) 0%, var(--color-accent-deep) 100%);
+  border-color: transparent;
+  color: var(--color-text-on-accent);
+  margin-left: auto;
+}
+.fb-btn-primary:hover { background: linear-gradient(135deg, var(--color-accent-default) 0%, var(--color-accent-deep) 100%); box-shadow: var(--shadow-glow-accent); }
+.fb-btn[aria-disabled='true'] { opacity: 0.6; cursor: progress; }
+
+.fb-done { padding: var(--space-32) var(--space-24) var(--space-24); }
+.fb-done .fb-btn { width: 100%; }
+
+@media (max-width: 640px) {
+  .fb-overlay { padding: var(--space-8); }
+  .fb-scroll { padding: var(--space-20) var(--space-16) var(--space-8); }
+  .fb-actions { padding: var(--space-12) var(--space-16) var(--space-16); }
+  .fb-done { padding: var(--space-24) var(--space-16) var(--space-16); }
+}

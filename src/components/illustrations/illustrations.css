@@ -1,0 +1,58 @@
+/* Night palette for the freesvg illustrations (CC0). Every colour is a design
+   token, or a mix of tokens, so the scenes follow the rest of the app. */
+
+/* The frame: a rounded window with a soft fade into the card below. */
+.ill-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  max-height: 190px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-accent);
+  background: var(--color-surface-canvas);
+  margin-bottom: var(--space-16);
+}
+.ill-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, var(--color-ember-00) 55%, var(--color-surface-canvas) 130%);
+}
+.ill { display: block; width: 100%; height: 100%; }
+
+/* Shared */
+.ill-sky { fill: var(--color-surface-popup); }
+.ill-glow-in { stop-color: var(--color-ember-50); }
+.ill-glow-out { stop-color: var(--color-ember-00); }
+
+/* Erupting volcano */
+.ill-hills { fill: color-mix(in srgb, var(--color-status-extinct) 12%, var(--color-surface-canvas)); }
+.ill-smoke { fill: color-mix(in srgb, var(--color-status-extinct) 22%, var(--color-surface-popup)); }
+.ill-cloud { fill: color-mix(in srgb, var(--color-highlight-cream) 9%, var(--color-surface-popup)); }
+.ill-vol-rock { fill: color-mix(in srgb, var(--color-status-extinct) 34%, var(--color-surface-canvas)); }
+.ill-vol-rock-light { fill: color-mix(in srgb, var(--color-status-extinct) 48%, var(--color-surface-canvas)); }
+.ill-vol-rock-shade { fill: color-mix(in srgb, var(--color-status-extinct) 20%, var(--color-surface-canvas)); }
+.ill-vol-rock-deep { fill: color-mix(in srgb, var(--color-status-extinct) 9%, var(--color-surface-canvas)); }
+.ill-lava { fill: var(--color-accent-deep); }
+.ill-lava-hot { fill: var(--color-highlight-spark); }
+.ill-lava, .ill-lava-hot { filter: drop-shadow(0 0 5px var(--color-ember-60)); }
+.ill-ground-1 { fill: color-mix(in srgb, var(--color-accent-deep) 10%, var(--color-surface-canvas)); }
+.ill-ground-2 { fill: color-mix(in srgb, var(--color-accent-deep) 6%, var(--color-surface-canvas)); }
+.ill-ground-3 { fill: var(--color-surface-canvas); }
+.ill-leaf { fill: color-mix(in srgb, var(--color-accent-deep) 3%, var(--color-surface-canvas)); }
+
+/* Volcano island */
+.ill-sky-band { fill: color-mix(in srgb, var(--color-status-extinct) 9%, var(--color-surface-popup)); }
+.ill-sea { fill: color-mix(in srgb, var(--color-sky-100) 20%, var(--color-surface-canvas)); }
+.ill-sea-mid { fill: color-mix(in srgb, var(--color-sky-100) 27%, var(--color-surface-canvas)); }
+.ill-sea-light { fill: color-mix(in srgb, var(--color-sky-100) 34%, var(--color-surface-canvas)); }
+.ill-rock { fill: color-mix(in srgb, var(--color-accent-deep) 30%, var(--color-surface-canvas)); }
+.ill-rock-light { fill: color-mix(in srgb, var(--color-accent-deep) 42%, var(--color-surface-canvas)); }
+.ill-rock-warm { fill: color-mix(in srgb, var(--color-accent-deep) 36%, var(--color-surface-canvas)); }
+.ill-rock-deep { fill: color-mix(in srgb, var(--color-accent-deep) 18%, var(--color-surface-canvas)); }
+.ill-sand { fill: color-mix(in srgb, var(--color-highlight-cream) 40%, var(--color-surface-canvas)); }
+.ill-green { fill: color-mix(in srgb, var(--color-status-extinct) 16%, var(--color-surface-canvas)); }
+.ill-green-light { fill: color-mix(in srgb, var(--color-status-extinct) 24%, var(--color-surface-canvas)); }
+.ill-surround { fill: var(--color-surface-canvas); }

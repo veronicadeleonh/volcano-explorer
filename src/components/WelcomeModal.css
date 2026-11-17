@@ -41,93 +41,6 @@
   margin: calc(var(--space-4) * -1) calc(var(--space-8) * -1) 0;
 }
 
-/* ── Central animated volcano ────────────────────────────────────────────
-   Replaces the old static emoji icon as the visual centerpiece: a glowing
-   crater with drifting embers, built with plain CSS/SVG so it stays crisp
-   at any size and costs nothing to load. */
-.wm-volcano {
-  position: relative;
-  width: 100%;
-  height: 150px;
-  margin-bottom: var(--space-16);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-
-.wm-volcano-glow {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  width: 150px;
-  height: 150px;
-  transform: translateX(-50%);
-  border-radius: var(--radius-full);
-  background: radial-gradient(circle, var(--color-ember-40) 0%, var(--color-ember-00) 70%);
-  animation: wmGlowPulse 3.2s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.wm-volcano-svg {
-  width: 132px;
-  height: 132px;
-  position: relative;
-  filter: drop-shadow(0 6px 16px var(--color-ember-30));
-}
-
-.wm-volcano-cone {
-  fill: var(--color-highlight-cream);
-}
-
-.wm-volcano-crater {
-  /* Lines up with the crater notch cut into the icon (roughly mid-height,
-  not the very top -- unlike the old hand-drawn triangle's pointed tip) so
-  the embers rise from the right spot. */
-  position: absolute;
-  top: 84px;
-  left: 50%;
-  width: 1px;
-  height: 1px;
-}
-
-.wm-ember {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 4px;
-  height: 4px;
-  border-radius: var(--radius-full);
-  background: var(--color-highlight-spark);
-  box-shadow: 0 0 8px 2px var(--color-highlight-spark-glow);
-  opacity: 0;
-  animation: wmEmberRise var(--duration-2800) ease-in infinite;
-}
-
-.wm-ember-1 { left: -7px; animation-delay: 0s; }
-.wm-ember-2 { left:  1px; animation-delay: var(--duration-700); }
-.wm-ember-3 { left: -2px; animation-delay: var(--duration-1400); }
-.wm-ember-4 { left:  6px; animation-delay: var(--duration-2100); }
-
-@keyframes wmGlowPulse {
-  0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
-  50%      { opacity: 1;    transform: translateX(-50%) scale(1.18); }
-}
-
-@keyframes wmEmberRise {
-  0%   { transform: translate(0, 0) scale(1);   opacity: 0; }
-  12%  { opacity: 1; }
-  75%  { opacity: 0.45; }
-  100% { transform: translate(6px, -64px) scale(0.3); opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .wm-volcano-glow,
-  .wm-ember {
-    animation: none;
-    opacity: 0.7;
-  }
-}
-
 .wm-card h2 {
   font-size: var(--font-size-22);
   font-weight: var(--font-weight-bold);
@@ -180,26 +93,6 @@
     border-radius: 16px;
     margin: auto 0;
     max-height: min(600px, 100%);
-  }
-
-  .wm-volcano {
-    height: 118px;
-    margin-bottom: var(--space-10);
-  }
-
-  .wm-volcano-svg {
-    width: 104px;
-    height: 104px;
-  }
-
-  .wm-volcano-glow {
-    width: 118px;
-    height: 118px;
-    top: 8px;
-  }
-
-  .wm-volcano-crater {
-    top: 66px;
   }
 
   .wm-card h2 {

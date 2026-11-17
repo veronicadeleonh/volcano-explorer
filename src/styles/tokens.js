@@ -246,7 +246,9 @@ export const tokens = {
     "sm": "0 4px 20px rgba(0, 0, 0, 0.45)",
     "drawer": "-8px 0 48px rgba(0, 0, 0, 0.6)",
     "modal": "0 32px 80px rgba(0, 0, 0, 0.6)",
-    "glow-accent": "0 8px 28px rgba(255, 80, 30, 0.45)"
+    "glow-accent": "0 8px 28px rgba(255, 80, 30, 0.45)",
+    "glow-new-soft": "0 0 6px 1px rgba(255, 90, 40, 0.5)",
+    "glow-new-strong": "0 0 16px 4px rgba(255, 90, 40, 0.75)"
   },
   "breakpoint": {
     "tablet": "1024px",

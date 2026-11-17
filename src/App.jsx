@@ -13,6 +13,7 @@ import CompareModal from './components/CompareModal'
 import PlateModal from './components/PlateModal'
 import TokenGate from './components/TokenGate'
 import WelcomeModal from './components/WelcomeModal'
+import FeedbackDialog from './components/FeedbackDialog'
 import { hasSeenWelcome } from './lib/welcomeSeen'
 import './App.css'
 
@@ -30,6 +31,7 @@ export default function App() {
   const [flyTo, setFlyTo]         = useState(null)
   // Mobile only: which collapsible layer panel is open ('volcanoes' | 'geo' | null); opening one closes the other.
   const [mobilePanel, setMobilePanel] = useState(null)
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
   const [welcomeOpen, setWelcomeOpen] = useState(() => !hasSeenWelcome()) // first visit, or reopened with the help button
   const [layers, setLayers]       = useState(DEFAULT_LAYERS)
   const [token, setToken]         = useState(
@@ -188,6 +190,7 @@ export default function App() {
         onPlateClick={handlePlateClick}
         modalArrowPoint={plateArrowPoint}
         onHelp={() => setWelcomeOpen(true)}
+        onFeedback={() => setFeedbackOpen(true)}
       />
       <GeoLayers
         layers={layers}
@@ -222,6 +225,7 @@ export default function App() {
           onClose={() => { setSelectedPlate(null); setPlateArrowPoint(null) }}
         />
       )}
+      {feedbackOpen && <FeedbackDialog onClose={() => setFeedbackOpen(false)} />}
       <div className="app-attribution">
         <span className="app-attribution-line">
           By <a href="https://veronicadeleonh.de" target="_blank" rel="noopener noreferrer">Verónica De León Hernández</a>

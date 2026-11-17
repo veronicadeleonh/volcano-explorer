@@ -609,6 +609,30 @@
         },
         "type": "boxShadow",
         "description": "primary CTA glow"
+      },
+      "glow-new-soft": {
+        "value": {
+          "x": "0",
+          "y": "0",
+          "blur": "6",
+          "spread": "1",
+          "color": "rgba(255, 90, 40, 0.5)",
+          "type": "dropShadow"
+        },
+        "type": "boxShadow",
+        "description": "\"new\" marker glow, resting state (feedback button)"
+      },
+      "glow-new-strong": {
+        "value": {
+          "x": "0",
+          "y": "0",
+          "blur": "16",
+          "spread": "4",
+          "color": "rgba(255, 90, 40, 0.75)",
+          "type": "dropShadow"
+        },
+        "type": "boxShadow",
+        "description": "\"new\" marker glow, pulse peak (feedback button)"
       }
     },
     "breakpoint": {

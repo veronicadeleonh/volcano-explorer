@@ -1,5 +1,7 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import './WelcomeModal.css'
+import EruptingVolcano from './illustrations/EruptingVolcano'
+import './illustrations/illustrations.css'
 import { useDrawerFocus } from '../lib/useDrawerFocus'
 import { isMuted, subscribe, toggleMuted, holdSound, releaseSound } from '../lib/sound'
 import { hasSeenWelcome, markWelcomeSeen } from '../lib/welcomeSeen'
@@ -42,22 +44,7 @@ function WelcomeDialog({ onClose }) {
         "Start exploring" button below lives outside this wrapper so it's
         always visible, never pushed off-screen. */}
         <div className="wm-scroll">
-          <div className="wm-volcano" aria-hidden="true">
-            <div className="wm-volcano-glow" />
-            {/* Icon: Material Symbols "volcano" (Google, Apache License 2.0) */}
-            <svg className="wm-volcano-svg" viewBox="0 -960 960 960" aria-hidden="true" focusable="false">
-              <path
-                className="wm-volcano-cone"
-                d="m80-80 160-360h120l80-200h280L880-80H80Zm92-60h628L675-580H480l-80 200H279L172-140Zm371-640v-140h60v140h-60Zm181 76-42-42 99-99 43 42-100 99Zm-302 0-99-99 42-43 99 100-42 42Zm378 564H172h628Z"
-              />
-            </svg>
-            <div className="wm-volcano-crater">
-              <span className="wm-ember wm-ember-1" />
-              <span className="wm-ember wm-ember-2" />
-              <span className="wm-ember wm-ember-3" />
-              <span className="wm-ember wm-ember-4" />
-            </div>
-          </div>
+          <div className="ill-frame" aria-hidden="true"><EruptingVolcano /></div>
 
           <h2 id="wm-title">Volcano Explorer</h2>
 

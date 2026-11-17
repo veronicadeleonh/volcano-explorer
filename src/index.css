@@ -85,6 +85,21 @@ body {
 .mapboxgl-ctrl-icon { filter: invert(1) opacity(0.7); }
 .ve-sound-ctrl button { color: var(--color-text-tertiary); display: flex; align-items: center; justify-content: center; }
 .ve-sound-ctrl button:hover { color: var(--color-text-primary); }
+
+/* "New" glow on the feedback button (first session only, see Map.jsx). A slow,
+   continuous pulse until the button is clicked, which is the way to stop it
+   (WCAG 2.2.2). Gentle and far below the flash threshold. Reduced motion:
+   a static glow only. */
+.mapboxgl-ctrl.ve-feedback-ctrl.ve-feedback-new {
+  box-shadow: var(--shadow-glow-new-soft);
+  animation: ve-feedback-pulse var(--duration-2800) ease-in-out infinite;
+}
+@keyframes ve-feedback-pulse {
+  50% { box-shadow: var(--shadow-glow-new-strong); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mapboxgl-ctrl.ve-feedback-ctrl.ve-feedback-new { animation: none; }
+}
 .mapboxgl-ctrl-attrib { display: none !important; }
 
 /* Scrollbar */

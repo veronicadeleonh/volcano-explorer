@@ -201,7 +201,50 @@ class HelpControl {
   onRemove() { this._c?.remove() }
 }
 
-export default function Map({ token, volcanoes, selected, compareList = [], onSelect, onCountryClick, activeCountry, flyTo, layers, selectedPlate, onPlateClick, modalArrowPoint, onHelp }) {
+// "Send feedback" button: opens the feedback dialog. Sits right under the About
+// button, so keyboard users reach it with the other map controls.
+// A soft glow marks it as new, only during a person's first session, and stops
+// as soon as they click it. localStorage remembers the first visit; sessionStorage
+// keeps the glow on for the rest of that session (reloads included) until clicked.
+const FEEDBACK_SEEN_KEY = 'volcano-explorer:feedback-seen'
+const FEEDBACK_GLOW_KEY = 'volcano-explorer:feedback-glow'
+function shouldGlowFeedback() {
+  try {
+    if (!localStorage.getItem(FEEDBACK_SEEN_KEY)) {
+      localStorage.setItem(FEEDBACK_SEEN_KEY, '1')
+      sessionStorage.setItem(FEEDBACK_GLOW_KEY, '1')
+    }
+    return sessionStorage.getItem(FEEDBACK_GLOW_KEY) === '1'
+  } catch { return false }
+}
+function stopFeedbackGlow() {
+  try { sessionStorage.setItem(FEEDBACK_GLOW_KEY, '0') } catch { /* storage blocked: nothing to remember */ }
+}
+
+class FeedbackControl {
+  constructor({ onClick }) { this.onClick = onClick }
+  onAdd() {
+    const c = document.createElement('div')
+    c.className = 'mapboxgl-ctrl mapboxgl-ctrl-group ve-sound-ctrl ve-feedback-ctrl'
+    if (shouldGlowFeedback()) c.classList.add('ve-feedback-new')
+    const b = document.createElement('button')
+    b.type = 'button'
+    b.setAttribute('aria-label', 'Send feedback')
+    b.title = 'Send feedback'
+    b.innerHTML = '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+    b.addEventListener('click', () => {
+      c.classList.remove('ve-feedback-new')
+      stopFeedbackGlow()
+      this.onClick()
+    })
+    c.appendChild(b)
+    this._c = c
+    return c
+  }
+  onRemove() { this._c?.remove() }
+}
+
+export default function Map({ token, volcanoes, selected, compareList = [], onSelect, onCountryClick, activeCountry, flyTo, layers, selectedPlate, onPlateClick, modalArrowPoint, onHelp, onFeedback }) {
   const containerRef  = useRef(null)
   const mapRef        = useRef(null)
   const [mapInstance, setMapInstance] = useState(null)
@@ -212,6 +255,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   const onSelectRef   = useRef(onSelect)
   const onCountryClickRef  = useRef(onCountryClick)
   const onHelpRef          = useRef(onHelp)
+  const onFeedbackRef      = useRef(onFeedback)
   const activeCountryRef   = useRef(activeCountry)
   // (the "active" country highlight is filter-driven — see the effect below)
 
@@ -228,6 +272,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
   useEffect(() => { onSelectRef.current = onSelect      }, [onSelect])
   useEffect(() => { onCountryClickRef.current  = onCountryClick }, [onCountryClick])
   useEffect(() => { onHelpRef.current = onHelp }, [onHelp])
+  useEffect(() => { onFeedbackRef.current = onFeedback }, [onFeedback])
   useEffect(() => { activeCountryRef.current   = activeCountry  }, [activeCountry])
   useEffect(() => { volCacheRef.current = volcanoes     }, [volcanoes])
   useEffect(() => { layerCacheRef.current = layers      }, [layers])
@@ -329,6 +374,7 @@ export default function Map({ token, volcanoes, selected, compareList = [], onSe
       subscribe: (fn) => { rotationListeners.add(fn); return () => rotationListeners.delete(fn) },
     }), 'top-right')
     map.addControl(new HelpControl({ onClick: () => onHelpRef.current?.() }), 'top-right')
+    map.addControl(new FeedbackControl({ onClick: () => onFeedbackRef.current?.() }), 'top-right')
     const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)')
     const onMotionChange = (e) => {
       spinPausedRef.current = e.matches
