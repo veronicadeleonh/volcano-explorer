@@ -180,7 +180,7 @@ export default function FeedbackDialog({ onClose, demo = false }) {
       <div className="fb-card" ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="fb-title" aria-describedby={step === 0 ? 'fb-intro' : undefined}>
         <form className="fb-form" onSubmit={onSubmit} noValidate>
           <div className="fb-scroll">
-            <p className="fb-kicker" id="fb-title">Share your thoughts</p>
+            <p className="fb-kicker" id="fb-title">Share your feedback</p>
             {step > 0 && (
               <div className="fb-bar" aria-hidden="true">
                 {Array.from({ length: QUESTIONS }, (_, i) => <span key={i} className={i < step ? 'is-done' : ''} />)}
