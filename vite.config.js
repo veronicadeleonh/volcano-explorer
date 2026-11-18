@@ -13,7 +13,7 @@ function devApi() {
     configResolved(config) {
       // Server-only variables (no VITE_ prefix, so they never reach the browser).
       // Add more prefixes here if a function needs other server-side variables.
-      Object.assign(process.env, loadEnv(config.mode, config.root, ['NOTION_']))
+      Object.assign(process.env, loadEnv(config.mode, config.root, ['NOTION_', 'RESEND_', 'FEEDBACK_']))
     },
     configureServer(server) {
       server.middlewares.use('/api', async (req, res, next) => {

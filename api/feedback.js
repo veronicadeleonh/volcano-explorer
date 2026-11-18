@@ -4,6 +4,10 @@
 // no name or email is collected.
 //
 // Env: NOTION_TOKEN, NOTION_FEEDBACK_DB_ID
+// Optional email notification (Resend): RESEND_API_KEY, FEEDBACK_NOTIFY_TO and,
+// once you verify a domain, FEEDBACK_NOTIFY_FROM. Without the first two, no
+// email is sent. A failed email never fails the request: the row is already
+// saved in Notion by then.
 // Column names and option lists must match the Notion database and
 // src/components/FeedbackDialog.jsx exactly (keep them in sync).
 
@@ -36,6 +40,48 @@ const pick = (list, value) =>
   Array.isArray(value) ? [...new Set(value.filter((v) => list.includes(v)))] : []
 
 const text = (s) => ({ rich_text: [{ text: { content: s } }] })
+
+const list = (a) => (a.length ? a.join(', ') : '-')
+
+// Plain-text email to the owner. Only the rating goes in the subject; everything
+// else is in the body, as plain text (no HTML, so nothing to inject).
+async function notifyByEmail(d) {
+  const { RESEND_API_KEY, FEEDBACK_NOTIFY_TO, FEEDBACK_NOTIFY_FROM } = process.env
+  if (!RESEND_API_KEY || !FEEDBACK_NOTIFY_TO) return
+  const lines = [
+    `Rating: ${d.rating}/5`,
+    `Enjoys most: ${list(d.liked)}${d.likedOther ? ` (other: ${d.likedOther})` : ''}`,
+    `Improve first: ${list(d.wants)}${d.wantsOther ? ` (other: ${d.wantsOther})` : ''}`,
+    `Accessibility features: ${list(d.features)}`,
+    `Did they help: ${d.helpful ?? '-'}`,
+    `Viewport: ${d.viewport ? `${d.viewport}px` : '-'}`,
+  ]
+  if (d.url) lines.push('', `In Notion: ${d.url}`)
+  try {
+    const r = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+        'User-Agent': 'volcano-explorer-feedback',
+      },
+      body: JSON.stringify({
+        from: FEEDBACK_NOTIFY_FROM || 'Volcano Explorer <onboarding@resend.dev>',
+        to: FEEDBACK_NOTIFY_TO,
+        subject: `New Volcano Explorer feedback: ${d.rating}/5`,
+        text: lines.join('\n'),
+      }),
+      signal: AbortSignal.timeout(4000),
+    })
+    if (!r.ok) {
+      // Status and Resend's error name only, never the feedback text.
+      const err = await r.json().catch(() => ({}))
+      console.error('feedback: email error', r.status, err.name)
+    }
+  } catch (e) {
+    console.error('feedback: email request failed', e.name)
+  }
+}
 
 function sameOrigin(req) {
   const origin = req.headers.origin
@@ -121,6 +167,8 @@ export default async function handler(req, res) {
       console.error('feedback: notion error', r.status, err.code)
       return res.status(502).json({ error: 'upstream_error' })
     }
+    const page = await r.json().catch(() => ({}))
+    await notifyByEmail({ rating, liked, likedOther, wants, wantsOther, features, helpful, viewport, url: page.url })
     return res.status(200).json({ ok: true })
   } catch (e) {
     console.error('feedback: request failed', e.name)
