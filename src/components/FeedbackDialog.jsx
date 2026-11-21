@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import './FeedbackDialog.css'
 import { useDrawerFocus } from '../lib/useDrawerFocus'
 import { sfx } from '../lib/sound'
+import { track } from '../lib/analytics'
 import VolcanoIsland from './illustrations/VolcanoIsland'
 import './illustrations/illustrations.css'
 
@@ -133,6 +134,7 @@ export default function FeedbackDialog({ onClose, demo = false }) {
           website,
         }),
       })
+      if (res.ok) track('feedback_sent')
       setStatus(res.ok ? 'sent' : 'error')
     } catch {
       setStatus('error')
@@ -148,6 +150,7 @@ export default function FeedbackDialog({ onClose, demo = false }) {
       return
     }
     sfx.uiClick()
+    if (step === 0 && !demo) track('feedback_started')
     if (step < LAST) goTo(step + 1)
     else send()
   }

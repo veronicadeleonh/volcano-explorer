@@ -15,6 +15,7 @@ import TokenGate from './components/TokenGate'
 import WelcomeModal from './components/WelcomeModal'
 import FeedbackDialog from './components/FeedbackDialog'
 import { hasSeenWelcome } from './lib/welcomeSeen'
+import { track } from './lib/analytics'
 import './App.css'
 
 const DEFAULT_LAYERS = {
@@ -190,7 +191,7 @@ export default function App() {
         onPlateClick={handlePlateClick}
         modalArrowPoint={plateArrowPoint}
         onHelp={() => setWelcomeOpen(true)}
-        onFeedback={() => setFeedbackOpen(true)}
+        onFeedback={() => { track('feedback_opened'); setFeedbackOpen(true) }}
       />
       <GeoLayers
         layers={layers}
