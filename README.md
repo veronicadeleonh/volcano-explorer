@@ -1,6 +1,6 @@
 # 🌋 Volcano Explorer
 
-An interactive 3D globe for exploring the world's volcanoes — search, filter, compare, and dive into eruption history with real-time geological overlays.
+_The world's volcanoes, their eruptions and the tectonic plates underneath, on one 3D globe._
 
 ![100% vibecoded](https://img.shields.io/badge/100%25-vibecoded-ff4422?style=flat-square&labelColor=0a0a16)
 
