@@ -91,7 +91,7 @@ body.sg-body #root { width: auto; height: auto; }
 .sg-stage-in { position: absolute; inset: 0; }
 .sg-stage .tg-wrap { width: 100%; height: 100%; }
 .sg-stage .wm-overlay,
-.sg-stage .fb-overlay { position: absolute; }
+.sg-stage .fb-card { position: absolute; right: var(--space-16); bottom: var(--space-16); }
 .sg-legend { position: absolute; inset: 0; padding: var(--space-20); display: flex; flex-direction: column; gap: var(--space-12); justify-content: center; font-size: var(--font-size-13); color: var(--color-text-primary); }
 .sg-legend-row { display: flex; align-items: center; gap: var(--space-12); }
 .sg-legend-label { min-width: 180px; }

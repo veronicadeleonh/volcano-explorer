@@ -1,28 +1,30 @@
-.fb-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-welcome);
-  background: var(--color-black-60);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-20);
-  backdrop-filter: blur(var(--blur-6));
-  overflow-y: auto;
-}
-
 .fb-card {
+  /* Non-modal card in the bottom-right corner: the map stays usable behind it. */
+  position: fixed;
+  right: var(--space-16);
+  bottom: var(--space-48);
+  z-index: var(--z-popover); /* above the side panels, below the modals */
+  width: 360px;
+  max-width: calc(100vw - var(--space-32));
+  max-height: calc(100vh - var(--space-48) - var(--space-32));
   background: var(--color-surface-overlay);
   border: 1px solid var(--color-border-accent);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-modal);
-  width: 100%;
-  max-width: 460px;
-  max-height: min(680px, 100%);
+  backdrop-filter: blur(var(--blur-24));
   display: flex;
   flex-direction: column;
   overflow: hidden;
   color: var(--color-text-secondary);
+  animation: fb-in var(--duration-250) ease-out;
+}
+@keyframes fb-in {
+  from { opacity: 0; transform: translateY(var(--space-12)); }
+}
+/* With a side panel open (volcano or country), sit beside it instead of on top. */
+@media (min-width: 1100px) {
+  .vp-overlay ~ .fb-card { right: calc(380px + var(--space-16)); }
+  .cp-overlay ~ .fb-card { right: calc(340px + var(--space-16)); }
 }
 
 .fb-form { display: flex; flex-direction: column; min-height: 0; flex: 1 1 auto; }
@@ -36,8 +38,22 @@
   padding: var(--space-24) var(--space-24) var(--space-8);
 }
 
+.fb-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-8); margin-bottom: var(--space-8); }
+.fb-x {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  margin: calc(var(--space-6) * -1) calc(var(--space-6) * -1) 0 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-14);
+  cursor: pointer;
+}
+.fb-x:hover { background: var(--color-surface-hover); color: var(--color-text-primary); }
 .fb-kicker {
-  margin: 0 0 var(--space-8);
+  margin: 0;
   font-size: var(--font-size-12);
   font-weight: var(--font-weight-semibold);
   letter-spacing: var(--font-tracking-p0-8px);
@@ -68,8 +84,6 @@
   letter-spacing: 0;
   color: var(--color-text-muted);
 }
-.fb-cover { padding: var(--space-8) 0 var(--space-4); }
-.fb-card h2.fb-cover-title { margin-bottom: var(--space-12); }
 
 .fb-sub { margin: var(--space-16) 0 var(--space-8); font-size: var(--font-size-14); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); }
 
@@ -81,6 +95,7 @@
   margin: 0 0 var(--space-16);
 }
 .fb-note a { color: var(--color-text-primary); text-underline-offset: 2px; }
+.fb-lead { margin: calc(var(--space-4) * -1) 0 var(--space-12); font-size: var(--font-size-13); }
 .fb-privacy { font-size: var(--font-size-12); margin: var(--space-12) 0 0; }
 
 .fb-field { border: none; padding: 0; margin: 0 0 var(--space-12); min-width: 0; position: relative; }
@@ -113,6 +128,7 @@
 /* Rating 1-5: the real radios are visually hidden, the labels are the buttons.
    Selected = filled + dark text, not only a colour change. */
 .fb-rating { display: flex; gap: var(--space-8); margin-top: var(--space-12); }
+.fb-rating-ends { display: flex; justify-content: space-between; gap: var(--space-8); margin: var(--space-8) 0 0; font-size: var(--font-size-12); color: var(--color-text-muted); }
 .fb-rating-opt { position: relative; flex: 1 1 0; max-width: 56px; }
 .fb-rating-opt input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
 .fb-rating-opt label {
@@ -192,9 +208,10 @@
 
 .fb-done { padding: var(--space-32) var(--space-24) var(--space-24); }
 .fb-done .fb-btn { width: 100%; }
+.fb-done .ill-frame { max-height: 120px; }
 
 @media (max-width: 640px) {
-  .fb-overlay { padding: var(--space-8); }
+  .fb-card { right: var(--space-8); left: var(--space-8); bottom: var(--space-8); width: auto; max-width: none; max-height: calc(100vh - var(--space-16)); }
   .fb-scroll { padding: var(--space-20) var(--space-16) var(--space-8); }
   .fb-actions { padding: var(--space-12) var(--space-16) var(--space-16); }
   .fb-done { padding: var(--space-24) var(--space-16) var(--space-16); }

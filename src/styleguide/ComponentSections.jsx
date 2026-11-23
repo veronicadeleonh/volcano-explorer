@@ -166,7 +166,7 @@ export function Components() {
           <Stage id="c-welcome" title="WelcomeModal" file="WelcomeModal.jsx · bienvenida" height={640}>
             {() => <WelcomeModal remember={false} />}
           </Stage>
-          <Stage id="c-feedback" title="FeedbackDialog" file="FeedbackDialog.jsx · formulario por pasos" height={640} note="Cover + 4 preguntas, una por paso. Se abre solo desde el botón bajo «?» del mapa (que brilla en la primera sesión hasta que se pulsa). Aquí es una demo: al enviar simula el envío y no escribe en Notion.">
+          <Stage id="c-feedback" title="FeedbackDialog" file="FeedbackDialog.jsx · formulario por pasos" height={640} note="Tarjeta no modal en la esquina, 4 preguntas una por paso, la primera visible al abrir. Se abre solo desde el botón bajo «?» del mapa (que brilla en la primera sesión hasta que se pulsa). Aquí es una demo: al enviar simula el envío y no escribe en Notion.">
             {(close) => <FeedbackDialog demo onClose={close} />}
           </Stage>
           <Stage id="c-token" title="TokenGate" file="TokenGate.jsx · pide el token de Mapbox" height={620}>
