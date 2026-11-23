@@ -88,7 +88,7 @@ export default function App() {
     }
     setSelected(volcano)
     setSelectedCountry(null)
-    if (volcano) setFlyTo({ lon: volcano.lon, lat: volcano.lat })
+    if (volcano) { track('volcano_opened'); setFlyTo({ lon: volcano.lon, lat: volcano.lat }) }
   }
 
   const handleCountryClick = useCallback((country) => {
@@ -112,6 +112,7 @@ export default function App() {
   }, [handleCountryClick])
 
   const handleToggleLayer = useCallback((id) => {
+    track('layer_toggled', { layer: id })
     setLayers(prev => {
       const next = { ...prev, [id]: !prev[id] }
       if (id === 'showActive' && !next.showActive) next.recencyFilter = 'all'
@@ -120,6 +121,7 @@ export default function App() {
   }, [])
 
   const handleSetRecency = useCallback((recencyFilter) => {
+    track('layer_toggled', { layer: 'recency' })
     setLayers(prev => ({ ...prev, recencyFilter }))
   }, [])
 
@@ -130,6 +132,7 @@ export default function App() {
   // closes the volcano/country panel -- only one of the three can be open at
   // a time.
   const handlePlateClick = useCallback((name) => {
+    track('plate_clicked')
     setSelected(null)
     setSelectedCountry(null)
     setSelectedPlate(prev => {
@@ -173,7 +176,7 @@ export default function App() {
           volcanoes={volcanoes}
           onAdd={handleAddToCompare}
           onRemove={(id) => { sfx.compareRemove(); setCompareList(prev => prev.filter(v => v.id !== id)) }}
-          onOpen={() => { sfx.compareOpen(); setCompareOpen(true) }}
+          onOpen={() => { track('compare_opened'); sfx.compareOpen(); setCompareOpen(true) }}
           onCancel={handleToggleCompareMode}
         />
       )}
@@ -190,7 +193,7 @@ export default function App() {
         selectedPlate={selectedPlate}
         onPlateClick={handlePlateClick}
         modalArrowPoint={plateArrowPoint}
-        onHelp={() => setWelcomeOpen(true)}
+        onHelp={() => { track('welcome_opened'); setWelcomeOpen(true) }}
         onFeedback={() => { track('feedback_opened'); setFeedbackOpen(true) }}
       />
       <GeoLayers

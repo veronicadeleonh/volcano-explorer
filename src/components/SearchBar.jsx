@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { sfx } from '../lib/sound'
+import { track } from '../lib/analytics'
 import { COUNTRY_ISO } from '../data/countryIso'
 import './SearchBar.css'
 
@@ -77,6 +78,7 @@ export default function SearchBar({ volcanoes, onSelect, onSelectCountry, select
   }
 
   const pick = (v, { keepFocus = false } = {}) => {
+    track('search_used')
     if (v.kind === 'country') onSelectCountry?.({ name: v.name, iso: v.iso, volcanoes: v.volcanoes })
     else onSelect(v)
     if (!compareMode) setQuery(v.name)
