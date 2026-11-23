@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import Map from './components/Map'
 import SearchBar from './components/SearchBar'
@@ -16,7 +16,18 @@ import WelcomeModal from './components/WelcomeModal'
 import FeedbackDialog from './components/FeedbackDialog'
 import { hasSeenWelcome } from './lib/welcomeSeen'
 import { track } from './lib/analytics'
+import { pathFor, titleFor, parsePath } from './lib/routes'
 import './App.css'
+
+const HOME_TITLE = document.title
+
+// Camera target for a whole country: its own extent (so it's centred as a
+// whole, not just its volcanoes), or its volcanoes if it isn't in the table.
+function countryFlyTarget(country) {
+  const box = COUNTRY_BOUNDS[country.name]
+  const bounds = box ? [[box[0], box[1]], [box[2], box[3]]] : boundsForVolcanoes(country.volcanoes)
+  return bounds ? { bounds } : null
+}
 
 const DEFAULT_LAYERS = {
   boundaries: true, ringOfFire: true,
@@ -48,9 +59,68 @@ export default function App() {
   const [selectedPlate, setSelectedPlate] = useState(null) // { name, side } | null
   const [plateArrowPoint, setPlateArrowPoint] = useState(null) // modal's measured arrow tip -- feeds the map connector line
 
-  useEffect(() => {
-    fetch('/data/volcanoes.json').then(r => r.json()).then(setVolcanoes)
+  // ── deep links (src/lib/routes.js) ────────────────────────────────────────
+  // Every panel has its own URL. The URL is read once when the data arrives
+  // and again on Back/Forward; after that, what's on screen drives the URL.
+  const volcanoesRef = useRef([])
+  const urlSynced = useRef(false)
+  const [urlReady, setUrlReady] = useState(false)
+
+  const applyRoute = useCallback((route) => {
+    setSelectedPlate(route.kind === 'plate' ? { name: route.plateName, side: 'right' } : null)
+    setPlateArrowPoint(null)
+    setSelected(route.kind === 'volcano' ? route.volcano : null)
+    setSelectedCountry(route.kind === 'country' ? route.country : null)
+    if (route.kind === 'compare') {
+      setCompareMode(true)
+      setCompareList(route.volcanoes)
+      setCompareOpen(true)
+    } else {
+      setCompareOpen(false)
+      if (route.kind === 'volcano' || route.kind === 'country') { setCompareMode(false); setCompareList([]) }
+    }
+    if (route.kind === 'volcano') setFlyTo({ lon: route.volcano.lon, lat: route.volcano.lat })
+    if (route.kind === 'country') {
+      const target = countryFlyTarget(route.country)
+      if (target) setFlyTo(target)
+    }
   }, [])
+
+  useEffect(() => {
+    fetch('/data/volcanoes.json').then(r => r.json()).then((data) => {
+      volcanoesRef.current = data
+      setVolcanoes(data)
+      applyRoute(parsePath(window.location.pathname, data))
+      setUrlReady(true)
+    })
+  }, [applyRoute])
+
+  useEffect(() => {
+    const onPop = () => applyRoute(parsePath(window.location.pathname, volcanoesRef.current))
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [applyRoute])
+
+  // What's visible right now. While comparing, the volcano and country panels
+  // are hidden, so they don't count.
+  const routeState = {
+    compareVolcanoes: compareOpen ? compareList : null,
+    plateName: selectedPlate?.name,
+    volcano: compareMode ? null : selected,
+    country: compareMode ? null : selectedCountry,
+  }
+  const routePath = pathFor(routeState)
+  const routeTitle = titleFor(routeState) ?? HOME_TITLE
+  useEffect(() => {
+    if (!urlReady) return
+    if (window.location.pathname !== routePath) {
+      // the first sync only tidies the address the visitor arrived with
+      if (urlSynced.current) window.history.pushState(null, '', routePath)
+      else window.history.replaceState(null, '', routePath)
+    }
+    urlSynced.current = true
+    document.title = routeTitle
+  }, [routePath, routeTitle, urlReady])
 
   const handleSaveToken = (t) => {
     localStorage.setItem('mapbox_token', t)
@@ -104,11 +174,8 @@ export default function App() {
   const handleSearchCountry = useCallback((country) => {
     handleCountryClick(country)
     if (!country) return
-    // the country's own extent (so it's centred as a whole, not just its
-    // volcanoes); falls back to the volcanoes if it isn't in the table
-    const box = COUNTRY_BOUNDS[country.name]
-    const bounds = box ? [[box[0], box[1]], [box[2], box[3]]] : boundsForVolcanoes(country.volcanoes)
-    if (bounds) setFlyTo({ bounds })
+    const target = countryFlyTarget(country)
+    if (target) setFlyTo(target)
   }, [handleCountryClick])
 
   const handleToggleLayer = useCallback((id) => {
