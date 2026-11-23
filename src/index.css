@@ -43,8 +43,10 @@ body {
   height: 100vh;
 }
 
-/* Mapbox overrides */
-.mapboxgl-popup-content {
+/* Mapbox overrides. These need to out-rank Mapbox's own stylesheet (white
+   background, its own padding and tip colours), which loads after this file,
+   so they don't rely on source order. */
+.mapboxgl-popup .mapboxgl-popup-content {
   background: var(--color-surface-popup);
   color: var(--color-text-primary);
   border: 1px solid var(--color-border-accent-strong);
@@ -71,12 +73,19 @@ body {
 .vt-name { color: var(--color-text-primary); font-weight: var(--font-weight-semibold); font-size: var(--font-size-13); }
 .vt-status { font-size: var(--font-size-11); }
 .vt-meta { color: var(--color-text-subtle); font-size: var(--font-size-11); }
-.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip { border-top-color: var(--color-border-accent-strong); }
+/* Tip colour per anchor side (the tip is a CSS triangle: the visible side is a border) */
+.mapboxgl-popup[class*="anchor-top"] .mapboxgl-popup-tip    { border-bottom-color: var(--color-border-accent-strong); }
+.mapboxgl-popup[class*="anchor-bottom"] .mapboxgl-popup-tip { border-top-color: var(--color-border-accent-strong); }
+.mapboxgl-popup[class*="anchor-left"] .mapboxgl-popup-tip   { border-right-color: var(--color-border-accent-strong); }
+.mapboxgl-popup[class*="anchor-right"] .mapboxgl-popup-tip  { border-left-color: var(--color-border-accent-strong); }
 .country-popup .mapboxgl-popup-content {
   border-color: var(--color-country-border);
   padding: 7px 11px;
 }
-.country-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip { border-top-color: var(--color-country-border); }
+.country-popup[class*="anchor-top"] .mapboxgl-popup-tip    { border-bottom-color: var(--color-country-border); }
+.country-popup[class*="anchor-bottom"] .mapboxgl-popup-tip { border-top-color: var(--color-country-border); }
+.country-popup[class*="anchor-left"] .mapboxgl-popup-tip   { border-right-color: var(--color-country-border); }
+.country-popup[class*="anchor-right"] .mapboxgl-popup-tip  { border-left-color: var(--color-country-border); }
 .ct-root { display: flex; flex-direction: column; gap: var(--space-2); }
 .ct-name { color: var(--color-text-primary); font-weight: var(--font-weight-semibold); font-size: var(--font-size-13); }
 .ct-count { color: var(--color-country-text); font-size: var(--font-size-11); }
