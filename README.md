@@ -2,7 +2,7 @@
 
 _The world's volcanoes, their eruptions and the tectonic plates underneath, on one 3D globe._
 
-![100% vibecoded](https://img.shields.io/badge/100%25-vibecoded-ff4422?style=flat-square&labelColor=0a0a16)
+![AI-assisted](https://img.shields.io/badge/AI--assisted-ff4422?style=flat-square&labelColor=0a0a16)
 
 ![Volcano Explorer](.github/screenshots/hero.png)
 
